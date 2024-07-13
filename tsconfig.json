@@ -18,6 +18,7 @@
       }
     ],
     "paths": {
+      "@/styles/*": ["./src/styled-system/*"],
       "@/*": ["./src/*"]
     }
   },
