@@ -1,0 +1,114 @@
+#cursor {
+  position: fixed;
+  top: -5px;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  background-color: black;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+#cursor-border {
+  --size: 50px;
+  position: fixed;
+  top: calc(var(--size) / -2);
+  left: calc(var(--size) / -2);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px black;
+  pointer-events: none;
+  transition:
+    top 0.15s ease-out,
+    left 0.15s ease-out,
+    width 0.15s ease-out,
+    height 0.15s ease-out,
+    background-color 0.15s ease-out;
+  z-index: 999;
+}
+
+.cursor {
+  position: fixed;
+  top: -5px;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  background-color: black;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.cursorBorder {
+  --size: 50px;
+  position: fixed;
+  top: calc(var(--size) / -2);
+  left: calc(var(--size) / -2);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px black;
+  pointer-events: none;
+  transition:
+    top 0.15s ease-out,
+    left 0.15s ease-out,
+    width 0.15s ease-out,
+    height 0.15s ease-out,
+    background-color 0.15s ease-out;
+  z-index: 999;
+}
+/* 
+.button {
+  font-family: "Century Gothic", sans-serif;
+  font-size: 2rem;
+  padding: 1rem 2rem;
+  background-color: transparent;
+  color: #64ffda;
+  border: 1px solid #64ffda;
+  border-radius: 0;
+  box-shadow:
+    0 0 10px #64ffda,
+    0 0 10px #64ffda inset;
+  text-shadow:
+    0 0 5px #64ffda,
+    0 0 10px #64ffda;
+  transition: 0.3s ease-out;
+} */
+/* 
+.button:hover {
+  color: black;
+  background-color: #64ffda;
+  border-color: #64ffda;
+  box-shadow: 0 0 80px #64ffda;
+}
+
+.button:active {
+  transform: scale(0.85);
+  box-shadow: 0 0 30px #64ffda;
+}
+
+.secondButton {
+  margin-left: 2rem;
+  color: black;
+  border: 1px solid black;
+  box-shadow:
+    0 0 10px black,
+    0 0 10px black inset;
+  text-shadow:
+    0 0 5px black,
+    0 0 10px black;
+}
+
+.secondButton:hover {
+  color: black;
+  background-color: black;
+  border-color: black;
+  box-shadow: 0 0 80px black;
+}
+
+.secondButton:active {
+  transform: scale(0.85);
+  box-shadow: 0 0 30px black;
+} */
