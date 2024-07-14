@@ -15,7 +15,7 @@ export default defineConfig({
   theme: {
     extend: {},
   },
-
+  importMap: "@/styles",
   // The output directory for your css system
   outdir: "./src/styled-system",
 });
