@@ -13,7 +13,22 @@ export default defineConfig({
 
   // Useful for theme customization
   theme: {
-    extend: {},
+    extend: {
+      tokens: {
+        colors: {
+          colorTheme01: { value: "#ff6737" },
+          colorTheme02: { value: "#fc8755" },
+          colorTheme03: { value: "#ffddca" },
+          colorTheme04: { value: "#f3efec" },
+          colorBgSurface: { value: "#2a2b31" },
+          colorNeutral01: { value: "#60616a" },
+          colorNeutral02: { value: "#9597a1" },
+          colorNeutral03: { value: "#ebebeb" },
+          colorNeutral04: { value: "#fbfbfb" },
+          colorBackground: { value: "#ffffff" },
+        },
+      },
+    },
   },
   importMap: "@/styles",
   // The output directory for your css system

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Nav from "./nav";
 import { AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
+import { css, cx } from "@/styles/css";
 
 export default function Header() {
   const [isActive, setIsActive] = useState(false);
@@ -23,7 +24,14 @@ export default function Header() {
               setIsActive(!isActive);
             }}
             data-cursor="pointer"
-            className={styles.button}
+            className={cx(
+              styles.button,
+              css({
+                bg: "colorTheme01",
+                borderColor: "colorBgSurface",
+                borderWidth: 1,
+              })
+            )}
           >
             <div
               className={`${styles.burger} ${isActive ? styles.burgerActive : ""}`}
