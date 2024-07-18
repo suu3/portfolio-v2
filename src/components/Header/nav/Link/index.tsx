@@ -4,12 +4,25 @@ import { motion } from "framer-motion";
 import { slide, scale } from "../../anim";
 import { cx } from "@/styles/css";
 
-export default function Index({
+interface Data {
+  title: string;
+  href: string;
+  index: number;
+}
+
+interface Props {
+  data: Data;
+  isActive: boolean;
+  setSelectedIndicator: (href: string) => void;
+  className?: string;
+}
+
+export default function NavLink({
   data,
   isActive,
   setSelectedIndicator,
   className,
-}) {
+}: Props) {
   const { title, href, index } = data;
 
   return (

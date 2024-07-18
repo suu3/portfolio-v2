@@ -13,7 +13,7 @@ export default function Header() {
 
   useEffect(() => {
     if (isActive) setIsActive(false);
-  }, [pathname]);
+  }, [isActive, pathname]);
 
   return (
     <>

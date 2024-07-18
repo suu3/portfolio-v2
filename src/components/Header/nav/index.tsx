@@ -18,7 +18,7 @@ const navItems = [
   },
 ];
 
-export default function index() {
+function Nav() {
   const pathname = usePathname();
   const [selectedIndicator, setSelectedIndicator] = useState(pathname);
 
@@ -63,3 +63,5 @@ export default function index() {
     </motion.div>
   );
 }
+
+export default Nav;
