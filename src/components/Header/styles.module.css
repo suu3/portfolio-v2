@@ -1,8 +1,16 @@
 .header {
-  padding: 30px;
+  /* pointer-events: none; 필요하면 넣기*/
+  mix-blend-mode: multiply;
   position: fixed;
+  z-index: 5;
+  top: 96px;
+  left: 0;
   right: 0;
-  z-index: 1;
+  padding: 0 88px 0 96px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .button {

@@ -9,11 +9,11 @@ import { css } from "@/styles/css";
 
 const navItems = [
   {
-    title: "Home",
+    title: "HOME",
     href: "/home",
   },
   {
-    title: "Project",
+    title: "PROJECT",
     href: "/project",
   },
 ];
@@ -38,7 +38,7 @@ function Nav() {
           className={styles.nav}
         >
           <div className={styles.header}>
-            <p>Navigation</p>
+            <p>Content</p>
           </div>
           {navItems.map((data, index) => {
             return (
@@ -47,7 +47,9 @@ function Nav() {
                   "& a": {
                     textDecoration: "none",
                     color: "white",
-                    fontWeight: 300,
+                    fontWeight: 500,
+                    stroke: "#000",
+                    // '-webkit-text-stroke': '2px black'
                   },
                 })}
                 key={index}

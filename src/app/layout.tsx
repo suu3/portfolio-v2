@@ -1,10 +1,16 @@
+import { Inter } from "next/font/google";
+
+// If loading a variable font, you don't need to specify the font weight
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import Cursor from "@/components/Cursor";
 import Header from "@/components/Header";
+import { css, cx } from "@/styles/css";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({
+//   subsets: ["latin"],
+//   display: "swap",
+// });
 
 export const metadata: Metadata = {
   title: "Portfolio site",
@@ -18,10 +24,38 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="kr">
-      <body className={inter.className}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body
+        className={cx(
+          // inter.className,
+          css({
+            bg: "colorNeutral03",
+          })
+        )}
+      >
         <Header />
-        {children}
-
+        <main
+          className={cx(
+            css({
+              maxWidth: "1200px",
+              margin: "auto",
+              width: "100%",
+              minHeight: "100vh",
+            })
+            // flex({
+            //   align: "center",
+            //   justify: "center",
+            // })
+          )}
+        >
+          {children}
+        </main>
         <Cursor />
       </body>
     </html>

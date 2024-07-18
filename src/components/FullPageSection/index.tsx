@@ -1,17 +1,20 @@
-import { css } from "@/styles/css";
+import { css, cx } from "@/styles/css";
 import { ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
+  className?: string;
 }
 
-const FullPageSection = ({ children }: Props) => {
+const FullPageSection = ({ children, className }: Props) => {
   return (
     <section
-      //   className={styles.section}
-      className={css({
-        height: "100vh",
-      })}
+      className={cx(
+        css({
+          height: "100vh",
+        }),
+        className
+      )}
     >
       {children}
     </section>

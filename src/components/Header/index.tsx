@@ -18,26 +18,26 @@ export default function Header() {
 
   return (
     <>
-      <div className={styles.main}>
-        <div className={styles.header}>
+      <div className={styles.header}>
+        <div />
+        <div
+          onClick={() => {
+            setIsActive(!isActive);
+          }}
+          data-cursor="pointer"
+          className={cx(
+            styles.button,
+            css({
+              bg: "colorTheme01",
+              borderColor: "colorBgSurface",
+              borderWidth: 1,
+              pointerEvents: "auto",
+            })
+          )}
+        >
           <div
-            onClick={() => {
-              setIsActive(!isActive);
-            }}
-            data-cursor="pointer"
-            className={cx(
-              styles.button,
-              css({
-                bg: "colorTheme01",
-                borderColor: "colorBgSurface",
-                borderWidth: 1,
-              })
-            )}
-          >
-            <div
-              className={`${styles.burger} ${isActive ? styles.burgerActive : ""}`}
-            />
-          </div>
+            className={`${styles.burger} ${isActive ? styles.burgerActive : ""}`}
+          />
         </div>
       </div>
       <AnimatePresence mode="wait">{isActive && <Nav />}</AnimatePresence>
