@@ -13,7 +13,8 @@ export default function Header() {
 
   useEffect(() => {
     if (isActive) setIsActive(false);
-  }, [isActive, pathname]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return (
     <>
