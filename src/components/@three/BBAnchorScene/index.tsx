@@ -1,7 +1,7 @@
 import {
   BBAnchor,
   useHelper,
-  OrbitControls,
+  // OrbitControls,
   Icosahedron,
 } from "@react-three/drei";
 import React, { ComponentProps } from "react";
@@ -22,7 +22,7 @@ function BBAnchorScene({
 
   return (
     <>
-      <OrbitControls autoRotate />
+      {/* <OrbitControls autoRotate /> */}
       <Icosahedron ref={ref}>
         <meshBasicMaterial color="hotpink" wireframe />
         <BBAnchor {...props}>{children}</BBAnchor>
