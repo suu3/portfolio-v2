@@ -4,7 +4,8 @@ import { css } from "@/styled-system/css";
 
 export default function link({ title, href }: { title: string; href: string }) {
   return (
-    <div
+    <Link
+      href={href}
       className={css({
         borderTop: "1px solid white",
         display: "flex",
@@ -15,20 +16,28 @@ export default function link({ title, href }: { title: string; href: string }) {
         "&:last-of-type": {
           borderBottom: "1px solid white",
         },
+        transition: "bg 0.5s",
+        _hover: {
+          bg: "colorAccentLime",
+
+          "& a": {
+            color: "black",
+          },
+        },
       })}
     >
-      <Link
-        href={href}
+      <div
         className={css({
           fontSize: "56px",
           padding: "0",
           color: "white",
           fontWeight: 600,
           fontFamily: "Prompt",
+          transition: "color 0.5s",
         })}
       >
         {title.toUpperCase()}
-      </Link>
-    </div>
+      </div>
+    </Link>
   );
 }

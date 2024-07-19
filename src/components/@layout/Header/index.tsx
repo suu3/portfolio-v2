@@ -4,7 +4,7 @@ import { useState } from "react";
 import Burger from "./burger";
 import Stairs from "./stairs";
 import Menu from "./menu";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, LayoutGroup } from "framer-motion";
 
 export default function () {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -16,18 +16,20 @@ export default function () {
           setMenuIsOpen(true);
         }}
       />
-      <AnimatePresence mode="wait">
-        {menuIsOpen && (
-          <>
-            <Stairs />
-            <Menu
-              closeMenu={() => {
-                setMenuIsOpen(false);
-              }}
-            />
-          </>
-        )}
-      </AnimatePresence>
+      <LayoutGroup>
+        <AnimatePresence mode="wait">
+          {menuIsOpen && (
+            <>
+              <Stairs key="stairs" />
+              <Menu
+                closeMenu={() => {
+                  setMenuIsOpen(false);
+                }}
+              />
+            </>
+          )}
+        </AnimatePresence>
+      </LayoutGroup>
     </header>
   );
 }
