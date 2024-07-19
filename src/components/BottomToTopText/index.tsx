@@ -26,6 +26,7 @@ const BottomToTopText = ({ text }: { text: string }) => {
         overflowY: "hidden",
         height: "100",
       })}
+      data-cursor="pointer2"
     >
       <motion.h1
         initial={"disappeared"}

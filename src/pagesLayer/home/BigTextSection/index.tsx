@@ -3,6 +3,8 @@ import { Canvas } from "@react-three/fiber";
 import Grid from "@/components/@three/Grid";
 import TorusWireframe, { HtmlComp } from "@/components/@three/TorusWireframe";
 import { Sparkles } from "@react-three/drei";
+import FadeInText from "@/components/FadeInText";
+import { flex } from "@/styled-system/patterns";
 
 const BigTextSection = () => {
   return (
@@ -32,7 +34,7 @@ const BigTextSection = () => {
                 <path
                   xmlns="http://www.w3.org/2000/svg"
                   d="m40.898 44.5 1.25 27.324 1.25-27.324 12.375 11.273-11.301-12.375 27.352-1.2266-27.352-1.25 11.301-12.375-12.375 11.273-1.25-27.324-1.25 27.324-12.375-11.273 11.301 12.375-27.324 1.25 27.324 1.2266-11.301 12.375zm29.102 27.523 0.72656 15.477 0.69922-15.477 7 6.375-6.3984-7 15.477-0.69922-15.477-0.69922 6.3984-7-7 6.375-0.69922-15.449-0.72656 15.449-7-6.375 6.3984 7-15.477 0.69922 15.477 0.69922-6.3984 7z"
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                 />
               </svg>
             </HtmlComp>
@@ -48,8 +50,18 @@ const BigTextSection = () => {
           </HtmlComp>
         </TorusWireframe>
       </Canvas>
-      안녕하세요, 프론트엔드 개발자 <BottomToTopText text={"suu3"} />
-      입니다.
+      <h1
+        className={flex({
+          direction: "column",
+          // align: "center",
+        })}
+      >
+        <FadeInText>안녕하세요</FadeInText>
+        <FadeInText delay={0.2}>
+          프론트엔드 개발자 <BottomToTopText text={"suu3"} />
+          입니다.
+        </FadeInText>
+      </h1>
     </>
   );
 };

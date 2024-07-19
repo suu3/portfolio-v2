@@ -45,7 +45,7 @@ const Cursor = () => {
         if (item.dataset.cursor === "pointer2") {
           cursorBorder.style.backgroundColor = "white";
           cursorBorder.style.mixBlendMode = "difference";
-          cursorBorder.style.setProperty("--size", "80px");
+          cursorBorder.style.setProperty("--size", "100px");
         }
       });
       item.addEventListener("mouseout", () => {

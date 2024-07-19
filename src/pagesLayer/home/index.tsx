@@ -17,6 +17,7 @@ import { horizontalScrollCls, horizontalScrollContainerCls } from "./styles";
 import { maxWidthCls } from "@/styles/common";
 import Skills from "./Skills";
 import BigTextSection from "./BigTextSection";
+import CurvedPath from "@/components/CurvedPath";
 
 // gsap.registerPlugin(ScrollTrigger);
 // gsap.utils.toArray(".panel");
@@ -50,27 +51,24 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <main className={css({ overflow: "hidden" })}>
-      <div
-        className={css({
-          borderBottom: "1px solid black",
-        })}
+    <main className={css({ overflow: "hidden", position: "relative" })}>
+      <FullPageSection
+        alignCenter
+        className={cx(
+          maxWidthCls,
+          css({
+            fontSize: 36,
+            fontWeight: 500,
+            position: "relative",
+            zIndex: 1,
+          })
+        )}
       >
-        <FullPageSection
-          alignCenter
-          className={cx(
-            maxWidthCls,
-            css({
-              fontSize: 36,
-              fontWeight: 500,
-              position: "relative",
-              zIndex: 1,
-            })
-          )}
-        >
-          <BigTextSection />
-        </FullPageSection>
-      </div>
+        <BigTextSection />
+      </FullPageSection>
+
+      <CurvedPath />
+
       <FullPageSection alignCenter className={maxWidthCls}>
         여기엔 작은 글씨로 자기소개가 들어갑니다
         <br />
