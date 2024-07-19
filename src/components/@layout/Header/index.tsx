@@ -1,47 +1,33 @@
 "use client";
 
-import styles from "./styles.module.css";
-import { useEffect, useState } from "react";
-import Nav from "./nav";
+import { useState } from "react";
+import Burger from "./burger";
+import Stairs from "./stairs";
+import Menu from "./menu";
 import { AnimatePresence } from "framer-motion";
-import { usePathname } from "next/navigation";
-import { css, cx } from "@/styled-system/css";
-import { maxWidthCls } from "@/styles/common";
 
-export default function Header() {
-  const [isActive, setIsActive] = useState(false);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    if (isActive) setIsActive(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+export default function () {
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
 
   return (
-    <>
-      <div className={cx(styles.header, maxWidthCls)}>
-        <div />
-        <div
-          onClick={() => {
-            setIsActive(!isActive);
-          }}
-          data-cursor="pointer"
-          className={cx(
-            styles.button,
-            css({
-              bg: "colorTheme01",
-              borderColor: "colorBgSurface",
-              borderWidth: 1,
-              pointerEvents: "auto",
-            })
-          )}
-        >
-          <div
-            className={`${styles.burger} ${isActive ? styles.burgerActive : ""}`}
-          />
-        </div>
-      </div>
-      <AnimatePresence mode="wait">{isActive && <Nav />}</AnimatePresence>
-    </>
+    <header>
+      <Burger
+        openMenu={() => {
+          setMenuIsOpen(true);
+        }}
+      />
+      <AnimatePresence mode="wait">
+        {menuIsOpen && (
+          <>
+            <Stairs />
+            <Menu
+              closeMenu={() => {
+                setMenuIsOpen(false);
+              }}
+            />
+          </>
+        )}
+      </AnimatePresence>
+    </header>
   );
 }
