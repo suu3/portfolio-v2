@@ -5,7 +5,7 @@ import SplashScreen from "../SplashScreen";
 const MainLayout = ({ children }: { children: ReactNode }) => {
   return (
     <>
-      <SplashScreen />
+      {/* <SplashScreen /> */}
       <Header />
       {children}
     </>

@@ -19,6 +19,7 @@
     ],
     "paths": {
       "@/styled-system/*": ["./src/styled-system/*"],
+      "@/assets/*": ["./public/*"],
       "@/*": ["./src/*"]
     }
   },

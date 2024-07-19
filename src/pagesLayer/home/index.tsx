@@ -1,9 +1,8 @@
 "use client";
 
-import BottomToTopText from "@/components/BottomToTopText";
 import FullPageSection from "@/components/FullPageSection";
 import { css, cx } from "@/styled-system/css";
-import { flex } from "@/styled-system/patterns";
+// import starIcon from "@/assets/images/star.svg";
 import gsap, { snap, toArray } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -16,8 +15,8 @@ import {
 } from "react";
 import { horizontalScrollCls, horizontalScrollContainerCls } from "./styles";
 import { maxWidthCls } from "@/styles/common";
-import Card from "@/components/Card";
 import Skills from "./Skills";
+import BigTextSection from "./BigTextSection";
 
 // gsap.registerPlugin(ScrollTrigger);
 // gsap.utils.toArray(".panel");
@@ -52,12 +51,24 @@ const Home: React.FC = () => {
 
   return (
     <main className={css({ overflow: "hidden" })}>
-      <FullPageSection alignCenter className={maxWidthCls}>
-        안녕하세요, 프론트엔드 개발자 <BottomToTopText text={"suu3"} />
-        입니다.
-      </FullPageSection>
+      <div
+        className={css({
+          borderBottom: "1px solid black",
+        })}
+      >
+        <FullPageSection alignCenter className={cx(maxWidthCls)}>
+          <BigTextSection />
+        </FullPageSection>
+      </div>
       <FullPageSection alignCenter className={maxWidthCls}>
         여기엔 작은 글씨로 자기소개가 들어갑니다
+        <br />
+        여기엔 작은 글씨로 자기소개가 들어갑니다
+        <br />
+        여기엔 작은 글씨로 자기소개가 들어갑니다
+        <br />
+        여기엔 작은 글씨로 자기소개가 들어갑니다
+        <br />
       </FullPageSection>
       <div ref={containerRef} className={horizontalScrollContainerCls}>
         <FullPageSection
