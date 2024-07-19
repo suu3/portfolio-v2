@@ -10,10 +10,10 @@ const BottomToTopText = ({ text }: { text: string }) => {
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    if (textDisappeared && latest === 0) {
+    if (textDisappeared && latest < 10) {
       setTextDisappeared(false);
     }
-    if (!textDisappeared && latest !== 0) {
+    if (!textDisappeared && latest >= 10) {
       setTextDisappeared(true);
     }
   });

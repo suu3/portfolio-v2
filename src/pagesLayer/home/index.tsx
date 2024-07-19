@@ -16,6 +16,8 @@ import {
 } from "react";
 import { horizontalScrollCls, horizontalScrollContainerCls } from "./styles";
 import { maxWidthCls } from "@/styles/common";
+import Card from "@/components/Card";
+import Skills from "./Skills";
 
 // gsap.registerPlugin(ScrollTrigger);
 // gsap.utils.toArray(".panel");
@@ -41,7 +43,7 @@ const Home: React.FC = () => {
           // snap: 1 / (horizontalSections.length - 1),
           end: () => "+=" + containerRef.current?.offsetWidth,
         },
-        onUpdate: () => console.log("Animation update"),
+        // onUpdate: () => console.log("Animation update"),
       });
     });
 
@@ -63,6 +65,7 @@ const Home: React.FC = () => {
           className={cx(
             horizontalScrollCls,
             css({
+              border: "1px solid black",
               bg: "colorTheme03",
             })
           )}
@@ -70,13 +73,14 @@ const Home: React.FC = () => {
             if (el) sectionsRef.current[0] = el;
           }}
         >
-          111111111111111111111111111111Skills 부분은 가로스크롤로 진행됩니다.
+          <Skills />
         </FullPageSection>
         <FullPageSection
           alignCenter
           className={cx(
             horizontalScrollCls,
             css({
+              border: "1px solid black",
               bg: "colorNeutral02",
             })
           )}

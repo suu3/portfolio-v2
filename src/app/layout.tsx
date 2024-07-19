@@ -4,7 +4,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Cursor from "@/components/Cursor";
-import Header from "@/components/@layout/Header";
 import { css, cx } from "@/styled-system/css";
 
 // const inter = Inter({
@@ -36,6 +35,7 @@ export default function RootLayout({
           // inter.className,
           css({
             bg: "colorNeutral03",
+            minW: 1400, //반응형 없는동안
           })
         )}
       >
