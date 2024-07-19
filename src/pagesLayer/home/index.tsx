@@ -56,7 +56,18 @@ const Home: React.FC = () => {
           borderBottom: "1px solid black",
         })}
       >
-        <FullPageSection alignCenter className={cx(maxWidthCls)}>
+        <FullPageSection
+          alignCenter
+          className={cx(
+            maxWidthCls,
+            css({
+              fontSize: 36,
+              fontWeight: 500,
+              position: "relative",
+              zIndex: 1,
+            })
+          )}
+        >
           <BigTextSection />
         </FullPageSection>
       </div>

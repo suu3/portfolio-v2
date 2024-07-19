@@ -21,6 +21,7 @@ export default function Burger({ openMenu }: { openMenu: () => void }) {
         top: 0,
         padding: "10px",
         cursor: "pointer",
+        border: "1px solid black",
 
         "& svg": {
           position: "absolute",
