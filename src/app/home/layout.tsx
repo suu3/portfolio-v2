@@ -1,12 +1,6 @@
 import MainLayout from "@/components/@layout/MainLayout";
-import SplashScreen from "@/components/SplashScreen";
 import { ReactNode } from "react";
 
 export default function HomeLayout({ children }: { children: ReactNode }) {
-  return (
-    <>
-      <SplashScreen />
-      <MainLayout>{children}</MainLayout>
-    </>
-  );
+  return <MainLayout>{children}</MainLayout>;
 }

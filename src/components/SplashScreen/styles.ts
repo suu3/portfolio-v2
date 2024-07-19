@@ -3,17 +3,20 @@ import { flex } from "@/styled-system/patterns";
 
 const absolute = css({
   zIndex: 1000,
-  position: "absolute",
+  position: "fixed",
   top: 0,
   left: 0,
+  right: 0,
+  bottom: 0,
   width: "100%",
   height: "100%",
+  overflow: "hidden",
 });
 
 export const splashScreenCls = cx(
   absolute,
   flex({
-    background: "orange",
+    background: "colorTheme02",
     align: "center",
     justify: " center",
   })

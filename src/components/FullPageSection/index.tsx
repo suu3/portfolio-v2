@@ -17,6 +17,7 @@ const FullPageSection = forwardRef<HTMLDivElement, Props>(
         className={cx(
           css({
             height: "100vh",
+            fontSize: 24,
           }),
           alignCenter &&
             flex({
