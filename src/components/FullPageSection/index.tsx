@@ -32,4 +32,6 @@ const FullPageSection = forwardRef<HTMLDivElement, Props>(
   }
 );
 
+FullPageSection.displayName = "FullPageSection";
+
 export default FullPageSection;

@@ -2,7 +2,7 @@
 
 import { css, cx } from "@/styled-system/css";
 
-export default function ({ openMenu }: { openMenu: () => void }) {
+export default function Burger({ openMenu }: { openMenu: () => void }) {
   return (
     <div
       data-cursor="pointer"

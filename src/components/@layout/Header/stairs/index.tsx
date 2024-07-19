@@ -9,6 +9,7 @@ export default function index() {
       {[...Array(5)].map((_, index) => {
         return (
           <motion.div
+            key={index}
             variants={height}
             {...mountAnim}
             custom={4 - index}

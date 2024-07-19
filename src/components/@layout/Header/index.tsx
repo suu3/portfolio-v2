@@ -6,7 +6,7 @@ import Stairs from "./stairs";
 import Menu from "./menu";
 import { AnimatePresence, LayoutGroup } from "framer-motion";
 
-export default function () {
+export default function Header() {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
   return (

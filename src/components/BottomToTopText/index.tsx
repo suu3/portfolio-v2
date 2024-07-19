@@ -33,14 +33,18 @@ const BottomToTopText = ({ text }: { text: string }) => {
         variants={bottomTitleVariant}
         className={textGroupCls}
       >
-        {animatedText.split("").map((char) => {
-          return <motion.span variants={bottomSpanVariant}>{char}</motion.span>;
+        {animatedText.split("").map((char, index) => {
+          return (
+            <motion.span key={index} variants={bottomSpanVariant}>
+              {char}
+            </motion.span>
+          );
         })}
       </motion.h1>
 
       <h1 className={textGroupCls}>
-        {animatedText.split("").map((char) => {
-          return <span>{char}</span>;
+        {animatedText.split("").map((char, index) => {
+          return <span key={index}>{char}</span>;
         })}
       </h1>
     </motion.div>
