@@ -1,11 +1,8 @@
 import BottomToTopText from "@/components/BottomToTopText";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import Grid from "@/components/@three/Grid";
 import TorusWireframe, { HtmlComp } from "@/components/@three/TorusWireframe";
 import { Sparkles } from "@react-three/drei";
-// import { useRef } from "react";
-// import BBAnchorScene from "@/components/@three/BBAnchorScene";
-// import Particles from "@/components/@three/Particles";
 
 const BigTextSection = () => {
   return (
@@ -50,10 +47,6 @@ const BigTextSection = () => {
             </svg>
           </HtmlComp>
         </TorusWireframe>
-
-        {/* <BBAnchorScene anchor={[1, 1, 1]} drawBoundingBox={true}>
-          <HtmlComp />
-        </BBAnchorScene> */}
       </Canvas>
       안녕하세요, 프론트엔드 개발자 <BottomToTopText text={"suu3"} />
       입니다.
