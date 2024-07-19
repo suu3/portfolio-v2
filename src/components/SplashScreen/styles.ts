@@ -1,5 +1,5 @@
-import { css, cx } from "@/styles/css";
-import { flex } from "@/styles/patterns";
+import { css, cx } from "@/styled-system/css";
+import { flex } from "@/styled-system/patterns";
 
 const absolute = css({
   zIndex: 1000,

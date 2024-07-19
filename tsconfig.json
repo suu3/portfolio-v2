@@ -18,7 +18,7 @@
       }
     ],
     "paths": {
-      "@/styles/*": ["./src/styled-system/*"],
+      "@/styled-system/*": ["./src/styled-system/*"],
       "@/*": ["./src/*"]
     }
   },

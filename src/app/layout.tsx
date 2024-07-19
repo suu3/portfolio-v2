@@ -1,11 +1,11 @@
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 
 // If loading a variable font, you don't need to specify the font weight
 import "./globals.css";
 import type { Metadata } from "next";
 import Cursor from "@/components/Cursor";
-import Header from "@/components/Header";
-import { css, cx } from "@/styles/css";
+import Header from "@/components/@layout/Header";
+import { css, cx } from "@/styled-system/css";
 
 // const inter = Inter({
 //   subsets: ["latin"],
@@ -39,23 +39,7 @@ export default function RootLayout({
           })
         )}
       >
-        <Header />
-        <main
-          className={cx(
-            css({
-              maxWidth: "1200px",
-              margin: "auto",
-              width: "100%",
-              minHeight: "100vh",
-            })
-            // flex({
-            //   align: "center",
-            //   justify: "center",
-            // })
-          )}
-        >
-          {children}
-        </main>
+        {children}
         <Cursor />
       </body>
     </html>

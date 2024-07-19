@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { menuSlide } from "../anim";
 import Link from "./Link";
 import Curve from "./Curve";
-import { css } from "@/styles/css";
+import { css } from "@/styled-system/css";
 
 const navItems = [
   {

@@ -30,7 +30,7 @@ export default defineConfig({
       },
     },
   },
-  importMap: "@/styles",
+  importMap: "@/styled-system",
   // The output directory for your css system
   outdir: "./src/styled-system",
 });

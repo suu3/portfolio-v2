@@ -2,7 +2,7 @@ import styles from "./styles.module.css";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { slide, scale } from "../../anim";
-import { cx } from "@/styles/css";
+import { cx } from "@/styled-system/css";
 
 interface Data {
   title: string;

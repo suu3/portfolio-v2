@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import Nav from "./nav";
 import { AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { css, cx } from "@/styles/css";
+import { css, cx } from "@/styled-system/css";
+import { maxWidthCls } from "@/styles/common";
 
 export default function Header() {
   const [isActive, setIsActive] = useState(false);
@@ -18,7 +19,7 @@ export default function Header() {
 
   return (
     <>
-      <div className={styles.header}>
+      <div className={cx(styles.header, maxWidthCls)}>
         <div />
         <div
           onClick={() => {
