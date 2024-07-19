@@ -3,6 +3,7 @@
 import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { Html } from "@react-three/drei";
 
 const TorusWireframe = () => {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -15,7 +16,7 @@ const TorusWireframe = () => {
   });
 
   return (
-    <mesh ref={meshRef} scale={2} position={[2, 0, 0]}>
+    <mesh ref={meshRef} scale={1.5} position={[1.5, 0.5, 0]}>
       {/* icosahedronGeometry를 사용할 때 인자 필요 없음 */}
       <icosahedronGeometry />
       {/* torusGeometry를 사용하고자 할 때 올바른 인자를 제공 */}
@@ -27,3 +28,17 @@ const TorusWireframe = () => {
 };
 
 export default TorusWireframe;
+
+export function HtmlComp() {
+  return (
+    <Html
+      style={{
+        color: "white",
+        whiteSpace: "nowrap",
+      }}
+      center
+    >
+      Html element
+    </Html>
+  );
+}

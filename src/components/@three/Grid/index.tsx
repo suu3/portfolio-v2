@@ -16,7 +16,7 @@ const Grid = () => {
   return (
     <group
       position={[0, -0.01, 0]}
-      rotation={[Math.PI / 2, Math.PI / -2.5, Math.PI / -4]}
+      rotation={[Math.PI / 1.5, Math.PI / -2.0, Math.PI / 2]}
     >
       <gridHelper args={[10.5, 10.5]} {...gridConfig} />
     </group>
