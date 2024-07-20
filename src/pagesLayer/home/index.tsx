@@ -55,7 +55,6 @@ const Home: React.FC = () => {
       <FullPageSection
         alignCenter
         className={cx(
-          maxWidthCls,
           css({
             fontSize: 36,
             fontWeight: 500,
