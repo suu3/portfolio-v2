@@ -24,8 +24,8 @@ const FadeInText = ({
           duration: 0.5,
           scrollTrigger: {
             trigger: textRef.current,
-            start: "top 80%", // 시작 위치
-            end: "bottom 60%", // 종료 위치
+            start: "top 90%", // 시작 위치
+            end: "bottom 30%", // 종료 위치
             toggleActions: "play reverse play reverse", // 반복 트리거 설정
           },
         }

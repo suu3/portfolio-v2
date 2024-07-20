@@ -5,6 +5,8 @@ import TorusWireframe, { HtmlComp } from "@/components/@three/TorusWireframe";
 import { Sparkles } from "@react-three/drei";
 import FadeInText from "@/components/FadeInText";
 import { flex } from "@/styled-system/patterns";
+import { cx } from "@/styled-system/css";
+import { maxWidthCls } from "@/styles/common";
 
 const BigTextSection = () => {
   return (
@@ -51,13 +53,16 @@ const BigTextSection = () => {
         </TorusWireframe>
       </Canvas>
       <h1
-        className={flex({
-          direction: "column",
-          // align: "center",
-        })}
+        className={cx(
+          maxWidthCls,
+          flex({
+            direction: "column",
+            // alignq: "center",
+          })
+        )}
       >
         <FadeInText>안녕하세요</FadeInText>
-        <FadeInText delay={0.2}>
+        <FadeInText>
           프론트엔드 개발자 <BottomToTopText text={"suu3"} />
           입니다.
         </FadeInText>
