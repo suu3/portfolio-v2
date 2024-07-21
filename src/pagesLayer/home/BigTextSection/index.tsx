@@ -5,8 +5,9 @@ import TorusWireframe, { HtmlComp } from "@/components/@three/TorusWireframe";
 import { Sparkles } from "@react-three/drei";
 import FadeInText from "@/components/FadeInText";
 import { flex } from "@/styled-system/patterns";
-import { cx } from "@/styled-system/css";
+import { css, cx } from "@/styled-system/css";
 import { maxWidthCls } from "@/styles/common";
+import { motion } from "framer-motion";
 
 const BigTextSection = () => {
   return (
@@ -61,6 +62,37 @@ const BigTextSection = () => {
           })
         )}
       >
+        {/* <motion.div
+          className={css({
+            width: "150px",
+            height: "150px",
+            position: "absolute",
+            inset: "20%",
+          })}
+          animate={{ rotate: 360 }}
+          transition={{
+            repeat: Infinity,
+            repeatType: "loop",
+            duration: 10,
+            ease: "linear",
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+            height="100%"
+            width="100%"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke="#000"
+              strokeWidth="2px"
+              vectorEffect="non-scaling-stroke"
+              fill="#31c22a"
+              d="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12Z"
+            />
+          </svg>
+        </motion.div> */}
         <FadeInText>안녕하세요</FadeInText>
         <FadeInText>
           프론트엔드 개발자 <BottomToTopText text={"suu3"} />
