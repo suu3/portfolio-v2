@@ -35,7 +35,6 @@ export default function RootLayout({
           // inter.className,
           css({
             bg: "colorNeutral03",
-            minW: 1400, //반응형 없는동안
           })
         )}
       >
