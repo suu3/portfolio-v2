@@ -163,7 +163,7 @@ const Hero = () => {
           <br />
           <span className={css({ display: "inline-flex", alignItems: "center", gap: "12px" })}>
             <GlitchText live className={css({ color: ORANGE, WebkitTextStroke: "2px #000" })}>
-              SUU3
+              {profile.handle.toUpperCase()}
             </GlitchText>
             <Sparkle size={38} color={LIME} />
           </span>
