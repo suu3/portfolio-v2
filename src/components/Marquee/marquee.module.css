@@ -1,0 +1,36 @@
+.wrap {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  user-select: none;
+}
+
+.track {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 28px;
+  padding-right: 28px;
+  min-width: 100%;
+  animation: slide var(--dur, 24s) linear infinite;
+}
+
+.reverse .track {
+  animation-direction: reverse;
+}
+
+.wrap:hover .track {
+  animation-play-state: paused;
+}
+
+@keyframes slide {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}

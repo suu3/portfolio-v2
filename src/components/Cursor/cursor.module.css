@@ -1,114 +1,77 @@
-#cursor {
+/* Brutalist cursor: hard rectangle, inverts whatever is underneath. */
+
+.dot {
   position: fixed;
-  top: -5px;
-  left: -5px;
-  width: 10px;
-  height: 10px;
-  background-color: black;
-  border-radius: 50%;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  mix-blend-mode: difference;
   pointer-events: none;
-  z-index: 999;
+  z-index: 10000;
+  will-change: transform;
+  transition: opacity 0.1s steps(2);
 }
 
-#cursor-border {
-  --size: 50px;
+.box {
   position: fixed;
-  top: calc(var(--size) / -2);
-  left: calc(var(--size) / -2);
-  width: var(--size);
-  height: var(--size);
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px black;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  border: 2px solid #fff;
+  mix-blend-mode: difference;
   pointer-events: none;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, width, height;
   transition:
-    top 0.15s ease-out,
-    left 0.15s ease-out,
-    width 0.15s ease-out,
-    height 0.15s ease-out,
-    background-color 0.15s ease-out;
-  z-index: 999;
+    width 0.16s cubic-bezier(0.2, 0.9, 0.2, 1),
+    height 0.16s cubic-bezier(0.2, 0.9, 0.2, 1);
 }
 
-.cursor {
-  position: fixed;
-  top: -5px;
-  left: -5px;
-  width: 10px;
-  height: 10px;
-  background-color: black;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 999;
+/* print-style crop marks, only while wrapping a target */
+.box::before,
+.box::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #fff;
+}
+.box::before {
+  top: -6px;
+  left: -6px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.box::after {
+  right: -6px;
+  bottom: -6px;
+  border-left: 0;
+  border-top: 0;
+}
+.box[data-stuck="false"]::before,
+.box[data-stuck="false"]::after {
+  display: none;
 }
 
-.cursorBorder {
-  --size: 50px;
-  position: fixed;
-  top: calc(var(--size) / -2);
-  left: calc(var(--size) / -2);
-  width: var(--size);
-  height: var(--size);
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px black;
-  pointer-events: none;
-  transition:
-    top 0.15s ease-out,
-    left 0.15s ease-out,
-    width 0.15s ease-out,
-    height 0.15s ease-out,
-    background-color 0.15s ease-out;
-  z-index: 999;
-}
-/* 
-.button {
-  font-family: "Century Gothic", sans-serif;
-  font-size: 2rem;
-  padding: 1rem 2rem;
-  background-color: transparent;
-  color: #64ffda;
-  border: 1px solid #64ffda;
-  border-radius: 0;
-  box-shadow:
-    0 0 10px #64ffda,
-    0 0 10px #64ffda inset;
-  text-shadow:
-    0 0 5px #64ffda,
-    0 0 10px #64ffda;
-  transition: 0.3s ease-out;
-} */
-/* 
-.button:hover {
-  color: black;
-  background-color: #64ffda;
-  border-color: #64ffda;
-  box-shadow: 0 0 80px #64ffda;
+.label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
 }
 
-.button:active {
-  transform: scale(0.85);
-  box-shadow: 0 0 30px #64ffda;
+@media (pointer: coarse) {
+  .dot,
+  .box {
+    display: none;
+  }
 }
-
-.secondButton {
-  margin-left: 2rem;
-  color: black;
-  border: 1px solid black;
-  box-shadow:
-    0 0 10px black,
-    0 0 10px black inset;
-  text-shadow:
-    0 0 5px black,
-    0 0 10px black;
-}
-
-.secondButton:hover {
-  color: black;
-  background-color: black;
-  border-color: black;
-  box-shadow: 0 0 80px black;
-}
-
-.secondButton:active {
-  transform: scale(0.85);
-  box-shadow: 0 0 30px black;
-} */

@@ -1,19 +1,14 @@
-// import { Inter } from "next/font/google";
-
-// If loading a variable font, you don't need to specify the font weight
 import "./globals.css";
 import type { Metadata } from "next";
 import Cursor from "@/components/Cursor";
-import { css, cx } from "@/styled-system/css";
-
-// const inter = Inter({
-//   subsets: ["latin"],
-//   display: "swap",
-// });
+import Grain from "@/components/Grain";
+import CropMarks from "@/components/CropMarks";
+import SoundToggle from "@/components/SoundToggle";
+import { css } from "@/styled-system/css";
 
 export const metadata: Metadata = {
-  title: "Portfolio site",
-  description: "Portfolio site",
+  title: "Portfolio · Frontend Developer",
+  description: "확장 가능한 구조 설계와 인터랙티브 웹을 만드는 프론트엔드 개발자 포트폴리오.",
 };
 
 export default function RootLayout({
@@ -22,24 +17,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="kr">
+    <html lang="ko">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&display=swap"
           rel="stylesheet"
         />
       </head>
       <body
-        className={cx(
-          // inter.className,
-          css({
-            bg: "colorNeutral03",
-            minW: 1400, //반응형 없는동안
-          })
-        )}
+        className={css({
+          bg: "#f3efec",
+          color: "#23242a",
+        })}
       >
         {children}
+        <SoundToggle />
+        <CropMarks />
+        <Grain />
         <Cursor />
       </body>
     </html>

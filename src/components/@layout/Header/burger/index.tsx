@@ -1,88 +1,77 @@
 "use client";
 
-import { css, cx } from "@/styled-system/css";
+import { css } from "@/styled-system/css";
 
 export default function Burger({ openMenu }: { openMenu: () => void }) {
   return (
-    <div
+    <button
+      type="button"
+      aria-label="메뉴 열기"
       data-cursor="pointer"
-      onClick={() => {
-        openMenu();
-      }}
+      data-cursor-label="Menu"
+      onClick={openMenu}
       className={css({
-        width: "150px",
-        height: "120px",
-        bg: "black",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-end",
         position: "fixed",
-        right: 0,
-        top: 0,
-        padding: "10px",
-        cursor: "pointer",
-        border: "1px solid black",
+        top: { base: "18px", md: "26px" },
+        right: { base: "18px", md: "26px" },
+        // stays under the menu overlay (z 3) while still above page content,
+        // since the header itself owns a z-999 stacking context
+        zIndex: 1,
 
-        "& svg": {
-          position: "absolute",
-          right: "20px",
-          top: "20px",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "12px",
+        padding: { base: "11px 16px", md: "13px 20px" },
 
-          "& line": {
-            transition: "stroke 0.5s",
-          },
-        },
+        background: "#fff",
+        color: "#000",
+        border: "3px solid #000",
+        borderRadius: "999px",
+        boxShadow: "5px 5px 0 0 #000",
+
+        fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+        fontSize: { base: "11px", md: "12px" },
+        fontWeight: 700,
+        letterSpacing: "0.2em",
+        textTransform: "uppercase",
+
+        transition:
+          "transform .12s cubic-bezier(.2,.9,.2,1), box-shadow .12s cubic-bezier(.2,.9,.2,1), background .1s steps(1)",
 
         _hover: {
-          "& p": {
-            color: "black",
-          },
-          "& svg": {
-            "& line": {
-              stroke: "black",
-            },
-          },
-          "& .background": {
-            height: "100%",
-          },
+          background: "#bffe28",
+          transform: "translate(5px, 5px)",
+          boxShadow: "0 0 0 0 #000",
+          "& .bar-top": { width: "20px" },
+          "& .bar-mid": { width: "12px" },
+          "& .bar-bot": { width: "20px" },
         },
+        _active: { background: "#ff00ff", color: "#fff" },
       })}
     >
-      <div
-        className={cx(
-          css({
-            bg: "colorAccentLime",
-            width: "100%",
-            position: "absolute",
-            left: 0,
-            top: 0,
-            zIndex: -1,
-            height: 0,
-            transition: "height 0.3s",
-          }),
-          "background"
-        )}
-      ></div>
-      <svg
-        width="56"
-        height="7"
-        viewBox="0 0 56 7"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <line x1="56" y1="0.5" x2="4.37114e-08" y2="0.500005" stroke="white" />
-        <line x1="56" y1="6.5" x2="28" y2="6.5" stroke="white" />
-      </svg>
-      <p
+      <span
         className={css({
-          color: "white",
-          margin: "0px",
-          textTransform: "uppercase",
-          transition: "color 0.5s",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          gap: "4px",
         })}
       >
-        Menu
-      </p>
-    </div>
+        {(["bar-top", "bar-mid", "bar-bot"] as const).map((c, i) => (
+          <span
+            key={c}
+            className={`${c} ${css({
+              display: "block",
+              height: "2.5px",
+              background: "currentColor",
+              borderRadius: "2px",
+              transition: "width .18s cubic-bezier(.2,.9,.2,1)",
+            })}`}
+            style={{ width: i === 1 ? 20 : 12 }}
+          />
+        ))}
+      </span>
+      Menu
+    </button>
   );
 }

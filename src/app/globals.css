@@ -1,5 +1,4 @@
 @layer reset, base, tokens, recipes, utilities;
-/* @import url("https://use.typekit.net/njr2div.css"); MONOSPACE 폰트*/
 
 @font-face {
   font-family: "NEXON Lv1 Gothic OTF";
@@ -7,12 +6,39 @@
     format("woff");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
-* {
-  cursor: none;
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  font-family: "NEXON Lv1 Gothic OTF";
+  font-family: "NEXON Lv1 Gothic OTF", "Prompt", sans-serif;
+  background: #f3efec;
+}
+
+/* custom cursor only on precise-pointer (desktop) devices */
+@media (pointer: fine) {
+  * {
+    cursor: none;
+  }
+}
+
+#cursor,
+#cursor-border {
+  display: none;
+}
+@media (pointer: fine) {
+  #cursor,
+  #cursor-border {
+    display: block;
+  }
+}
+
+::selection {
+  background: #ff6737;
+  color: #fff;
 }

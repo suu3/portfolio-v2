@@ -9,12 +9,18 @@ interface TorusWireframeProps {
   children?: ReactNode;
   drawBoundingBox?: boolean;
   secondChildren?: ReactNode;
+  color?: string;
+  scale?: number;
+  position?: [number, number, number];
 }
 
 const TorusWireframe: React.FC<TorusWireframeProps> = ({
   children,
   drawBoundingBox = true,
   secondChildren,
+  color = "hotpink",
+  scale = 1,
+  position = [1.5, 0.5, 0],
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const ref = useRef<THREE.Mesh>(null);
@@ -27,9 +33,9 @@ const TorusWireframe: React.FC<TorusWireframeProps> = ({
   });
 
   return (
-    <mesh ref={meshRef} position={[1.5, 0.5, 0]}>
-      <Icosahedron ref={ref} scale={1}>
-        <meshBasicMaterial wireframe color="hotpink" />
+    <mesh ref={meshRef} position={position}>
+      <Icosahedron ref={ref} scale={scale}>
+        <meshBasicMaterial wireframe color={color} />
         <BBAnchor anchor={[1, -1, 1]}>{children}</BBAnchor>
         <BBAnchor anchor={[-1, 1, -1]}>{secondChildren}</BBAnchor>
       </Icosahedron>

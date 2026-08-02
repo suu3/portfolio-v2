@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function index() {
   return (
-    <motion.div className={styles.stairs} data-cursor="pointer">
+    <motion.div className={styles.stairs}>
       {[...Array(5)].map((_, index) => {
         return (
           <motion.div

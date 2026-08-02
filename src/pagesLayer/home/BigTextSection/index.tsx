@@ -95,7 +95,7 @@ const BigTextSection = () => {
         </motion.div> */}
         <FadeInText>안녕하세요</FadeInText>
         <FadeInText>
-          프론트엔드 개발자 <BottomToTopText text={"suu3"} />
+          프론트엔드 개발자 <BottomToTopText text={"sample"} />
           입니다.
         </FadeInText>
       </h1>

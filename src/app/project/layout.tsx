@@ -1,9 +1,13 @@
-"use client";
-
-import React, { ReactNode } from "react";
+import Header from "@/components/@layout/Header";
+import { ReactNode } from "react";
 
 const ProjectLayout = ({ children }: { children: ReactNode }) => {
-  return <div>{children}</div>;
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 };
 
 export default ProjectLayout;

@@ -1,11 +1,11 @@
 import { ReactNode } from "react";
 import Header from "./Header";
-import SplashScreen from "../SplashScreen";
+import EntryFlow from "./EntryFlow";
 
 const MainLayout = ({ children }: { children: ReactNode }) => {
   return (
     <>
-      <SplashScreen />
+      <EntryFlow />
       <Header />
       {children}
     </>
