@@ -1,0 +1,94 @@
+.btn {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 900;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 15px;
+
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+
+  color: #000;
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 999px;
+  box-shadow: 4px 4px 0 0 #000;
+
+  transition:
+    transform 0.12s cubic-bezier(0.2, 0.9, 0.2, 1),
+    box-shadow 0.12s cubic-bezier(0.2, 0.9, 0.2, 1),
+    background 0.1s steps(1);
+}
+
+.btn:hover {
+  background: #bffe28;
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 0 #000;
+}
+
+.on {
+  background: #000;
+  color: #bffe28;
+  box-shadow: 4px 4px 0 0 #bffe28;
+}
+
+.on:hover {
+  background: #bffe28;
+  color: #000;
+}
+
+/* tiny equaliser — only animates while enabled */
+.bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 11px;
+}
+
+.bars i {
+  display: block;
+  width: 2.5px;
+  height: 3px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.on .bars i {
+  animation: bounce 0.9s ease-in-out infinite;
+}
+.on .bars i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.on .bars i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    height: 3px;
+  }
+  50% {
+    height: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .on .bars i {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .btn {
+    left: 14px;
+    bottom: 14px;
+  }
+}

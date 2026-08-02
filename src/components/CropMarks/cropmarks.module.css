@@ -1,0 +1,45 @@
+.wrap {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 8998;
+}
+
+.mark {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  opacity: 0.45;
+}
+
+.tl {
+  top: 14px;
+  left: 14px;
+  border-top: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+}
+.tr {
+  top: 14px;
+  right: 14px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+}
+.bl {
+  bottom: 14px;
+  left: 14px;
+  border-bottom: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+}
+.br {
+  bottom: 14px;
+  right: 14px;
+  border-bottom: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+}
+
+/* mix-blend keeps them visible over both the cream and the black sections */
+.wrap {
+  color: #000;
+  mix-blend-mode: difference;
+  filter: invert(1);
+}

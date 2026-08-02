@@ -1,0 +1,77 @@
+/* RGB-split glitch — cyan/magenta channels tear apart on hover. */
+
+.glitch {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  opacity: 0;
+  z-index: -1;
+}
+
+.glitch::before {
+  color: #00ffff;
+}
+.glitch::after {
+  color: #ff00ff;
+}
+
+.glitch:hover::before {
+  opacity: 0.95;
+  animation: tearA 0.28s steps(2) infinite;
+}
+.glitch:hover::after {
+  opacity: 0.95;
+  animation: tearB 0.28s steps(2) infinite;
+}
+
+/* always-on subtle drift for headings that opt in */
+.live::before {
+  opacity: 0.75;
+  animation: tearA 1.6s steps(3) infinite;
+}
+.live::after {
+  opacity: 0.75;
+  animation: tearB 1.6s steps(3) infinite;
+}
+
+@keyframes tearA {
+  0% {
+    transform: translate(-3px, -1px);
+  }
+  50% {
+    transform: translate(2px, 1px);
+  }
+  100% {
+    transform: translate(-2px, 1px);
+  }
+}
+
+@keyframes tearB {
+  0% {
+    transform: translate(3px, 1px);
+  }
+  50% {
+    transform: translate(-2px, -1px);
+  }
+  100% {
+    transform: translate(2px, -1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch::before,
+  .glitch::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}

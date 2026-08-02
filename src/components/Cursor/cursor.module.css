@@ -1,0 +1,77 @@
+/* Brutalist cursor: hard rectangle, inverts whatever is underneath. */
+
+.dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  z-index: 10000;
+  will-change: transform;
+  transition: opacity 0.1s steps(2);
+}
+
+.box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  border: 2px solid #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, width, height;
+  transition:
+    width 0.16s cubic-bezier(0.2, 0.9, 0.2, 1),
+    height 0.16s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+/* print-style crop marks, only while wrapping a target */
+.box::before,
+.box::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #fff;
+}
+.box::before {
+  top: -6px;
+  left: -6px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.box::after {
+  right: -6px;
+  bottom: -6px;
+  border-left: 0;
+  border-top: 0;
+}
+.box[data-stuck="false"]::before,
+.box[data-stuck="false"]::after {
+  display: none;
+}
+
+.label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
+
+@media (pointer: coarse) {
+  .dot,
+  .box {
+    display: none;
+  }
+}
