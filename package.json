@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "data:real": "node -e \"require('fs').copyFileSync('src/pagesLayer/home/data.real.ts','src/pagesLayer/home/data.ts')\" && echo switched to REAL data (do not commit data.ts)",
+    "data:real": "node -e \"const s=require('path').resolve(process.cwd(),'../../../이력서/portfolio-data.real.ts');require('fs').copyFileSync(s,'src/pagesLayer/home/data.ts')\" && echo switched to REAL data (do NOT commit data.ts)",
     "data:dummy": "git checkout -- src/pagesLayer/home/data.ts && echo switched back to DUMMY data"
   },
   "dependencies": {
