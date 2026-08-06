@@ -46,3 +46,6 @@ styled-system-studio
 /CLAUDE.md
 # local only — 실제 이력 데이터. 공개 저장소에는 더미 data.ts만 유지
 /src/pagesLayer/home/data.real.ts
+
+# local only — 이력서·경력기술서 (개인 정보 포함, 공개 저장소에 올리지 않음)
+/resume/
