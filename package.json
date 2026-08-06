@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "data:real": "node -e \"require('fs').copyFileSync('src/pagesLayer/home/data.real.ts','src/pagesLayer/home/data.ts')\" && echo switched to REAL data (do not commit data.ts)",
+    "data:dummy": "git checkout -- src/pagesLayer/home/data.ts && echo switched back to DUMMY data"
   },
   "dependencies": {
     "@react-three/drei": "^9.108.3",

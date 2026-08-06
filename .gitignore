@@ -44,3 +44,5 @@ styled-system-studio
 
 # local only — 개인 메모 및 로컬 경로가 들어있어 공개 저장소에 올리지 않음
 /CLAUDE.md
+# local only — 실제 이력 데이터. 공개 저장소에는 더미 data.ts만 유지
+/src/pagesLayer/home/data.real.ts
