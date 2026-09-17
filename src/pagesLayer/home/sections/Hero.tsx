@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { css, cx } from "@/styled-system/css";
 import Window from "@/components/Window";
-import WarpGrid from "@/components/WarpGrid";
 import { profile } from "../data";
 import { metaCls, pillCls, pillGhostCls } from "../ui";
+
+const ShaderBackdrop = dynamic(() => import("@/components/@three/ShaderBackdrop"), { ssr: false });
 
 const Clock = () => {
   const [now, setNow] = useState<string>();
@@ -112,7 +114,7 @@ const sectionCls = css({
   flexDirection: { lg: "column" },
 });
 
-/** the warp grid sits behind the whole hero but fades out under the copy */
+/** the shader backdrop sits behind the whole hero but fades out under the copy */
 const gridCls = css({
   position: "absolute",
   inset: 0,
@@ -169,7 +171,8 @@ const Row = ({ k, children }: { k: string; children: React.ReactNode }) => (
 const Hero = () => {
   return (
     <section id="top" className={sectionCls}>
-      <WarpGrid className={gridCls} />
+      {/* variant="halftone" for the dot version */}
+      <ShaderBackdrop className={gridCls} variant="grid" />
 
       <div className={innerCls}>
         <div className={copyCls}>
