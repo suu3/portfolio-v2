@@ -6,7 +6,7 @@ import * as THREE from "three";
 
 /**
  * The rabbit doll from room-of-memory, dressed as the orange rabbit companion
- * (white fur, orange hoodie, butter-yellow scarf, lavender inner ears) with its
+ * (white fur, apricot hoodie with the hood down, lavender inner ears) with its
  * arms resting at its sides. Baked by scripts/bunny/export-bunny.py. Sitting,
  * feet at y = 0, faces +z, ~3.2 tall.
  */
