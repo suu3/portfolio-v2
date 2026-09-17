@@ -333,7 +333,7 @@ const Character = ({ touch }: { touch: boolean }) => {
           }}
         >
           {d.kind === "bunny" ? (
-            <Bunny rotation={[0.05, 1.0, 0]} speed={d.speed} />
+            <Bunny rotation={[0.05, 0.5, 0]} speed={d.speed} />
           ) : d.kind === "code" ? (
             <CodeGlyph speed={d.speed} />
           ) : d.kind === "keys" ? (

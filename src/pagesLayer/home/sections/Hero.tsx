@@ -74,7 +74,7 @@ const StatusBar = () => {
         gap: "18px",
         height: "30px",
         marginTop: { base: "22px", lg: 0 },
-        paddingX: { base: "16px", lg: "clamp(24px, 4.5vw, 88px)" },
+        paddingX: { base: "16px", lg: "max(clamp(28px, 5vw, 88px), calc((100% - 1180px) / 2))" },
         borderTop: "1px solid token(colors.ink)",
         background: "surface",
         fontFamily: "mono",
@@ -127,16 +127,27 @@ const gridCls = css({
   },
 });
 
+/**
+ * Same content column as the other sections (ui.ts sectionCls + innerCls:
+ * 1180px wide inside clamp(28px, 5vw, 88px) gutters), so wide screens don't
+ * open a big gap between the copy and the character. The status window and
+ * the status bar line up with that column via
+ * max(gutter, (100% - 1180px) / 2) — written out literally, Panda can't read
+ * an identifier.
+ */
 const innerCls = css({
   position: "relative",
   zIndex: 1,
+  width: "100%",
+  maxWidth: { lg: "calc(1180px + 2 * clamp(28px, 5vw, 88px))" },
+  marginX: "auto",
   flex: { lg: 1 },
   display: { base: "flex", lg: "grid" },
   flexDirection: "column",
-  gridTemplateColumns: { lg: "minmax(0, 1fr) clamp(360px, 36vw, 560px)" },
+  gridTemplateColumns: { lg: "minmax(0, 1fr) clamp(340px, 34vw, 500px)" },
   alignItems: { lg: "center" },
   gap: { lg: "clamp(24px, 3vw, 56px)" },
-  paddingX: { base: "16px", lg: "clamp(24px, 4.5vw, 88px)" },
+  paddingX: { base: "16px", lg: "clamp(28px, 5vw, 88px)" },
   paddingTop: { base: "108px", lg: "110px" },
   paddingBottom: { base: "0", lg: "96px" },
 });
@@ -184,7 +195,7 @@ const Hero = () => {
             className={css({
               fontFamily: "sans",
               fontWeight: 650,
-              fontSize: { base: "clamp(40px, 11.5vw, 60px)", lg: "clamp(56px, 6.2vw, 108px)" },
+              fontSize: { base: "clamp(40px, 11.5vw, 60px)", lg: "clamp(52px, 6vw, 88px)" },
               lineHeight: 1.0,
               letterSpacing: "-0.055em",
               marginTop: "20px",
@@ -226,7 +237,7 @@ const Hero = () => {
       <div
         className={css({
           position: { base: "relative", lg: "absolute" },
-          right: { lg: "clamp(24px, 4vw, 72px)" },
+          right: { lg: "max(clamp(28px, 5vw, 88px), calc((100% - 1180px) / 2))" },
           bottom: { lg: "88px" },
           zIndex: 1,
           width: { base: "auto", lg: "236px" },

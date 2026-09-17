@@ -84,14 +84,15 @@ for ob in [o for o in bpy.data.objects if o.type == "MESH"]:
         assign(ob, [FUR, HOODIE] if ob.name == "Cube" else [PAD, HOODIE])
 
     elif ob.name == "Cube001":
-        # inner ear: front-facing faces in the middle strip of each ear
+        # the ear itself is all fur; the inner ear is a separate smooth ellipse
+        # shrink-wrapped onto its front (painting faces gave a ragged outline)
+        EAR_SPOTS = []
         for comp in islands(bm):
-            cx = sum(v.co.x for v in comp) / len(comp)
-            for f in {f for v in comp for f in v.link_faces}:
-                c = f.calc_center_median()
-                inner = f.normal.y < -0.35 and abs(c.x - cx) < 0.13 and 2.25 < c.z < 3.05
-                f.material_index = 1 if inner else 0
-        assign(ob, [FUR, EAR_IN])
+            xs = [v.co.x for v in comp]; ys = [v.co.y for v in comp]; zs = [v.co.z for v in comp]
+            EAR_SPOTS.append(((min(xs) + max(xs)) / 2, min(ys), max(zs), max(xs) - min(xs)))
+        for f in bm.faces:
+            f.material_index = 0
+        assign(ob, [FUR])
     elif ob.name in ("Roundcube", "Sphere"):
         for f in bm.faces: f.material_index = 0
         assign(ob, [FUR])
@@ -151,7 +152,49 @@ if HOOD:
     for p in cords.data.polygons:
         p.use_smooth = True
 
-for name, r in (("Cube", 0.35), ("Roundcube", 0.4), ("Cube001", 0.4), ("Cube004", 0.5), ("Cube006", 0.6)):
+# ears stay full-res so the inner-ear outline stays smooth
+# inner-ear ellipses: concentric rings (smooth outline + inner verts to conform)
+ear_obj = bpy.data.objects["Cube001"]
+for i, (cx, front_y, top, width) in enumerate(EAR_SPOTS):
+    bm = bmesh.new()
+    rx, rz, cz = width * 0.29, 0.31, top - 0.43
+    RINGS, SEG = 7, 56
+    center = bm.verts.new((cx, front_y - 0.12, cz))
+    rings = []
+    for r in range(1, RINGS + 1):
+        k = r / RINGS
+        rings.append([bm.verts.new((cx + math.cos(a) * rx * k, front_y - 0.12, cz + math.sin(a) * rz * k))
+                      for a in (2 * math.pi * j / SEG for j in range(SEG))])
+    for j in range(SEG):
+        bm.faces.new((center, rings[0][j], rings[0][(j + 1) % SEG]))
+    for r in range(RINGS - 1):
+        for j in range(SEG):
+            bm.faces.new((rings[r][j], rings[r + 1][j], rings[r + 1][(j + 1) % SEG], rings[r][(j + 1) % SEG]))
+    me = bpy.data.meshes.new(f"InnerEar{i}")
+    bm.to_mesh(me); bm.free()
+    spot = bpy.data.objects.new(f"InnerEar{i}", me)
+    bpy.context.scene.collection.objects.link(spot)
+    sw = spot.modifiers.new("wrap", "SHRINKWRAP")
+    sw.target = ear_obj
+    sw.wrap_method = "PROJECT"
+    sw.use_project_y = True
+    sw.use_negative_direction = True
+    sw.use_positive_direction = True
+    sw.offset = 0.006
+    dg = bpy.context.evaluated_depsgraph_get(); dg.update()
+    baked = bpy.data.meshes.new_from_object(spot.evaluated_get(dg), preserve_all_data_layers=True, depsgraph=dg)
+    spot.modifiers.clear(); spot.data = baked
+    # face the camera side (the rings were wound away from it)
+    bm = bmesh.new(); bm.from_mesh(spot.data)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    for f in bm.faces:
+        if f.normal.y > 0:
+            f.normal_flip()
+    bm.to_mesh(spot.data); bm.free()
+    assign(spot, [EAR_IN])
+    for p in spot.data.polygons: p.use_smooth = True
+
+for name, r in (("Cube", 0.35), ("Roundcube", 0.4), ("Cube004", 0.5), ("Cube006", 0.6)):
     ob = bpy.data.objects[name]
     md = ob.modifiers.new("dec", "DECIMATE"); md.ratio = r
     dg = bpy.context.evaluated_depsgraph_get(); dg.update()
@@ -165,7 +208,7 @@ if PREVIEW != "-":
     sc = bpy.context.scene
     sc.render.engine = "BLENDER_EEVEE"; sc.render.resolution_x, sc.render.resolution_y = 360, 440
     cam = bpy.data.objects["c"]
-    for tag, loc, aim in [("front", (0, -7.5, 1.6), 1.4), ("tq", (4.5, -5.8, 2.4), 1.4), ("neck", (1.6, -3.4, 1.35), 1.05)]:
+    for tag, loc, aim in [("front", (0, -7.5, 1.6), 1.4), ("tq", (4.5, -5.8, 2.4), 1.4), ("neck", (1.6, -3.4, 1.35), 1.05), ("ears", (0.9, -3.2, 2.7), 2.6)]:
         cam.location = loc
         cam.rotation_euler = (Vector((0, 0, aim)) - Vector(loc)).to_track_quat("-Z", "Y").to_euler()
         sc.render.filepath = os.path.join(PREVIEW, f"rig_{TAG}_{tag}.png")
@@ -175,7 +218,7 @@ if OUT != "-":
     for o in list(bpy.data.objects):
         if o.type != "MESH":
             bpy.data.objects.remove(o, do_unlink=True)
-    names = {"Cube": "Body", "Cube001": "Ears", "Cube004": "Pads", "Cube006": "Face", "Roundcube": "Head", "Sphere": "Tail", "Hood": "Hood", "Cords": "Cords"}
+    names = {"Cube": "Body", "Cube001": "Ears", "Cube004": "Pads", "Cube006": "Face", "Roundcube": "Head", "Sphere": "Tail", "Hood": "Hood", "Cords": "Cords", "InnerEar0": "InnerEarL", "InnerEar1": "InnerEarR"}
     for o in bpy.data.objects:
         o.name = names.get(o.name, o.name)
     bpy.ops.export_scene.gltf(filepath=OUT, export_format="GLB", export_yup=True, export_apply=True,
