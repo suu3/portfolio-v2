@@ -89,6 +89,13 @@
   }
 }
 
+/* desktop hero has an editor status bar along the bottom edge — sit above it */
+@media (min-width: 1024px) {
+  .btn {
+    bottom: 42px;
+  }
+}
+
 @media (max-width: 640px) {
   .btn {
     right: 12px;

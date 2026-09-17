@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { css, cx } from "@/styled-system/css";
 import Window from "@/components/Window";
 import WarpGrid from "@/components/WarpGrid";
-import Barcode from "@/components/Barcode";
 import { profile } from "../data";
 import { metaCls, pillCls, pillGhostCls } from "../ui";
 
@@ -29,6 +28,93 @@ const Clock = () => {
       <span className={css({ animation: "blink 1s steps(2) infinite" })}>:</span>
       {mm}
     </span>
+  );
+};
+
+/** `Ln` follows the scroll, one "line" per 24px — the page is the file */
+const useLine = () => {
+  const [ln, setLn] = useState(1);
+  useEffect(() => {
+    let raf = 0;
+    const on = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        setLn(Math.floor(window.scrollY / 24) + 1);
+      });
+    };
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", on);
+    };
+  }, []);
+  return ln;
+};
+
+const barItemCls = css({ display: "inline-flex", alignItems: "center", gap: "7px", whiteSpace: "nowrap" });
+const barWideCls = css({ display: { base: "none", md: "inline-flex" }, alignItems: "center", whiteSpace: "nowrap" });
+
+const StatusBar = () => {
+  const ln = useLine();
+  return (
+    <div
+      className={css({
+        position: { base: "relative", lg: "absolute" },
+        left: 0,
+        right: 0,
+        bottom: { lg: 0 },
+        zIndex: 1,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "18px",
+        height: "30px",
+        marginTop: { base: "22px", lg: 0 },
+        paddingX: { base: "16px", lg: "clamp(24px, 4.5vw, 88px)" },
+        borderTop: "1px solid token(colors.ink)",
+        background: "surface",
+        fontFamily: "mono",
+        fontSize: "11px",
+        letterSpacing: "0.02em",
+        color: "ink",
+      })}
+    >
+      <span className={css({ display: "flex", alignItems: "center", gap: "18px", minWidth: 0 })}>
+        <span className={barItemCls}>
+          <i className={css({ display: "inline-block", width: "7px", height: "7px", borderRadius: "999px", background: "point" })} />
+          main
+        </span>
+        <span className={barWideCls}>~/{profile.handle}/index.tsx</span>
+      </span>
+      <span className={css({ display: "flex", alignItems: "center", gap: "18px" })}>
+        <span className={barWideCls}>Ln {ln}, Col 1</span>
+        <span className={barWideCls}>UTF-8</span>
+        <span className={barWideCls}>TSX</span>
+        <span className={barItemCls}>
+          SEOUL <Clock />
+        </span>
+        <a
+          href="#about"
+          data-cursor="pointer"
+          data-cursor-label="Go ↓"
+          className={css({
+            display: { base: "none", lg: "inline-flex" },
+            alignItems: "center",
+            gap: "6px",
+            paddingX: "8px",
+            height: "20px",
+            background: "ink",
+            color: "#fff",
+            transition: "background .1s steps(2), color .1s steps(2)",
+            _hover: { background: "point", color: "ink" },
+          })}
+        >
+          scroll ↓
+        </a>
+      </span>
+    </div>
   );
 };
 
@@ -156,7 +242,7 @@ const Hero = () => {
         className={css({
           position: { base: "relative", lg: "absolute" },
           right: { lg: "clamp(24px, 4vw, 72px)" },
-          bottom: { lg: "28px" },
+          bottom: { lg: "54px" },
           zIndex: 1,
           width: { base: "auto", lg: "236px" },
           marginX: { base: "16px", lg: 0 },
@@ -183,68 +269,8 @@ const Hero = () => {
         </Window>
       </div>
 
-      {/* HUD */}
-      <div
-        className={css({
-          position: { base: "relative", lg: "absolute" },
-          left: { lg: "clamp(24px, 4.5vw, 88px)" },
-          bottom: { lg: "26px" },
-          zIndex: 1,
-          display: "flex",
-          alignItems: { base: "center", lg: "flex-start" },
-          flexDirection: { base: "row", lg: "column" },
-          justifyContent: { base: "space-between", lg: "flex-start" },
-          gap: "6px",
-          paddingX: { base: "16px", lg: 0 },
-          paddingY: { base: "22px", lg: 0 },
-          fontFamily: "mono",
-          fontSize: "11px",
-          lineHeight: 1.45,
-          letterSpacing: "0.04em",
-          pointerEvents: "none",
-        })}
-      >
-        <span>
-          SEOUL <Clock />
-          <br />
-          frontend
-          <br />
-          portfolio
-        </span>
-        <Barcode value={profile.handle} height={18} className={css({ marginTop: { lg: "4px" } })} />
-      </div>
-
-      <a
-        href="#about"
-        data-cursor="pointer"
-        data-cursor-label="Scroll"
-        className={css({
-          display: { base: "none", lg: "flex" },
-          position: "absolute",
-          left: "50%",
-          bottom: "24px",
-          transform: "translateX(-50%)",
-          zIndex: 1,
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "8px",
-          fontFamily: "mono",
-          fontSize: "10px",
-          letterSpacing: "0.16em",
-          color: "ink",
-        })}
-      >
-        SCROLL
-        <span
-          className={css({
-            width: "1px",
-            height: "34px",
-            background: "ink",
-            transformOrigin: "top",
-            animation: "drip 1.6s steps(8) infinite",
-          })}
-        />
-      </a>
+      {/* editor-style status bar */}
+      <StatusBar />
     </section>
   );
 };
