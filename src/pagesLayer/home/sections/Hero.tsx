@@ -138,7 +138,7 @@ const Hero = () => {
       <div className={stageCls}>
         <WarpGrid className={cx(layerCls, css({ zIndex: 0 }))} />
         <div className={cx(layerCls, css({ zIndex: 2, pointerEvents: "none" }))}>
-          <HeroCanvas eventSource={ref} />
+          <HeroCanvas eventSource={ref} desk={desk} />
         </div>
       </div>
 

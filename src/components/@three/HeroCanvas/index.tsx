@@ -26,22 +26,22 @@ const shadowTexture = () => {
  * screen: on desktop the figure stands right of centre with the windows around
  * it, on the stacked mobile layout it's centred and smaller.
  */
-const Stage = () => {
-  const { viewport, size } = useThree();
+const Stage = ({ wide, desk }: { wide: boolean; desk: boolean }) => {
+  const { viewport } = useThree();
   const tex = useMemo(shadowTexture, []);
-  const wide = size.width >= 1024;
 
   const vh = viewport.height;
   const vw = viewport.width;
   const figure = (wide ? 0.66 : 0.6) * vh;
   const scale = figure / MODEL_HEIGHT;
   const floor = -vh / 2 + vh * (wide ? 0.1 : 0.13);
-  const x = wide ? vw * 0.1 : 0;
+  // squarer screens: pull the figure in so its head doesn't sit on the status window
+  const x = wide ? vw * (vw / vh < 1.5 ? 0.05 : 0.1) : 0;
 
   return (
     <>
       <group position={[x, floor, 0]} scale={scale}>
-        <HeroCharacter touch={!wide} />
+        <HeroCharacter touch={!desk} />
         <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={[3.4, 2.2, 1]} renderOrder={-1}>
           <planeGeometry />
           <meshBasicMaterial map={tex} transparent depthWrite={false} />
@@ -50,7 +50,7 @@ const Stage = () => {
 
       {wide ? (
         <>
-          <ClayRabbit position={[vw * 0.24, vh * 0.33, 1.2]} scale={vh * 0.05} rotation={[0.1, 0.5, 0.18]} speed={1.2} />
+          <ClayRabbit position={[-vw * 0.29, vh * 0.3, 1.2]} scale={vh * 0.045} rotation={[0.1, 0.5, 0.18]} speed={1.2} />
           <ClayRabbit position={[vw * 0.42, -vh * 0.07, -0.5]} scale={vh * 0.08} rotation={[0.05, -0.6, -0.12]} speed={1} />
           <ClayRabbit position={[-vw * 0.1, -vh * 0.3, 1.5]} scale={vh * 0.045} rotation={[-0.2, 0.3, 0.3]} speed={1.7} />
         </>
@@ -64,9 +64,26 @@ const Stage = () => {
   );
 };
 
-const HeroCanvas = ({ eventSource }: { eventSource: RefObject<HTMLElement> }) => {
+type Props = {
+  eventSource: RefObject<HTMLElement>;
+  /** wide + fine pointer: the windows are draggable, so the character says so */
+  desk: boolean;
+};
+
+const HeroCanvas = ({ eventSource, desk }: Props) => {
   const wrap = useRef<HTMLDivElement>(null);
   const [onScreen, setOnScreen] = useState(true);
+  const [wide, setWide] = useState(false);
+
+  // same breakpoint as the CSS (lg). The canvas' own width excludes the scrollbar,
+  // so measuring it would flip layouts a few px earlier than the HTML does.
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const on = () => setWide(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
 
   // stop rendering once the hero has scrolled away
   useEffect(() => {
@@ -109,7 +126,7 @@ const HeroCanvas = ({ eventSource }: { eventSource: RefObject<HTMLElement> }) =>
           <Lightformer form="rect" intensity={0.5} position={[7, -2, 1]} rotation-y={-Math.PI / 2} scale={[8, 8, 1]} />
         </Environment>
         <Suspense fallback={null}>
-          <Stage />
+          <Stage wide={wide} desk={desk} />
         </Suspense>
       </Canvas>
     </div>
