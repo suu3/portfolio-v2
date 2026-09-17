@@ -81,15 +81,20 @@ export const OfficeChair = () => (
   </group>
 );
 
-/** Laptop on the lap, lid open toward the viewer — we see its back and the logo. */
+/**
+ * Laptop held in front of the chest, lid open toward the viewer — we see its
+ * back and the logo. Placed against the Sit clip: the paws land on the
+ * keyboard (y ≈ 2.2, z ≈ 0.85) and the hinge sits past them, so no hand goes
+ * through the lid.
+ */
 export const Laptop = () => (
-  <group position={[0, 1.78, 0.2]}>
-    <RoundedBox args={[1.55, 0.08, 1.02]} radius={0.03} material={shell} raycast={noRaycast} />
+  <group position={[0, 2.1, 0.74]}>
+    <RoundedBox args={[1.55, 0.08, 0.8]} radius={0.03} material={shell} raycast={noRaycast} />
     {/* keyboard well */}
-    <mesh position={[0, 0.045, -0.05]} rotation={[-Math.PI / 2, 0, 0]} material={shellDark} raycast={noRaycast}>
-      <planeGeometry args={[1.3, 0.55]} />
+    <mesh position={[0, 0.045, -0.04]} rotation={[-Math.PI / 2, 0, 0]} material={shellDark} raycast={noRaycast}>
+      <planeGeometry args={[1.3, 0.42]} />
     </mesh>
-    <group position={[0, 0.02, 0.5]} rotation={[0.42, 0, 0]}>
+    <group position={[0, 0.02, 0.4]} rotation={[0.42, 0, 0]}>
       <RoundedBox args={[1.55, 1.05, 0.06]} radius={0.03} position={[0, 0.52, 0]} material={shell} raycast={noRaycast} />
       {/* glowing panel faces the character */}
       <mesh position={[0, 0.52, -0.035]} rotation={[0, Math.PI, 0]} material={screen} raycast={noRaycast}>

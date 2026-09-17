@@ -6,7 +6,7 @@ import { Html, useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { sfx } from "@/lib/sfx";
 import { workScroll } from "@/lib/workScroll";
-import ClayRabbit from "@/components/@three/ClayRabbit";
+import Bunny from "@/components/@three/Bunny";
 import { Laptop, OfficeChair } from "@/components/@three/Props";
 import { CLIPS, MODEL_HEIGHT, TrackState, computeTrack, emptyTrack } from "./track";
 import styles from "./bubble.module.css";
@@ -57,7 +57,7 @@ const shadowTexture = () => {
 /* the desk-mates fly off in different directions when the desk is left behind */
 const RABBITS = [
   { at: [-2.3, 4.9, 0.6], size: 0.55, rot: [0.1, 0.5, 0.18], speed: 1.2, fly: [-6, 5, 1] },
-  { at: [2.7, 2.2, -0.6], size: 0.7, rot: [0.05, -0.6, -0.12], speed: 1, fly: [7, 4, -1] },
+  { at: [2.55, 3.7, -0.6], size: 0.66, rot: [0.05, -0.6, -0.12], speed: 1, fly: [7, 4, -1] },
   { at: [-2.4, 0.6, 1.2], size: 0.42, rot: [-0.2, 0.3, 0.3], speed: 1.7, fly: [-5, -4, 2] },
 ] as const;
 
@@ -307,7 +307,7 @@ const Character = ({ touch }: { touch: boolean }) => {
             rabbitRefs.current[i] = el;
           }}
         >
-          <ClayRabbit position={[0, 0, 0]} rotation={[...d.rot]} speed={d.speed} />
+          <Bunny rotation={[...d.rot]} speed={d.speed} />
         </group>
       ))}
     </>
