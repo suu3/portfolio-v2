@@ -15,9 +15,9 @@ import styles from "./bubble.module.css";
 
 /**
  * Baked + rigged from `mycharactor_rabbit_theme_v2.blend` by
- * scripts/export-character.py: one skinned mesh, 11 bones, six clips.
+ * scripts/export-character.py: one skinned mesh, 13 bones, six clips.
  */
-export const MODEL_URL = "/models/character.glb";
+export const MODEL_URL = "/models/character.glb?v=soft-20260918-4";
 const DRACO = "/draco/";
 
 useGLTF.preload(MODEL_URL, DRACO);

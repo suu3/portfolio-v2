@@ -9,6 +9,7 @@ What it does (the .blend itself is never modified):
 - curves -> meshes at a web-friendly resolution, modifiers applied, subsurf capped at 2
 - the procedural sock shader (coloured by world Z) -> real geometry split into 3 flat materials
 - flat-colour image textures (hoodie/shorts) -> plain base colour; skin lightened
+- refines the fringe, cheeks, smile and padded clothing; warms the hair to espresso
 - rigs it: a 13-bone armature (incl. two eye bones for blinking) with hand-computed weights (the file has no rig), then
   keyframes the clips the site plays — Idle / Sit / Perch / Run / Wave / Recline — and pushes
   each onto an NLA track so the glTF exporter writes them as separate animations
@@ -30,6 +31,7 @@ PREVIEW_ONLY = set(argv[2].split(",")) if len(argv) > 2 else None
 scene = bpy.context.scene
 FLOOR_Z = -3.85
 FPS = 24
+EYE_DROP = 0.035
 scene.render.fps = FPS
 
 # ---------- 1. choose what ships ----------
@@ -41,6 +43,8 @@ keep = [o for o in scene.objects
 for o in keep:
     if o.type == "CURVE":
         d = o.data
+        if o.name == "Hood | fine bound opening":
+            d.bevel_depth *= 1.45
         heavy = any(k in o.name for k in ("rim", "Hood", "hem", "stitch", "seam"))
         d.resolution_u = 4 if heavy else 6
         for s in d.splines:
@@ -82,6 +86,52 @@ def by(name):
     return bpy.data.objects[name]
 
 
+# Refine the evaluated geometry, keeping the source .blend and rest rig intact.
+def soft_range(lo, hi, value):
+    t = max(0.0, min(1.0, (value - lo) / (hi - lo)))
+    return t * t * (3.0 - 2.0 * t)
+
+
+FRINGE = {"Hair | Cube.007", "Hair | Cube.008", "Hair | Cube.010"}
+CLOTHING = ("Hoodie |", "Hood |", "Sleeve |", "Pocket |", "Chest |", "Drawcord")
+for o in baked:
+    for v in o.data.vertices:
+        x, y, z = v.co
+        if o.name in FRINGE:
+            # Lift only the lower, forward ends; leave the crown joined up.
+            tip = (1.0 - soft_range(0.25, 1.22, z)) * (1.0 - soft_range(-0.85, -0.25, y))
+            v.co.z += 0.18 * tip
+            v.co.y += 0.045 * tip
+        elif o.name == "Face | peach and blush UV":
+            cheek = math.exp(-((z + 0.30) / 0.32) ** 2)
+            v.co.x *= 1.0 + 0.055 * cheek
+            # A little fullness at the cheeks, without displacing eyes or mouth.
+            front = 1.0 - soft_range(-0.8, -0.2, y)
+            side = soft_range(0.22, 0.6, abs(x))
+            v.co.y -= 0.045 * cheek * front * side
+            v.co.z += 0.035 * (1.0 - soft_range(-0.70, -0.38, z))
+        elif o.name == "Small smile":
+            v.co.x *= 1.22
+            v.co.z += 0.024 * min(1.0, (x / 0.073) ** 2)
+        elif o.name.startswith("Face | bean eye"):
+            cx = 0.36 if x > 0 else -0.36
+            v.co.x = cx + (x - cx) * 1.10
+            v.co.z -= EYE_DROP
+            v.co.y -= 0.004
+        elif o.name.startswith(CLOTHING):
+            # Apply the same shaping to seams and trim so they stay on the fabric.
+            sleeve = soft_range(0.60, 1.12, abs(x)) if z > -1.8 else 0.0
+            axis_z = -1.15 - max(0.0, abs(x) - 0.56) * 0.19
+            v.co.y = -0.02 + (y + 0.02) * (1.06 + 0.08 * sleeve)
+            v.co.z = axis_z + (z - axis_z) * (1.0 + 0.10 * sleeve)
+            if o.name.startswith("Hoodie | ribbed wrist"):
+                v.co.x += math.copysign(0.055, x)
+            if o.name == "Hoodie | kangaroo pocket":
+                v.co.y -= 0.025
+            if o.name.startswith("Pocket |"):
+                v.co.y -= 0.025
+
+
 # ---------- decimation helper ----------
 def decimate(obj, ratio):
     md = obj.modifiers.new("dec", "DECIMATE")
@@ -118,7 +168,12 @@ face_img = bpy.data.images["Face_Peach_Blush"]
 px = np.empty(len(face_img.pixels), dtype=np.float32)
 face_img.pixels.foreach_get(px)
 px = px.reshape(-1, 4)
-px[:, :3] = 1.0 - (1.0 - px[:, :3]) * (1.0 - SKIN_LIGHTEN)
+# Keep the painted cheek falloff, tinting it apricot instead of pink.
+base = np.quantile(px[:, :3], 0.9, axis=0)
+blush_mask = np.clip((base[1] - px[:, 1]) / 0.22, 0.0, 1.0)[:, None]
+skin_base = 1.0 - (1.0 - base) * (1.0 - SKIN_LIGHTEN)
+apricot = np.array((1.0, 0.74, 0.51), dtype=np.float32)
+px[:, :3] = skin_base + (apricot - skin_base) * blush_mask * 0.24
 face_img.pixels.foreach_set(px.ravel())
 face_img.pack()
 SKIN_RGB = tuple(1.0 - (1.0 - c) * (1.0 - SKIN_LIGHTEN) for c in (1.0, 0.859, 0.766))
@@ -128,15 +183,23 @@ M_SOCK = flat_mat("Sock", (0.855, 0.823, 0.738), 0.83)
 M_STRIPE = flat_mat("Sock stripe", (0.73, 0.165, 0.038), 0.83)
 M_HOODIE = flat_mat("Hoodie", (0.956, 0.13, 0.026), 0.86)
 M_SHORTS = flat_mat("Shorts", (0.034, 0.044, 0.044), 0.86)
+M_HAIR = flat_mat("Hair | espresso", (0.028, 0.019, 0.016), 0.55)
+M_HAIR_SOFT = flat_mat("Hair | soft espresso", (0.041, 0.028, 0.022), 0.57)
+M_EYE = flat_mat("Eyes | warm charcoal", (0.025, 0.019, 0.017), 1.0)
 
 swap = {
     "Hoodie | rabbit companion orange cotton": M_HOODIE,
     "Shorts | charcoal twill": M_SHORTS,
+    "Hair | natural black": M_HAIR,
+    "Hair | soft black variation": M_HAIR_SOFT,
 }
 for o in baked:
     for i, slot in enumerate(o.data.materials):
         if slot and slot.name in swap:
             o.data.materials[i] = swap[slot.name]
+    if o.name.startswith("Face | bean eye"):
+        o.data.materials.clear()
+        o.data.materials.append(M_EYE)
 
 # body: the sock shader coloured by world Z -> turn that into real geometry
 # (decimate first: collapsing edges after the split would chew up the stripes)
@@ -162,6 +225,31 @@ for f in body.data.polygons:
         f.material_index = 1
 
 decimate(by("Face | peach and blush UV"), 0.45)
+
+# A soft warm tint on the inner ears, fading out before the cheek and outer rim.
+# Vertex colour multiplies the painted skin, preserving its UV texture in glTF.
+face = by("Face | peach and blush UV")
+ear_colour = face.data.color_attributes.new(name="Ear warmth", type="FLOAT_COLOR", domain="CORNER")
+for loop in face.data.loops:
+    x, y, z = face.data.vertices[loop.vertex_index].co
+    ear = soft_range(1.04, 1.18, abs(x))
+    inner = math.exp(-((abs(x) - 1.27) / 0.19) ** 2 - ((z - 0.12) / 0.20) ** 2)
+    front = 1.0 - soft_range(0.06, 0.22, y)
+    warmth = ear * inner * front
+    ear_colour.data[loop.index].color = (1.0, 1.0 - 0.11 * warmth, 1.0 - 0.17 * warmth, 1.0)
+face.data.color_attributes.active_color = ear_colour
+face_mat = face.data.materials[0]
+nt = face_mat.node_tree
+skin_shader = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
+paint = skin_shader.inputs["Base Color"].links[0].from_socket
+ear_node = nt.nodes.new("ShaderNodeVertexColor")
+ear_node.layer_name = ear_colour.name
+tint = nt.nodes.new("ShaderNodeMixRGB")
+tint.blend_type = "MULTIPLY"
+tint.inputs[0].default_value = 1.0
+nt.links.new(paint, tint.inputs[1])
+nt.links.new(ear_node.outputs["Color"], tint.inputs[2])
+nt.links.new(tint.outputs["Color"], skin_shader.inputs["Base Color"])
 
 # ---------- 4. smooth normals where it reads as soft vinyl ----------
 for o in bpy.data.objects:
@@ -266,8 +354,8 @@ BONES = [
     ("Head", (0, 0, -0.62), (0, 0, 1.0), "Spine"),
     # eye bones sit at the centre of each bean eye and point up, so scaling
     # their local Y closes the eye onto its middle line
-    ("EyeL", (0.36, -0.925, 0.025), (0.36, -0.925, 0.2), "Head"),
-    ("EyeR", (-0.36, -0.925, 0.025), (-0.36, -0.925, 0.2), "Head"),
+    ("EyeL", (0.36, -0.929, 0.025 - EYE_DROP), (0.36, -0.929, 0.2 - EYE_DROP), "Head"),
+    ("EyeR", (-0.36, -0.929, 0.025 - EYE_DROP), (-0.36, -0.929, 0.2 - EYE_DROP), "Head"),
     ("UpperArm.L", (0.56, -0.02, -1.15), (1.15, -0.02, -1.26), "Spine"),
     ("LowerArm.L", (1.15, -0.02, -1.26), (1.73, -0.02, -1.36), "UpperArm.L"),
     ("UpperArm.R", (-0.56, -0.02, -1.15), (-1.15, -0.02, -1.26), "Spine"),
