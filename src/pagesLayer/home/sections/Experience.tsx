@@ -8,6 +8,7 @@ import { css, cx } from "@/styled-system/css";
 import { company, projects } from "../data";
 import ScrambleText from "@/components/ScrambleText";
 import Window from "@/components/Window";
+import { workScroll } from "@/lib/workScroll";
 import { chipDarkCls, eyebrowCls, metaCls, sectionTitleCls, textLinkCls } from "../ui";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -23,8 +24,8 @@ const floorCls = css({
   transformOrigin: "50% 100%",
   backgroundImage: `linear-gradient(token(colors.signal) 1px, transparent 1px), linear-gradient(90deg, token(colors.signal) 1px, transparent 1px)`,
   backgroundSize: "64px 64px",
-  opacity: 0.6,
-  maskImage: "linear-gradient(to top, #000 0%, transparent 75%)",
+  opacity: 0.7,
+  maskImage: "linear-gradient(to top, #000 0%, #000 18%, transparent 62%)",
   pointerEvents: "none",
 });
 
@@ -53,8 +54,12 @@ const Experience = () => {
           scrub: 1,
           invalidateOnRefresh: true,
           anticipatePin: 1,
+          onToggle: (self) => {
+            workScroll.active = self.isActive;
+          },
           onUpdate: (self) => {
-            // the floor rolls under you and the progress bar fills as you walk the room
+            // the floor rolls under you, the bar fills, and the character runs (see Character)
+            workScroll.progress = self.progress;
             if (floorRef.current) floorRef.current.style.backgroundPosition = `${-self.progress * 640}px 0`;
             if (barRef.current) barRef.current.style.transform = `scaleX(${self.progress})`;
           },
@@ -62,24 +67,33 @@ const Experience = () => {
       });
     }, section);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      workScroll.active = false;
+    };
   }, []);
 
   return (
     <section
       ref={sectionRef}
       id="experience"
+      data-char-anchor="work"
       className={css({
         position: "relative",
         background: "dark",
         color: "#ededeb",
         overflow: "hidden",
-        paddingY: { base: "88px", md: "0" },
+        paddingY: { base: "64px", md: "0" },
+        // the bottom strip is the floor the character runs along; content sits above it
+        paddingBottom: { md: "26vh" },
         minHeight: { md: "100vh" },
         display: { md: "flex" },
         alignItems: { md: "center" },
       })}
     >
+      {/* stacked layout: a stage for the character above the intro */}
+      <div data-char-anchor="work-m" className={css({ display: { base: "block", md: "none" }, height: "32vh" })} aria-hidden />
+
       <div ref={floorRef} className={floorCls} aria-hidden />
 
       <div
@@ -133,8 +147,8 @@ const Experience = () => {
               collapsible={false}
               className={css({
                 flexShrink: 0,
-                width: { base: "100%", md: "540px" },
-                minHeight: { md: "560px" },
+                width: { base: "100%", md: "520px" },
+                minHeight: { md: "480px" },
                 transition: "border-color .1s steps(2)",
                 _hover: { borderColor: "#6a6a66" },
               })}
@@ -142,7 +156,7 @@ const Experience = () => {
                 display: "flex",
                 flexDirection: "column",
                 flex: 1,
-                padding: { base: "22px 20px 24px", md: "30px 32px 32px" },
+                padding: { base: "22px 20px 24px", md: "26px 30px 28px" },
               })}
             >
               <div className={css({ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "12px" })}>

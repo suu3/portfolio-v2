@@ -58,12 +58,12 @@ const Skills = () => {
             </div>
           </Reveal>
 
-          <Reveal delay={0.06}>
+          <Reveal delay={0.06} className={css({ marginTop: { base: "40px", md: "60px" } })}>
             <Window
               title="~/stack — zsh"
               meta="80×24"
               tone="dark"
-              className={css({ marginTop: { base: "40px", md: "60px" } })}
+              data-char-anchor="stack"
               bodyClassName={css({ padding: { base: "22px 18px 26px", md: "34px 36px 38px" } })}
             >
               {skills.map((s, gi) => (

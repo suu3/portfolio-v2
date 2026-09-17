@@ -21,6 +21,8 @@ type Props = {
   bodyClassName?: string;
   style?: CSSProperties;
   children: ReactNode;
+  /** e.g. the character's `data-char-anchor` */
+  [dataAttr: `data-${string}`]: string | undefined;
 };
 
 /* light + dark are complete class sets — atomic classes can't reliably override each other */
@@ -106,6 +108,7 @@ const Window = ({
   bodyClassName,
   style,
   children,
+  ...rest
 }: Props) => {
   const controls = useDragControls();
   const [collapsed, setCollapsed] = useState(false);
@@ -123,6 +126,7 @@ const Window = ({
       onPointerDown={draggable ? () => setZ(++topZ) : undefined}
       style={{ ...style, ...(z ? { zIndex: z } : null) }}
       className={cx(tone === "dark" ? windowDarkCls : windowCls, className)}
+      {...rest}
     >
       <header
         className={cx(barCls, tone === "dark" ? barDarkCls : barLightCls, draggable && grabCls)}

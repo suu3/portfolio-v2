@@ -65,6 +65,7 @@ const Beyond = () => {
           <Window
             title="archive/"
             meta={`${archive.length} items`}
+            data-char-anchor="archive"
             className={css({ marginTop: { base: "14px", md: "18px" } })}
           >
             <div

@@ -1,29 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { css, cx } from "@/styled-system/css";
 import Window from "@/components/Window";
 import WarpGrid from "@/components/WarpGrid";
-import PixelRabbit from "@/components/PixelRabbit";
 import Barcode from "@/components/Barcode";
 import { profile } from "../data";
-import { INK, ORANGE, metaCls, pillCls, pillGhostCls } from "../ui";
-
-const HeroCanvas = dynamic(() => import("@/components/@three/HeroCanvas"), { ssr: false });
-
-/** true once we know this is a wide, fine-pointer screen (drag + floating layout) */
-const useDesk = () => {
-  const [desk, setDesk] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px) and (pointer: fine)");
-    const on = () => setDesk(mq.matches);
-    on();
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, []);
-  return desk;
-};
+import { metaCls, pillCls, pillGhostCls } from "../ui";
 
 const Clock = () => {
   const [now, setNow] = useState<string>();
@@ -57,68 +40,55 @@ const sectionCls = css({
   background: "paper",
   color: "ink",
   minHeight: { lg: "max(680px, 100svh)" },
-  paddingBottom: { base: "28px", lg: 0 },
+  display: { lg: "flex" },
+  flexDirection: { lg: "column" },
 });
 
-/** grid + 3D. absolutely fills the hero on desktop, a fixed-height stage when stacked */
-const stageCls = css({
-  position: { base: "relative", lg: "absolute" },
-  inset: { lg: 0 },
-  height: { base: "min(78svh, 640px)", lg: "auto" },
-});
-
-const layerCls = css({ position: "absolute", inset: 0, width: "100%", height: "100%" });
-
-const windowsCls = css({
-  position: { base: "relative", lg: "absolute" },
-  inset: { lg: 0 },
-  zIndex: 1,
-  pointerEvents: { lg: "none" },
-  display: "flex",
-  flexDirection: "column",
-  gap: "14px",
-  paddingX: { base: "16px", lg: 0 },
-  marginTop: { base: "-56px", lg: 0 },
-  "& > *": { pointerEvents: "auto" },
-});
-
-const helloPos = css({
-  position: { lg: "absolute" },
-  left: { lg: "clamp(24px, 4.5vw, 88px)" },
-  top: { lg: "clamp(96px, 19vh, 190px)" },
-  width: { lg: "clamp(380px, 37vw, 560px)" },
-});
-
-const statusPos = css({
-  position: { lg: "absolute" },
-  right: { lg: "clamp(24px, 4vw, 72px)" },
-  top: { lg: "clamp(110px, 17vh, 170px)" },
-  width: { lg: "268px" },
-});
-
-const charmPos = css({
-  display: { base: "none", lg: "flex" },
+/** the warp grid sits behind the whole hero but fades out under the copy */
+const gridCls = css({
   position: "absolute",
-  right: "clamp(40px, 9vw, 150px)",
-  bottom: "clamp(56px, 12vh, 130px)",
-  width: "164px",
+  inset: 0,
+  width: "100%",
+  height: "100%",
+  zIndex: 0,
+  maskImage: {
+    base: "linear-gradient(to bottom, transparent 0, transparent 34%, #000 52%)",
+    lg: "linear-gradient(90deg, transparent 22%, #000 58%)",
+  },
 });
 
-/**
- * Window pop-in as a plain CSS animation, not framer-motion: rAF is frozen in a
- * hidden tab, so a JS-driven entrance would leave the windows at opacity 0 until
- * the tab is focused. CSS keeps its own clock.
- */
-const popCls = css({ animation: "winPop .2s steps(4) both" });
-const pop = (i: number) => ({ style: { animationDelay: `${1300 + i * 140}ms` } });
+const innerCls = css({
+  position: "relative",
+  zIndex: 1,
+  flex: { lg: 1 },
+  display: { base: "flex", lg: "grid" },
+  flexDirection: "column",
+  gridTemplateColumns: { lg: "minmax(0, 1fr) clamp(360px, 36vw, 560px)" },
+  alignItems: { lg: "center" },
+  gap: { lg: "clamp(24px, 3vw, 56px)" },
+  paddingX: { base: "16px", lg: "clamp(24px, 4.5vw, 88px)" },
+  paddingTop: { base: "108px", lg: "110px" },
+  paddingBottom: { base: "0", lg: "96px" },
+});
+
+const copyCls = css({
+  maxWidth: { lg: "760px" },
+});
+
+/** where the character sits — an empty stage the fixed canvas draws into */
+const stageCls = css({
+  position: "relative",
+  height: { base: "min(58svh, 460px)", lg: "min(78svh, 720px)" },
+  width: "100%",
+});
 
 const Row = ({ k, children }: { k: string; children: React.ReactNode }) => (
   <div
     className={css({
       display: "grid",
-      gridTemplateColumns: "72px 1fr",
+      gridTemplateColumns: "60px 1fr",
       gap: "10px",
-      paddingY: "7px",
+      paddingY: "6px",
       borderTop: "1px solid rgba(17,17,17,0.1)",
       _first: { borderTop: "none" },
     })}
@@ -129,116 +99,87 @@ const Row = ({ k, children }: { k: string; children: React.ReactNode }) => (
 );
 
 const Hero = () => {
-  const ref = useRef<HTMLElement>(null);
-  const desk = useDesk();
-
   return (
-    <section ref={ref} id="top" className={sectionCls}>
-      {/* 2D grid sheet (back) → windows (middle) → 3D figure (front) */}
-      <div className={stageCls}>
-        <WarpGrid className={cx(layerCls, css({ zIndex: 0 }))} />
-        <div className={cx(layerCls, css({ zIndex: 2, pointerEvents: "none" }))}>
-          <HeroCanvas eventSource={ref} desk={desk} />
-        </div>
-      </div>
+    <section id="top" className={sectionCls}>
+      <WarpGrid className={gridCls} />
 
-      <div className={windowsCls}>
-        <div {...pop(0)} className={cx(popCls, helloPos)}>
-          <Window
-            title="hello.txt"
-            meta="UTF-8"
-            draggable={desk}
-            constraints={ref}
-            bodyClassName={css({ padding: { base: "20px 18px 22px", md: "26px 28px 28px" } })}
-          >
-            <p className={cx(metaCls, css({ color: "muted" }))}>
-              {profile.role} — {profile.location}
-            </p>
-            <h1
-              className={css({
-                fontFamily: "sans",
-                fontWeight: 650,
-                fontSize: { base: "clamp(34px, 10vw, 48px)", lg: "clamp(40px, 4.2vw, 68px)" },
-                lineHeight: 1.04,
-                letterSpacing: "-0.05em",
-                marginTop: "16px",
-              })}
-            >
-              안녕하세요,
-              <br />
-              프론트엔드 개발자
-              <br />
-              <span className={css({ color: "point" })}>{profile.handle}</span>입니다.
-            </h1>
-            <p
-              className={css({
-                marginTop: "18px",
-                fontSize: { base: "15px", md: "16px" },
-                lineHeight: 1.65,
-                color: "#3b3b38",
-                whiteSpace: "pre-line",
-              })}
-            >
-              {profile.tagline}
-            </p>
-            <div className={css({ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "24px" })}>
-              <a href={`mailto:${profile.email}`} className={pillCls} data-cursor="pointer" data-cursor-label="Mail ↗">
-                메일 보내기 ↗
-              </a>
-              <a href="#experience" className={pillGhostCls} data-cursor="pointer" data-cursor-label="Go ↓">
-                작업 보기 ↓
-              </a>
-            </div>
-          </Window>
-        </div>
-
-        <div {...pop(1)} className={cx(popCls, statusPos)}>
-          <Window
-            title="status.log"
-            draggable={desk}
-            constraints={ref}
-            bodyClassName={css({ padding: "10px 14px 12px", fontFamily: "mono", fontSize: "11.5px" })}
-          >
-            <Row k="ROLE">{profile.role}</Row>
-            <Row k="BASE">{profile.location}</Row>
-            <Row k="STACK">Next.js · TS · R3F</Row>
-            <Row k="STATUS">
-              <span className={css({ display: "inline-flex", alignItems: "center", gap: "7px" })}>
-                <i
-                  className={css({
-                    display: "inline-block",
-                    width: "7px",
-                    height: "7px",
-                    borderRadius: "999px",
-                    background: "point",
-                    animation: "blink 1.2s steps(2) infinite",
-                  })}
-                />
-                available
-              </span>
-            </Row>
-          </Window>
-        </div>
-
-        <div {...pop(2)} className={cx(popCls, charmPos)}>
-          <Window
-            title="charm.bmp"
-            draggable={desk}
-            constraints={ref}
-            collapsible={false}
-            bodyClassName={css({
-              display: "grid",
-              placeItems: "center",
-              paddingY: "18px",
-              backgroundImage:
-                "linear-gradient(45deg, rgba(17,17,17,.06) 25%, transparent 25%, transparent 75%, rgba(17,17,17,.06) 75%), linear-gradient(45deg, rgba(17,17,17,.06) 25%, transparent 25%, transparent 75%, rgba(17,17,17,.06) 75%)",
-              backgroundSize: "12px 12px",
-              backgroundPosition: "0 0, 6px 6px",
+      <div className={innerCls}>
+        <div className={copyCls}>
+          <p className={cx(metaCls, css({ color: "muted" }))}>
+            {profile.role} — {profile.location}
+          </p>
+          <h1
+            className={css({
+              fontFamily: "sans",
+              fontWeight: 650,
+              fontSize: { base: "clamp(40px, 11.5vw, 60px)", lg: "clamp(56px, 6.2vw, 108px)" },
+              lineHeight: 1.0,
+              letterSpacing: "-0.055em",
+              marginTop: "20px",
+              textWrap: "balance",
             })}
           >
-            <PixelRabbit size={72} color={INK} ink={ORANGE} />
-          </Window>
+            안녕하세요,
+            <br />
+            프론트엔드 개발자
+            <br />
+            <span className={css({ color: "point" })}>{profile.handle}</span>입니다.
+          </h1>
+          <p
+            className={css({
+              marginTop: { base: "20px", lg: "28px" },
+              maxWidth: "520px",
+              fontSize: { base: "16px", lg: "19px" },
+              lineHeight: 1.65,
+              color: "#3b3b38",
+              whiteSpace: "pre-line",
+            })}
+          >
+            {profile.tagline}
+          </p>
+          <div className={css({ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: { base: "24px", lg: "34px" } })}>
+            <a href={`mailto:${profile.email}`} className={pillCls} data-cursor="pointer" data-cursor-label="Mail ↗">
+              메일 보내기 ↗
+            </a>
+            <a href="#experience" className={pillGhostCls} data-cursor="pointer" data-cursor-label="Go ↓">
+              작업 보기 ↓
+            </a>
+          </div>
         </div>
+
+        <div data-char-anchor="hero" className={stageCls} aria-hidden />
+      </div>
+
+      {/* status readout — bottom-right on desktop, under the stage when stacked */}
+      <div
+        className={css({
+          position: { base: "relative", lg: "absolute" },
+          right: { lg: "clamp(24px, 4vw, 72px)" },
+          bottom: { lg: "28px" },
+          zIndex: 1,
+          width: { base: "auto", lg: "236px" },
+          marginX: { base: "16px", lg: 0 },
+        })}
+      >
+        <Window title="status.log" bodyClassName={css({ padding: "8px 12px 10px", fontFamily: "mono", fontSize: "11px" })}>
+          <Row k="ROLE">{profile.role}</Row>
+          <Row k="BASE">{profile.location}</Row>
+          <Row k="STATUS">
+            <span className={css({ display: "inline-flex", alignItems: "center", gap: "7px" })}>
+              <i
+                className={css({
+                  display: "inline-block",
+                  width: "7px",
+                  height: "7px",
+                  borderRadius: "999px",
+                  background: "point",
+                  animation: "blink 1.2s steps(2) infinite",
+                })}
+              />
+              available
+            </span>
+          </Row>
+        </Window>
       </div>
 
       {/* HUD */}
@@ -247,14 +188,14 @@ const Hero = () => {
           position: { base: "relative", lg: "absolute" },
           left: { lg: "clamp(24px, 4.5vw, 88px)" },
           bottom: { lg: "26px" },
-          zIndex: 3,
+          zIndex: 1,
           display: "flex",
           alignItems: { base: "center", lg: "flex-start" },
           flexDirection: { base: "row", lg: "column" },
           justifyContent: { base: "space-between", lg: "flex-start" },
           gap: "6px",
           paddingX: { base: "16px", lg: 0 },
-          marginTop: { base: "22px", lg: 0 },
+          paddingY: { base: "22px", lg: 0 },
           fontFamily: "mono",
           fontSize: "11px",
           lineHeight: 1.45,
@@ -282,7 +223,7 @@ const Hero = () => {
           left: "50%",
           bottom: "24px",
           transform: "translateX(-50%)",
-          zIndex: 3,
+          zIndex: 1,
           flexDirection: "column",
           alignItems: "center",
           gap: "8px",

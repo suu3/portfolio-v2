@@ -30,7 +30,9 @@ const Footer = () => {
           <Reveal>
             <span className={eyebrowCls}>05 — Contact</span>
             <h2
+              data-char-anchor="contact"
               className={css({
+                width: "fit-content", // the anchor rect hugs the words, not the row
                 fontWeight: 650,
                 fontSize: { base: "clamp(48px, 15vw, 72px)", md: "clamp(84px, 10vw, 150px)" },
                 lineHeight: 0.95,
