@@ -4,9 +4,12 @@ import React, { useEffect, useRef } from "react";
 import styles from "./cursor.module.css";
 
 /**
- * Brutalist cursor — a hard rectangle that inverts what's under it
+ * Hairline cursor — a small ring that inverts what's under it
  * (mix-blend-mode: difference) and snaps to wrap any [data-cursor] target,
  * showing its [data-cursor-label] as a monospace tag.
+ *
+ * Things that aren't DOM (the 3D character) can't carry [data-cursor], so they
+ * dispatch `cursor:hint` with a label (or null) instead.
  */
 const Cursor = () => {
   const dotRef = useRef<HTMLDivElement>(null);
@@ -39,13 +42,21 @@ const Cursor = () => {
       return `${raw + PAD}px`;
     };
 
+    let hint: string | null = null;
+
     const release = () => {
-      box.style.width = "26px";
-      box.style.height = "26px";
+      const size = hint ? "64px" : "26px";
+      box.style.width = size;
+      box.style.height = size;
       box.style.borderRadius = "999px";
       box.dataset.stuck = "false";
-      label.textContent = "";
-      dot.style.opacity = "1";
+      label.textContent = hint ?? "";
+      dot.style.opacity = hint ? "0" : "1";
+    };
+
+    const onHint = (e: Event) => {
+      hint = (e as CustomEvent<string | null>).detail ?? null;
+      if (!stuck) release();
     };
 
     const grab = (el: HTMLElement) => {
@@ -72,6 +83,7 @@ const Cursor = () => {
     release();
     document.addEventListener("mousemove", onMove);
     document.addEventListener("mouseover", onOver);
+    window.addEventListener("cursor:hint", onHint);
 
     let raf = 0;
     const loop = () => {
@@ -103,6 +115,7 @@ const Cursor = () => {
     return () => {
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
+      window.removeEventListener("cursor:hint", onHint);
       cancelAnimationFrame(raf);
     };
   }, []);

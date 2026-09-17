@@ -2,9 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import Cursor from "@/components/Cursor";
 import Grain from "@/components/Grain";
-import CropMarks from "@/components/CropMarks";
 import SoundToggle from "@/components/SoundToggle";
-import { css } from "@/styled-system/css";
 
 export const metadata: Metadata = {
   title: "Portfolio · Frontend Developer",
@@ -19,22 +17,21 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body
-        className={css({
-          bg: "#f3efec",
-          color: "#23242a",
-        })}
-      >
+      <body>
         {children}
         <SoundToggle />
-        <CropMarks />
         <Grain />
         <Cursor />
       </body>

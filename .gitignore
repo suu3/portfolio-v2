@@ -49,3 +49,8 @@ styled-system-studio
 
 # local only — 이력서·경력기술서 (개인 정보 포함, 공개 저장소에 올리지 않음)
 /resume/
+
+# local only — Blender source for the hero character (29MB). The site ships the baked
+# public/models/character.glb instead; re-export with scripts/export-character.py
+/public/*.blend
+/public/*.blend1

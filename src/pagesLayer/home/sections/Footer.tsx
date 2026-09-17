@@ -1,70 +1,46 @@
 "use client";
 
-import { css } from "@/styled-system/css";
+import { css, cx } from "@/styled-system/css";
 import Reveal from "@/components/Reveal";
-import GlitchText from "@/components/GlitchText";
 import Marquee from "@/components/Marquee";
+import PixelRabbit from "@/components/PixelRabbit";
 import { profile } from "../data";
-import { INK, ORANGE, LIME, prompt, mono, metaCls, brutalBtnDarkCls } from "../ui";
+import { ORANGE, eyebrowCls, metaCls, pillDarkCls } from "../ui";
 
 const Footer = () => {
   return (
-    <footer id="contact">
-      <div
-        className={css({
-          background: LIME,
-          color: "#000",
-          borderY: "3px solid #000",
-          paddingY: "12px",
-        })}
-      >
+    <footer id="contact" className={css({ background: "dark", color: "#ededeb" })}>
+      <div className={css({ borderBottom: `1px solid token(colors.darkLine)`, paddingY: "11px", color: "#ededeb" })}>
         <Marquee
           className={metaCls}
-          duration={18}
-          items={["GET IN TOUCH", "OPEN TO WORK", "함께 이야기해요", profile.email.toUpperCase()]}
+          duration={22}
+          separator="●"
+          items={["get in touch", "함께 이야기해요", profile.email, "open to talk"]}
         />
       </div>
 
       <div
         className={css({
-          background: "#000",
-          color: "#fff",
-          paddingX: { base: "24px", md: "clamp(32px, 6vw, 120px)" },
-          paddingTop: { base: "72px", md: "110px" },
-          paddingBottom: "44px",
+          paddingX: { base: "16px", md: "clamp(28px, 5vw, 88px)" },
+          paddingTop: { base: "88px", md: "140px" },
+          paddingBottom: "28px",
         })}
       >
-        <div className={css({ maxWidth: "1120px", marginX: "auto" })}>
+        <div className={css({ maxWidth: "1180px", marginX: "auto" })}>
           <Reveal>
-            <span
-              className={css({
-                fontFamily: mono,
-                fontSize: "11px",
-                fontWeight: 700,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                background: ORANGE,
-                color: "#000",
-                padding: "5px 10px",
-                border: "2px solid #000",
-              })}
-            >
-              Contact / 05
-            </span>
+            <span className={eyebrowCls}>05 — Contact</span>
             <h2
               className={css({
-                fontFamily: prompt,
-                fontWeight: 700,
-                fontSize: { base: "clamp(42px, 13vw, 64px)", md: "clamp(70px, 9vw, 118px)" },
-                lineHeight: 0.9,
-                letterSpacing: "-0.04em",
-                textTransform: "uppercase",
+                fontWeight: 650,
+                fontSize: { base: "clamp(48px, 15vw, 72px)", md: "clamp(84px, 10vw, 150px)" },
+                lineHeight: 0.95,
+                letterSpacing: "-0.06em",
                 marginTop: "22px",
               })}
             >
               함께
               <br />
-              <GlitchText className={css({ color: LIME })}>이야기해요</GlitchText>
+              이야기해요<span className={css({ color: "point" })}>.</span>
             </h2>
           </Reveal>
 
@@ -75,16 +51,14 @@ const Footer = () => {
               data-cursor-label="Mail ↗"
               className={css({
                 display: "inline-block",
-                marginTop: "38px",
-                fontFamily: mono,
+                marginTop: "44px",
+                fontFamily: "mono",
                 fontSize: { base: "18px", md: "30px" },
-                fontWeight: 700,
-                letterSpacing: "0.02em",
-                color: "#fff",
-                borderBottom: `4px solid ${ORANGE}`,
+                letterSpacing: "-0.02em",
+                borderBottom: "1px solid currentColor",
                 paddingBottom: "6px",
-                transition: "color .1s steps(1), border-color .1s steps(1)",
-                _hover: { color: LIME, borderColor: LIME },
+                transition: "color .1s steps(2)",
+                _hover: { color: "point" },
               })}
             >
               {profile.email}
@@ -92,7 +66,7 @@ const Footer = () => {
           </Reveal>
 
           <Reveal delay={0.14}>
-            <div className={css({ display: "flex", flexWrap: "wrap", gap: "16px", marginTop: "46px" })}>
+            <div className={css({ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "36px" })}>
               {[
                 { label: "GitHub", href: profile.github },
                 { label: "Blog", href: profile.blog },
@@ -105,7 +79,7 @@ const Footer = () => {
                   rel="noreferrer"
                   data-cursor="pointer"
                   data-cursor-label="Open ↗"
-                  className={brutalBtnDarkCls}
+                  className={pillDarkCls}
                 >
                   {l.label} ↗
                 </a>
@@ -114,25 +88,33 @@ const Footer = () => {
           </Reveal>
 
           <div
-            className={css({
-              marginTop: "76px",
-              paddingTop: "22px",
-              borderTop: "2px solid rgba(255,255,255,0.2)",
-              display: "flex",
-              flexDirection: { base: "column", md: "row" },
-              justifyContent: "space-between",
-              gap: "8px",
-              fontFamily: mono,
-              fontSize: "11px",
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "#8a8b93",
-            })}
+            className={cx(
+              metaCls,
+              css({
+                marginTop: { base: "88px", md: "140px" },
+                paddingTop: "18px",
+                borderTop: `1px solid token(colors.darkLine)`,
+                display: "flex",
+                flexDirection: { base: "column", md: "row" },
+                justifyContent: "space-between",
+                alignItems: { md: "center" },
+                gap: "12px",
+                color: "darkMuted",
+              })
+            )}
           >
-            <span>
-              © {new Date().getFullYear()} {profile.name} ({profile.handle})
+            <span className={css({ display: "inline-flex", alignItems: "center", gap: "10px" })}>
+              <PixelRabbit size={16} color="#ededeb" ink={ORANGE} />© {new Date().getFullYear()} {profile.name} ({profile.handle})
             </span>
-            <span>Next.js · PandaCSS · Three.js · Framer Motion</span>
+            <span>Next.js · PandaCSS · Three.js · Blender</span>
+            <a
+              href="#top"
+              data-cursor="pointer"
+              data-cursor-label="Top ↑"
+              className={css({ fontFamily: "mono", color: "#ededeb", _hover: { color: "point" } })}
+            >
+              back to top ↑
+            </a>
           </div>
         </div>
       </div>

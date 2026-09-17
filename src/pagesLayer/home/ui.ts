@@ -1,276 +1,204 @@
 import { css } from "@/styled-system/css";
 
-export const INK = "#000000";
-export const CREAM = "#f3efec";
-export const PAPER = "#fbfbfb";
-export const ORANGE = "#ff6737";
-export const ORANGE2 = "#fc8755";
-export const PEACH = "#ffddca";
+/* ─────────────────────────────────────────────────────────────
+ * Monotone + two point colours.
+ *   ORANGE — the character's hoodie. The one thing that should pop.
+ *   BLUE   — electric grid blue, only for "live" feedback (cursor
+ *            lens on the grid, focus, selection, progress).
+ * Everything else is paper, ink and the greys in between.
+ * ──────────────────────────────────────────────────────────── */
 
-/* brutalist accents (already in the project's panda tokens) */
-export const LIME = "#bffe28";
-export const MAGENTA = "#ff00ff";
-export const CYAN = "#00ffff";
-export const PURPLE = "#8806ce";
+export const PAPER = "#ededeb";
+export const SURFACE = "#f7f7f5";
+export const INK = "#111111";
+export const MUTED = "#6e6e6a";
+export const HAIR = "rgba(17,17,17,0.14)";
 
-export const prompt = "Prompt, 'NEXON Lv1 Gothic OTF', sans-serif";
-export const mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+export const DARK = "#0d0d0d";
+export const DARK_SURFACE = "#151515";
+export const DARK_LINE = "#2c2c2c";
+export const DARK_MUTED = "#8c8c88";
 
-/** riso-style halftone dots — lay over blocks for print texture */
-export const halftoneCls = css({
-  backgroundImage: "radial-gradient(#000 1px, transparent 1.3px)",
-  backgroundSize: "6px 6px",
-});
+export const ORANGE = "#ff5a1f";
+export const BLUE = "#2d3cff";
 
-/** checkerboard strip, used as a hard divider */
-export const checkerCls = css({
-  backgroundImage:
-    "linear-gradient(45deg,#000 25%,transparent 25%,transparent 75%,#000 75%),linear-gradient(45deg,#000 25%,transparent 25%,transparent 75%,#000 75%)",
-  backgroundSize: "14px 14px",
-  backgroundPosition: "0 0, 7px 7px",
-});
+export const sans =
+  "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif";
+export const mono = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
-/** HUD readout block — dense filler metadata like the reference posters */
-export const hudCls = css({
-  fontFamily: mono,
-  fontSize: "9.5px",
-  fontWeight: 700,
-  letterSpacing: "0.24em",
-  textTransform: "uppercase",
-  opacity: 0.55,
-  whiteSpace: "nowrap",
-});
+/** snap easing — windows pop, they don't drift */
+export const SNAP = "cubic-bezier(.2,.9,.2,1)";
 
-/** measurement scale bar (decorative, like a poster's tick ruler) */
-export const scaleBarCls = css({
-  height: "10px",
-  backgroundImage:
-    "repeating-linear-gradient(to right,#000 0 1.5px,transparent 1.5px 9px)",
-});
+/* ───────── type ───────── */
 
-/** monospace metadata tag — file labels, indices, section numbers */
+/** tiny uppercase monospace — file names, indices, HUD readouts */
 export const metaCls = css({
-  fontFamily: mono,
+  fontFamily: "mono",
   fontSize: "11px",
-  fontWeight: 700,
-  letterSpacing: "0.2em",
+  fontWeight: 500,
+  letterSpacing: "0.08em",
   textTransform: "uppercase",
 });
 
-/** rotated sticker label with a hard border */
-export const stickerCls = css({
-  display: "inline-block",
-  fontFamily: mono,
-  fontSize: "10px",
-  fontWeight: 700,
-  letterSpacing: "0.16em",
-  textTransform: "uppercase",
-  padding: "5px 10px",
-  background: "#bffe28",
-  color: "#000",
-  border: "2px solid #000",
-  borderRadius: "999px",
-  transform: "rotate(-2.5deg)",
-});
-
-/**
- * The neo-brutalist press: element sits on a hard offset shadow, then slams
- * down into it on hover. Snappy easing, no soft fades.
- */
-export const brutalBtnCls = css({
+/** `01 — ABOUT` style section label */
+export const eyebrowCls = css({
   display: "inline-flex",
   alignItems: "center",
   gap: "10px",
-  fontFamily: mono,
-  fontWeight: 700,
-  fontSize: "13px",
-  letterSpacing: "0.14em",
+  fontFamily: "mono",
+  fontSize: "11px",
+  fontWeight: 500,
+  letterSpacing: "0.1em",
   textTransform: "uppercase",
-  padding: "14px 24px",
-  background: "#fff",
-  color: "#000",
-  border: "3px solid #000",
-  borderRadius: "999px",
-  boxShadow: "6px 6px 0 0 #000",
-  transition:
-    "transform .12s cubic-bezier(.2,.9,.2,1), box-shadow .12s cubic-bezier(.2,.9,.2,1), background .1s steps(1)",
-  _hover: {
-    background: "#bffe28",
-    transform: "translate(6px, 6px)",
-    boxShadow: "0 0 0 0 #000",
-  },
-  _active: { background: "#ff00ff", color: "#fff" },
-});
-
-/** same press, tuned for dark backgrounds */
-export const brutalBtnDarkCls = css({
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "10px",
-  fontFamily: mono,
-  fontWeight: 700,
-  fontSize: "13px",
-  letterSpacing: "0.14em",
-  textTransform: "uppercase",
-  padding: "14px 24px",
-  background: "#000",
-  color: "#fff",
-  border: "3px solid #fff",
-  borderRadius: "999px",
-  boxShadow: "6px 6px 0 0 #bffe28",
-  transition:
-    "transform .12s cubic-bezier(.2,.9,.2,1), box-shadow .12s cubic-bezier(.2,.9,.2,1), background .1s steps(1), color .1s steps(1)",
-  _hover: {
-    background: "#bffe28",
-    color: "#000",
-    borderColor: "#000",
-    transform: "translate(6px, 6px)",
-    boxShadow: "0 0 0 0 #bffe28",
-  },
-  _active: { background: "#ff00ff", color: "#fff" },
-});
-
-/** hard-edged card that shifts into its shadow on hover */
-export const brutalCardCls = css({
-  background: "#fbfbfb",
-  border: "3px solid #000",
-  borderRadius: "18px",
-  boxShadow: "8px 8px 0 0 #000",
-  transition:
-    "transform .14s cubic-bezier(.2,.9,.2,1), box-shadow .14s cubic-bezier(.2,.9,.2,1)",
-  _hover: {
-    transform: "translate(8px, 8px)",
-    boxShadow: "0 0 0 0 #000",
+  color: "currentColor",
+  _before: {
+    content: '""',
+    width: "7px",
+    height: "7px",
+    borderRadius: "999px",
+    background: "point",
   },
 });
 
-/** section outer padding */
+export const sectionTitleCls = css({
+  fontFamily: "sans",
+  fontWeight: 650,
+  fontSize: { base: "38px", md: "clamp(52px, 6vw, 88px)" },
+  lineHeight: 1.02,
+  letterSpacing: "-0.045em",
+  marginTop: "18px",
+  textWrap: "balance",
+});
+
+/* ───────── layout ───────── */
+
 export const sectionCls = css({
   width: "100%",
-  paddingX: { base: "24px", md: "clamp(32px, 6vw, 120px)" },
-  paddingY: { base: "72px", md: "120px" },
+  paddingX: { base: "16px", md: "clamp(28px, 5vw, 88px)" },
+  paddingY: { base: "88px", md: "140px" },
   position: "relative",
 });
 
 export const innerCls = css({
-  maxWidth: "1120px",
+  maxWidth: "1180px",
   marginX: "auto",
   width: "100%",
 });
 
-/** eyebrow label above a section title */
-export const eyebrowCls = css({
+/** faint drafting grid behind light sections */
+export const paperGridCls = css({
+  backgroundImage:
+    "linear-gradient(rgba(17,17,17,0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(17,17,17,0.055) 1px, transparent 1px)",
+  backgroundSize: "48px 48px",
+  backgroundPosition: "-1px -1px",
+});
+
+/* ───────── controls ───────── */
+
+/** black pill — primary link (1:09's "Twitter ↗") */
+export const pillCls = css({
   display: "inline-flex",
   alignItems: "center",
   gap: "8px",
-  fontFamily: mono,
-  fontSize: "11px",
-  fontWeight: 700,
-  letterSpacing: "0.2em",
-  textTransform: "uppercase",
-  color: "#000",
-  background: "#ff6737",
-  border: "2px solid #000",
+  fontFamily: "mono",
+  fontSize: "11.5px",
+  fontWeight: 500,
+  letterSpacing: "0.04em",
+  lineHeight: 1,
+  padding: "10px 16px",
   borderRadius: "999px",
-  padding: "6px 12px",
+  // a darkLine rim keeps the black pill readable when it floats over the dark sections
+  border: `1px solid token(colors.darkLine)`,
+  background: "ink",
+  color: "#fff",
+  whiteSpace: "nowrap",
+  transition: `background .12s steps(2), color .12s steps(2), border-color .12s steps(2)`,
+  _hover: { background: "point", borderColor: "point", color: "ink" },
+  _focusVisible: { outline: `2px solid token(colors.signal)`, outlineOffset: "3px" },
 });
 
-export const sectionTitleCls = css({
-  fontFamily: prompt,
-  fontWeight: 700,
-  fontSize: { base: "40px", md: "72px" },
-  lineHeight: 0.95,
-  letterSpacing: "-0.035em",
-  textTransform: "uppercase",
-  color: INK,
-  marginTop: "18px",
+/** outline pill — secondary */
+export const pillGhostCls = css({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "8px",
+  fontFamily: "mono",
+  fontSize: "11.5px",
+  fontWeight: 500,
+  letterSpacing: "0.04em",
+  lineHeight: 1,
+  padding: "10px 16px",
+  borderRadius: "999px",
+  border: `1px solid token(colors.ink)`,
+  background: "transparent",
+  color: "ink",
+  whiteSpace: "nowrap",
+  transition: `background .12s steps(2), color .12s steps(2)`,
+  _hover: { background: "ink", color: "#fff" },
+  _focusVisible: { outline: `2px solid token(colors.signal)`, outlineOffset: "3px" },
 });
 
-export const cardCls = css({
-  background: PAPER,
-  border: `2px solid ${INK}`,
-  borderRadius: "16px",
-  boxShadow: `6px 6px 0 0 ${INK}`,
+/** same outline pill on dark grounds */
+export const pillDarkCls = css({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "8px",
+  fontFamily: "mono",
+  fontSize: "12px",
+  fontWeight: 500,
+  letterSpacing: "0.04em",
+  lineHeight: 1,
+  padding: "12px 18px",
+  borderRadius: "999px",
+  border: "1px solid rgba(255,255,255,0.4)",
+  background: "transparent",
+  color: "#fff",
+  whiteSpace: "nowrap",
+  transition: `background .12s steps(2), color .12s steps(2), border-color .12s steps(2)`,
+  _hover: { background: "#fff", color: "ink", borderColor: "#fff" },
+  _focusVisible: { outline: `2px solid token(colors.signal)`, outlineOffset: "3px" },
 });
 
+/** stack chip */
 export const chipCls = css({
   display: "inline-block",
-  fontFamily: mono,
-  fontSize: "11.5px",
-  fontWeight: 700,
-  letterSpacing: "0.06em",
-  textTransform: "uppercase",
-  lineHeight: 1,
-  padding: "7px 12px",
-  border: "2px solid #000",
-  borderRadius: "999px",
-  background: "#fff",
-  color: "#000",
-  whiteSpace: "nowrap",
-  transition: "background .1s steps(1), color .1s steps(1), transform .1s steps(1)",
-  _hover: {
-    background: "#000",
-    color: "#bffe28",
-    transform: "translate(-2px, -2px)",
-  },
-});
-
-/** pill button whose color sweeps up to fill on hover (light backgrounds) */
-export const fillLinkCls = css({
-  position: "relative",
-  overflow: "hidden",
-  isolation: "isolate",
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "8px",
-  fontFamily: prompt,
-  fontWeight: 600,
-  fontSize: "15px",
-  padding: "13px 24px",
-  borderRadius: "999px",
-  border: `2px solid ${INK}`,
-  color: INK,
-  background: "transparent",
-  transition: "color .35s ease",
-  _before: {
-    content: '""',
-    position: "absolute",
-    inset: 0,
-    zIndex: -1,
-    background: ORANGE,
-    transform: "translateY(101%)",
-    transition: "transform .4s cubic-bezier(0.22,1,0.36,1)",
-  },
-  _hover: { color: "#fff" },
-  "&:hover::before": { transform: "translateY(0)" },
-});
-
-/** same sweep-fill button tuned for the dark footer/skills backgrounds */
-export const fillLinkDarkCls = css({
-  position: "relative",
-  overflow: "hidden",
-  isolation: "isolate",
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "8px",
-  fontFamily: prompt,
+  fontFamily: "mono",
+  fontSize: "11px",
   fontWeight: 500,
-  fontSize: "15px",
-  padding: "12px 22px",
+  letterSpacing: "0.02em",
+  lineHeight: 1,
+  padding: "7px 11px",
+  border: `1px solid token(colors.hair)`,
   borderRadius: "999px",
-  border: "1.5px solid rgba(255,255,255,0.35)",
-  color: "#fff",
-  background: "transparent",
-  transition: "color .35s ease, border-color .35s ease",
-  _before: {
-    content: '""',
-    position: "absolute",
-    inset: 0,
-    zIndex: -1,
-    background: ORANGE,
-    transform: "translateY(101%)",
-    transition: "transform .4s cubic-bezier(0.22,1,0.36,1)",
-  },
-  _hover: { color: INK, borderColor: ORANGE },
-  "&:hover::before": { transform: "translateY(0)" },
+  color: "ink",
+  whiteSpace: "nowrap",
+});
+
+export const chipDarkCls = css({
+  display: "inline-block",
+  fontFamily: "mono",
+  fontSize: "11px",
+  fontWeight: 500,
+  letterSpacing: "0.02em",
+  lineHeight: 1,
+  padding: "7px 11px",
+  border: `1px solid token(colors.darkLine)`,
+  borderRadius: "999px",
+  color: "#d6d6d2",
+  whiteSpace: "nowrap",
+});
+
+/** underlined text link that snaps to the point colour */
+export const textLinkCls = css({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "6px",
+  fontFamily: "mono",
+  fontSize: "12px",
+  letterSpacing: "0.04em",
+  color: "currentColor",
+  borderBottom: "1px solid currentColor",
+  paddingBottom: "3px",
+  transition: "color .1s steps(2), gap .16s " + SNAP,
+  _hover: { color: "point", gap: "12px" },
 });

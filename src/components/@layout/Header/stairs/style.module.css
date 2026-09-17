@@ -11,7 +11,7 @@
 .stair {
   width: 20vw;
   height: 100%;
-  background-color: #000;
+  background-color: #0d0d0d;
 }
 
 /* solid, so the big type stays legible over the hero */
@@ -19,7 +19,7 @@
   width: 100%;
   height: 100%;
   position: absolute;
-  background-color: #000;
+  background-color: #0d0d0d;
 }
 
 @media only screen and (min-width: 600px) {

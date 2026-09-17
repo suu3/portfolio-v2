@@ -1,27 +1,46 @@
+/* speech bubble as a one-line window — same hairline frame as the HTML windows */
 .bubble {
   position: relative;
   white-space: nowrap;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   line-height: 1;
-  color: #bffe28;
-  background: #000;
-  border: 3px solid #000;
-  border-radius: 999px;
-  box-shadow: 5px 5px 0 0 #bffe28;
-  padding: 12px 18px;
+  color: #111;
+  background: #f7f7f5;
+  border: 1px solid #111;
+  padding: 9px 12px;
   user-select: none;
-  transform-origin: 50% 120%;
-  transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.2, 1);
+  transform-origin: 50% 130%;
+  transition: transform 0.16s steps(3);
 }
 
-/* blinking terminal caret */
+/* blinking caret */
 .bubble::after {
-  content: "▍";
-  margin-left: 3px;
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 11px;
+  margin-left: 6px;
+  vertical-align: -1px;
+  background: #ff5a1f;
   animation: caret 1s steps(2) infinite;
+}
+
+/* the tail: a 1px-bordered notch */
+.bubble::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  background: #f7f7f5;
+  border-right: 1px solid #111;
+  border-bottom: 1px solid #111;
+  transform: rotate(45deg);
 }
 
 @keyframes caret {
@@ -35,69 +54,15 @@
   }
 }
 
-/* little squash when the line changes */
 .pop {
-  transform: scale(1.12);
-}
-
-.tail {
-  position: absolute;
-  box-sizing: border-box;
-  bottom: -7px;
-  left: 50%;
-  margin-left: -6px;
-  width: 12px;
-  height: 12px;
-  background: #000;
-  border-right: 3px solid #000;
-  border-bottom: 3px solid #000;
-  transform: rotate(45deg);
-}
-
-/* faint easter-egg hint */
-.hint {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #000;
-  background: none;
-  border: 0;
-  padding: 6px 8px;
-  white-space: nowrap;
-  opacity: 0.28;
-  animation: breathe 2.4s ease-in-out infinite;
-  transition:
-    opacity 0.4s ease,
-    transform 0.4s ease;
-}
-
-.hint:hover {
-  opacity: 0.75;
-}
-
-.hintGone {
-  opacity: 0;
-  transform: translateY(6px);
-  pointer-events: none;
-  animation: none;
-}
-
-@keyframes breathe {
-  0%,
-  100% {
-    opacity: 0.22;
-  }
-  50% {
-    opacity: 0.5;
-  }
+  transform: scale(1.1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bubble,
-  .hint {
+  .bubble {
     transition: none;
+  }
+  .bubble::after {
     animation: none;
   }
 }

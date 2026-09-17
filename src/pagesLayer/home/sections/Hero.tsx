@@ -1,256 +1,308 @@
 "use client";
 
-import { css } from "@/styled-system/css";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import GlitchText from "@/components/GlitchText";
-import Marquee from "@/components/Marquee";
-import Sparkle from "@/components/Sparkle";
+import { css, cx } from "@/styled-system/css";
+import Window from "@/components/Window";
+import WarpGrid from "@/components/WarpGrid";
+import PixelRabbit from "@/components/PixelRabbit";
+import Barcode from "@/components/Barcode";
 import { profile } from "../data";
-import {
-  INK,
-  ORANGE,
-  LIME,
-  PURPLE,
-  prompt,
-  mono,
-  metaCls,
-  hudCls,
-  checkerCls,
-  scaleBarCls,
-  brutalBtnCls,
-} from "../ui";
+import { INK, ORANGE, metaCls, pillCls, pillGhostCls } from "../ui";
 
-const HeroCanvas = dynamic(() => import("@/components/@three/HeroCanvas"), {
-  ssr: false,
-});
+const HeroCanvas = dynamic(() => import("@/components/@three/HeroCanvas"), { ssr: false });
 
-const rise = {
-  hidden: { opacity: 0, y: 40 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, delay: 0.12 * i, ease: [0.2, 0.9, 0.2, 1] as const },
-  }),
+/** true once we know this is a wide, fine-pointer screen (drag + floating layout) */
+const useDesk = () => {
+  const [desk, setDesk] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px) and (pointer: fine)");
+    const on = () => setDesk(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return desk;
 };
 
-const Hero = () => {
+const Clock = () => {
+  const [now, setNow] = useState<string>();
+  useEffect(() => {
+    const fmt = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "Asia/Seoul",
+    });
+    const tick = () => setNow(fmt.format(new Date()));
+    tick();
+    const id = window.setInterval(tick, 10_000);
+    return () => window.clearInterval(id);
+  }, []);
+  const [hh, mm] = (now ?? "--:--").split(":");
   return (
-    <section
-      className={css({
-        minHeight: { base: "auto", md: "100vh" },
-        display: "flex",
-        flexDirection: "column",
-        paddingTop: { base: "110px", md: "0" },
-        position: "relative",
-        overflow: "hidden",
-        borderBottom: "3px solid #000",
-      })}
-    >
-      {/* 3D space */}
-      <div className={css({ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" })}>
-        <HeroCanvas />
-      </div>
+    <span>
+      {hh}
+      <span className={css({ animation: "blink 1s steps(2) infinite" })}>:</span>
+      {mm}
+    </span>
+  );
+};
 
-      {/* poster decor: sparkles + HUD readouts */}
-      <div className={css({ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" })}>
-        <Sparkle size={62} color={ORANGE} style={{ position: "absolute", top: "16%", right: "8%" }} />
-        <Sparkle size={26} color={PURPLE} style={{ position: "absolute", top: "30%", right: "20%" }} />
-        <Sparkle size={34} color={LIME} style={{ position: "absolute", bottom: "26%", right: "13%" }} />
-        <Sparkle size={18} color={INK} style={{ position: "absolute", top: "24%", left: "6%" }} />
+/* ───────── layout ───────── */
 
-        <span
-          className={css({
-            position: "absolute",
-            top: "120px",
-            right: "clamp(24px, 6vw, 120px)",
-            display: { base: "none", md: "block" },
-          })}
-        >
-          <span className={hudCls}>0000000 / PORTFOLIO / 2026</span>
-        </span>
+const sectionCls = css({
+  position: "relative",
+  overflow: "hidden",
+  background: "paper",
+  color: "ink",
+  minHeight: { lg: "max(680px, 100svh)" },
+  paddingBottom: { base: "28px", lg: 0 },
+});
 
-        <span
-          className={css({
-            position: "absolute",
-            bottom: "150px",
-            left: "clamp(24px, 6vw, 120px)",
-            display: { base: "none", md: "block" },
-          })}
-        >
-          <span className={hudCls}>FE—001 ✦ SEOUL / KR ✦ AVAILABLE</span>
-        </span>
-      </div>
+/** grid + 3D. absolutely fills the hero on desktop, a fixed-height stage when stacked */
+const stageCls = css({
+  position: { base: "relative", lg: "absolute" },
+  inset: { lg: 0 },
+  height: { base: "min(78svh, 640px)", lg: "auto" },
+});
 
-      <div
-        className={css({
-          paddingX: { base: "24px", md: "clamp(32px, 6vw, 120px)" },
-          paddingBottom: { base: "64px", md: "88px" },
-          maxWidth: "1120px",
-          marginX: "auto",
-          marginY: "auto", // centre the copy, letting the ticker sit flush at the bottom
-          width: "100%",
-          position: "relative",
-          zIndex: 1,
-        })}
-      >
-        <motion.div
-          custom={0}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className={css({ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px" })}
-        >
-          <span
-            className={css({
-              fontFamily: mono,
-              fontSize: "11px",
-              fontWeight: 700,
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              background: "#000",
-              color: LIME,
-              padding: "6px 11px",
-              border: "2px solid #000",
-            })}
-          >
-            {profile.role}
-          </span>
-          <span
-            className={css({
-              fontFamily: mono,
-              fontSize: "11px",
-              fontWeight: 700,
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              background: ORANGE,
-              color: "#000",
-              padding: "6px 11px",
-              border: "2px solid #000",
-            })}
-          >
-            {profile.location}
-          </span>
-          <span className={css({ width: "90px" })}>
-            <span className={css({ display: "block" })}>
-              <span className={scaleBarCls} style={{ display: "block" }} />
-            </span>
-          </span>
-        </motion.div>
+const layerCls = css({ position: "absolute", inset: 0, width: "100%", height: "100%" });
 
-        <motion.h1
-          custom={1}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className={css({
-            fontFamily: prompt,
-            fontWeight: 700,
-            fontSize: { base: "clamp(38px, 11vw, 58px)", md: "clamp(62px, 7.6vw, 108px)" },
-            lineHeight: 1.02,
-            letterSpacing: "-0.02em",
-            textTransform: "uppercase",
-            color: INK,
-            marginTop: "30px",
-            textWrap: "balance",
-          })}
-        >
-          안녕하세요,
-          <br />
-          <span className={css({ fontSize: "0.66em", letterSpacing: "-0.01em" })}>
-            프론트엔드 개발자
-          </span>
-          <br />
-          <span className={css({ display: "inline-flex", alignItems: "center", gap: "12px" })}>
-            <GlitchText live className={css({ color: ORANGE, WebkitTextStroke: "2px #000" })}>
-              {profile.handle.toUpperCase()}
-            </GlitchText>
-            <Sparkle size={38} color={LIME} />
-          </span>
-        </motion.h1>
+const windowsCls = css({
+  position: { base: "relative", lg: "absolute" },
+  inset: { lg: 0 },
+  zIndex: 1,
+  pointerEvents: { lg: "none" },
+  display: "flex",
+  flexDirection: "column",
+  gap: "14px",
+  paddingX: { base: "16px", lg: 0 },
+  marginTop: { base: "-56px", lg: 0 },
+  "& > *": { pointerEvents: "auto" },
+});
 
-        <motion.p
-          custom={2}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className={css({
-            marginTop: "30px",
-            maxWidth: "620px",
-            fontSize: { base: "17px", md: "20px" },
-            lineHeight: 1.6,
-            color: "#2a2b31",
-            whiteSpace: "pre-line",
-            borderLeft: "4px solid #000",
-            paddingLeft: "18px",
-          })}
-        >
-          {profile.tagline}
-        </motion.p>
+const helloPos = css({
+  position: { lg: "absolute" },
+  left: { lg: "clamp(24px, 4.5vw, 88px)" },
+  top: { lg: "clamp(96px, 19vh, 190px)" },
+  width: { lg: "clamp(380px, 37vw, 560px)" },
+});
 
-        <motion.div
-          custom={3}
-          variants={rise}
-          initial="hidden"
-          animate="show"
-          className={css({ display: "flex", flexWrap: "wrap", gap: "14px", marginTop: "44px" })}
-        >
-          <a
-            href={`mailto:${profile.email}`}
-            data-cursor="pointer"
-            data-cursor-label="Mail ↗"
-            className={brutalBtnCls}
-          >
-            {profile.email}
-          </a>
-          <a
-            href={profile.github}
-            target="_blank"
-            rel="noreferrer"
-            data-cursor="pointer"
-            data-cursor-label="Open ↗"
-            className={brutalBtnCls}
-          >
-            GitHub
-          </a>
-          <a
-            href={profile.blog}
-            target="_blank"
-            rel="noreferrer"
-            data-cursor="pointer"
-            data-cursor-label="Open ↗"
-            className={brutalBtnCls}
-          >
-            Blog
-          </a>
-        </motion.div>
-      </div>
+const statusPos = css({
+  position: { lg: "absolute" },
+  right: { lg: "clamp(24px, 4vw, 72px)" },
+  top: { lg: "clamp(110px, 17vh, 170px)" },
+  width: { lg: "268px" },
+});
 
-      {/* checkerboard rule + ticker band */}
-      <div className={css({ position: "relative", zIndex: 1 })}>
-        <div className={checkerCls} style={{ height: 14 }} />
-        <div
-          className={css({
-            background: "#000",
-            color: LIME,
-            borderTop: "3px solid #000",
-            paddingY: "12px",
-          })}
-        >
-          <Marquee
-            className={metaCls}
-            duration={26}
-            items={[
-              "FRONTEND DEVELOPER",
-              "SCALABLE ARCHITECTURE",
-              "INTERACTIVE WEB",
-              "NEXT.JS / REACT / TYPESCRIPT",
-              "THREE.JS",
-              "SINCE 2022",
-            ]}
-          />
+const charmPos = css({
+  display: { base: "none", lg: "flex" },
+  position: "absolute",
+  right: "clamp(40px, 9vw, 150px)",
+  bottom: "clamp(56px, 12vh, 130px)",
+  width: "164px",
+});
+
+/**
+ * Window pop-in as a plain CSS animation, not framer-motion: rAF is frozen in a
+ * hidden tab, so a JS-driven entrance would leave the windows at opacity 0 until
+ * the tab is focused. CSS keeps its own clock.
+ */
+const popCls = css({ animation: "winPop .2s steps(4) both" });
+const pop = (i: number) => ({ style: { animationDelay: `${1300 + i * 140}ms` } });
+
+const Row = ({ k, children }: { k: string; children: React.ReactNode }) => (
+  <div
+    className={css({
+      display: "grid",
+      gridTemplateColumns: "72px 1fr",
+      gap: "10px",
+      paddingY: "7px",
+      borderTop: "1px solid rgba(17,17,17,0.1)",
+      _first: { borderTop: "none" },
+    })}
+  >
+    <span className={css({ color: "muted" })}>{k}</span>
+    <span>{children}</span>
+  </div>
+);
+
+const Hero = () => {
+  const ref = useRef<HTMLElement>(null);
+  const desk = useDesk();
+
+  return (
+    <section ref={ref} id="top" className={sectionCls}>
+      {/* 2D grid sheet (back) → windows (middle) → 3D figure (front) */}
+      <div className={stageCls}>
+        <WarpGrid className={cx(layerCls, css({ zIndex: 0 }))} />
+        <div className={cx(layerCls, css({ zIndex: 2, pointerEvents: "none" }))}>
+          <HeroCanvas eventSource={ref} />
         </div>
       </div>
+
+      <div className={windowsCls}>
+        <div {...pop(0)} className={cx(popCls, helloPos)}>
+          <Window
+            title="hello.txt"
+            meta="UTF-8"
+            draggable={desk}
+            constraints={ref}
+            bodyClassName={css({ padding: { base: "20px 18px 22px", md: "26px 28px 28px" } })}
+          >
+            <p className={cx(metaCls, css({ color: "muted" }))}>
+              {profile.role} — {profile.location}
+            </p>
+            <h1
+              className={css({
+                fontFamily: "sans",
+                fontWeight: 650,
+                fontSize: { base: "clamp(34px, 10vw, 48px)", lg: "clamp(40px, 4.2vw, 68px)" },
+                lineHeight: 1.04,
+                letterSpacing: "-0.05em",
+                marginTop: "16px",
+              })}
+            >
+              안녕하세요,
+              <br />
+              프론트엔드 개발자
+              <br />
+              <span className={css({ color: "point" })}>{profile.handle}</span>입니다.
+            </h1>
+            <p
+              className={css({
+                marginTop: "18px",
+                fontSize: { base: "15px", md: "16px" },
+                lineHeight: 1.65,
+                color: "#3b3b38",
+                whiteSpace: "pre-line",
+              })}
+            >
+              {profile.tagline}
+            </p>
+            <div className={css({ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "24px" })}>
+              <a href={`mailto:${profile.email}`} className={pillCls} data-cursor="pointer" data-cursor-label="Mail ↗">
+                메일 보내기 ↗
+              </a>
+              <a href="#experience" className={pillGhostCls} data-cursor="pointer" data-cursor-label="Go ↓">
+                작업 보기 ↓
+              </a>
+            </div>
+          </Window>
+        </div>
+
+        <div {...pop(1)} className={cx(popCls, statusPos)}>
+          <Window
+            title="status.log"
+            draggable={desk}
+            constraints={ref}
+            bodyClassName={css({ padding: "10px 14px 12px", fontFamily: "mono", fontSize: "11.5px" })}
+          >
+            <Row k="ROLE">{profile.role}</Row>
+            <Row k="BASE">{profile.location}</Row>
+            <Row k="STACK">Next.js · TS · R3F</Row>
+            <Row k="STATUS">
+              <span className={css({ display: "inline-flex", alignItems: "center", gap: "7px" })}>
+                <i
+                  className={css({
+                    display: "inline-block",
+                    width: "7px",
+                    height: "7px",
+                    borderRadius: "999px",
+                    background: "point",
+                    animation: "blink 1.2s steps(2) infinite",
+                  })}
+                />
+                available
+              </span>
+            </Row>
+          </Window>
+        </div>
+
+        <div {...pop(2)} className={cx(popCls, charmPos)}>
+          <Window
+            title="charm.bmp"
+            draggable={desk}
+            constraints={ref}
+            collapsible={false}
+            bodyClassName={css({
+              display: "grid",
+              placeItems: "center",
+              paddingY: "18px",
+              backgroundImage:
+                "linear-gradient(45deg, rgba(17,17,17,.06) 25%, transparent 25%, transparent 75%, rgba(17,17,17,.06) 75%), linear-gradient(45deg, rgba(17,17,17,.06) 25%, transparent 25%, transparent 75%, rgba(17,17,17,.06) 75%)",
+              backgroundSize: "12px 12px",
+              backgroundPosition: "0 0, 6px 6px",
+            })}
+          >
+            <PixelRabbit size={72} color={INK} ink={ORANGE} />
+          </Window>
+        </div>
+      </div>
+
+      {/* HUD */}
+      <div
+        className={css({
+          position: { base: "relative", lg: "absolute" },
+          left: { lg: "clamp(24px, 4.5vw, 88px)" },
+          bottom: { lg: "26px" },
+          zIndex: 3,
+          display: "flex",
+          alignItems: { base: "center", lg: "flex-start" },
+          flexDirection: { base: "row", lg: "column" },
+          justifyContent: { base: "space-between", lg: "flex-start" },
+          gap: "6px",
+          paddingX: { base: "16px", lg: 0 },
+          marginTop: { base: "22px", lg: 0 },
+          fontFamily: "mono",
+          fontSize: "11px",
+          lineHeight: 1.45,
+          letterSpacing: "0.04em",
+          pointerEvents: "none",
+        })}
+      >
+        <span>
+          SEOUL <Clock />
+          <br />
+          frontend
+          <br />
+          portfolio
+        </span>
+        <Barcode value={profile.handle} height={18} className={css({ marginTop: { lg: "4px" } })} />
+      </div>
+
+      <a
+        href="#about"
+        data-cursor="pointer"
+        data-cursor-label="Scroll"
+        className={css({
+          display: { base: "none", lg: "flex" },
+          position: "absolute",
+          left: "50%",
+          bottom: "24px",
+          transform: "translateX(-50%)",
+          zIndex: 3,
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "8px",
+          fontFamily: "mono",
+          fontSize: "10px",
+          letterSpacing: "0.16em",
+          color: "ink",
+        })}
+      >
+        SCROLL
+        <span
+          className={css({
+            width: "1px",
+            height: "34px",
+            background: "ink",
+            transformOrigin: "top",
+            animation: "drip 1.6s steps(8) infinite",
+          })}
+        />
+      </a>
     </section>
   );
 };
