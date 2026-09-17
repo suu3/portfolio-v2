@@ -78,6 +78,7 @@ const Character = ({ touch }: { touch: boolean }) => {
   const shadow = useRef<THREE.Mesh>(null);
   const deskRefs = useRef<(THREE.Group | null)[]>([]);
   const rocket = useRef<THREE.Group>(null);
+  const headset = useRef<THREE.Group>(null);
 
   const { actions } = useAnimations(animations, rig);
   const head = useMemo(() => nodes.Head as THREE.Object3D | undefined, [nodes]);
@@ -268,6 +269,15 @@ const Character = ({ touch }: { touch: boolean }) => {
       rb.rotation.z = gone * 3;
     });
 
+    if (headset.current) {
+      const hs = headset.current;
+      hs.visible = tr.hero > 0.01;
+      // head-bone space: pops up off the head and spins away to the upper right
+      hs.position.set(3.2 * gone, 4.5 * gone, 1.2 * gone);
+      hs.rotation.set(-0.8 * gone, 0.6 * gone, -2.6 * gone);
+      hs.scale.setScalar(1 - gone);
+    }
+
     // Work: a toy rocket crosses the gap between the cards and the floor, pushed
     // along by the horizontal scroll. Only while pinned — on the stacked layout
     // there is no empty strip and it would fly over the card copy.
@@ -304,8 +314,15 @@ const Character = ({ touch }: { touch: boolean }) => {
             }}
             onPointerOut={() => hint(null)}
           />
-          {/* headset rides on the head bone, so it turns with the look-at */}
-          {head && createPortal(<Headset />, head)}
+          {/* headset rides on the head bone (turns with the look-at) and, like the
+              other desk things, comes off and flies away when the desk is left */}
+          {head &&
+            createPortal(
+              <group ref={headset}>
+                <Headset />
+              </group>,
+              head
+            )}
           <group ref={props}>
             <group ref={chair}>
               <OfficeChair />

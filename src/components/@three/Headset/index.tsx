@@ -11,7 +11,6 @@ import * as THREE from "three";
 const shell = new THREE.MeshStandardMaterial({ color: "#f4f3ef", roughness: 0.45 });
 const cushion = new THREE.MeshStandardMaterial({ color: "#2a2a2c", roughness: 0.9 });
 const accent = new THREE.MeshStandardMaterial({ color: "#fa662e", roughness: 0.5 });
-const dark = new THREE.MeshStandardMaterial({ color: "#1b1b1d", roughness: 0.6 });
 
 const EAR_X = 1.44;
 const EAR_Y = 0.7;
@@ -25,22 +24,12 @@ const capGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.05, 32);
 const padGeo = new THREE.TorusGeometry(0.3, 0.1, 14, 40);
 const yokeGeo = new THREE.CapsuleGeometry(0.05, 0.42, 6, 12);
 
-/* mic boom: from the left cup, curving round toward the mouth */
-const boomCurve = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(-EAR_X - 0.08, EAR_Y - 0.12, 0.12),
-  new THREE.Vector3(-1.38, 0.28, 0.62),
-  new THREE.Vector3(-0.95, 0.12, 1.02),
-  new THREE.Vector3(-0.48, 0.2, 1.12),
-]);
-const boomGeo = new THREE.TubeGeometry(boomCurve, 40, 0.04, 10, false);
-const micGeo = new THREE.CapsuleGeometry(0.075, 0.14, 8, 16);
-
 const noRaycast = () => null;
 
 /**
- * Over-ear headset for the character — white shell, charcoal cushions, an
- * orange cap on each cup and a boom mic. Parent it to the Head bone so it
- * turns with the look-at.
+ * Over-ear headset for the character — white shell, charcoal cushions and an
+ * orange cap on each cup. Parent it to the Head bone so it turns with the
+ * look-at.
  */
 const Headset = () => (
   <group>
@@ -63,8 +52,6 @@ const Headset = () => (
       </group>
     ))}
 
-    <mesh geometry={boomGeo} material={dark} raycast={noRaycast} />
-    <mesh geometry={micGeo} material={dark} position={[-0.44, 0.2, 1.13]} rotation={[0, 0, Math.PI / 2]} raycast={noRaycast} />
   </group>
 );
 
