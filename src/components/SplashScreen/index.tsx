@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Sparkle from "@/components/Sparkle";
+import PixelRabbit from "@/components/PixelRabbit";
 import {
   splashScreenCls,
   railCls,
@@ -96,26 +96,22 @@ export default function SplashScreen() {
           transition={{ duration: 0.5, ease: [0.7, 0, 0.3, 1] }}
         >
           <div className={railCls}>
-            <span>{profile.name} / FE—001</span>
-            <span>PORTFOLIO ✦ 2026</span>
+            <span>{profile.handle} / portfolio</span>
+            <span>2026</span>
           </div>
 
           <div className={centerCls}>
-            <Sparkle size={40} color="#bffe28" />
-            <h1 className={textCls}>
-              Frontend
-              <br />
-              Portfolio
-            </h1>
+            <PixelRabbit size={48} color="#111" ink="#ff5a1f" />
             <span className={counterCls}>{String(count).padStart(3, "0")}</span>
             <div className={barTrackCls}>
               <div className={barFillCls} style={{ width: `${count}%` }} />
             </div>
+            <span className={textCls}>loading character.glb</span>
           </div>
 
           <div className={railCls}>
-            <span>Loading</span>
-            <span>0000000</span>
+            <span>frontend developer</span>
+            <span>seoul, kr</span>
           </div>
         </motion.div>
       )}

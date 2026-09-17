@@ -7,13 +7,13 @@ import Experience from "./sections/Experience";
 import Skills from "./sections/Skills";
 import Beyond from "./sections/Beyond";
 import Footer from "./sections/Footer";
-import { CREAM } from "./ui";
+import { PAPER } from "./ui";
 
 const Home = () => {
   return (
     <main
       className={css({
-        background: CREAM,
+        background: PAPER,
         overflowX: "hidden",
         position: "relative",
       })}

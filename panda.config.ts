@@ -29,6 +29,26 @@ export default defineConfig({
           colorAccentLime: { value: "#bffe28" },
           colorAccentPink: { value: "#ff00ff" },
           colorAccentPurple: { value: "#8806ce" },
+
+          /* monotone + two point colours (see pagesLayer/home/ui.ts) */
+          paper: { value: "#ededeb" },
+          surface: { value: "#f7f7f5" },
+          ink: { value: "#111111" },
+          muted: { value: "#6e6e6a" },
+          hair: { value: "rgba(17,17,17,0.14)" },
+          dark: { value: "#0d0d0d" },
+          darkSurface: { value: "#151515" },
+          darkLine: { value: "#2c2c2c" },
+          darkMuted: { value: "#8c8c88" },
+          point: { value: "#ff5a1f" },
+          signal: { value: "#2d3cff" },
+        },
+        fonts: {
+          sans: {
+            value:
+              "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif",
+          },
+          mono: { value: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" },
         },
       },
     },

@@ -4,16 +4,37 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { css } from "@/styled-system/css";
+import { css, cx } from "@/styled-system/css";
 import { company, projects } from "../data";
 import ScrambleText from "@/components/ScrambleText";
-import { INK, ORANGE, PEACH, PAPER, LIME, prompt, mono, chipCls } from "../ui";
+import Window from "@/components/Window";
+import StarField from "@/components/StarField";
+import { workScroll } from "@/lib/workScroll";
+import { chipDarkCls, eyebrowCls, metaCls, sectionTitleCls, textLinkCls } from "../ui";
 
 gsap.registerPlugin(ScrollTrigger);
+
+/** perspective floor grid — the dark "room" the projects sit in */
+const floorCls = css({
+  position: "absolute",
+  left: "-50%",
+  right: "-50%",
+  bottom: 0,
+  height: "95%",
+  transform: "perspective(520px) rotateX(68deg)",
+  transformOrigin: "50% 100%",
+  backgroundImage: `linear-gradient(token(colors.signal) 1px, transparent 1px), linear-gradient(90deg, token(colors.signal) 1px, transparent 1px)`,
+  backgroundSize: "64px 64px",
+  opacity: 0.7,
+  maskImage: "linear-gradient(to top, #000 0%, #000 18%, transparent 62%)",
+  pointerEvents: "none",
+});
 
 const Experience = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const floorRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -34,212 +55,187 @@ const Experience = () => {
           scrub: 1,
           invalidateOnRefresh: true,
           anticipatePin: 1,
+          onToggle: (self) => {
+            workScroll.active = self.isActive;
+          },
+          onUpdate: (self) => {
+            // the floor rolls under you, the bar fills, and the character runs (see Character)
+            workScroll.progress = self.progress;
+            if (floorRef.current) floorRef.current.style.backgroundPosition = `${-self.progress * 640}px 0`;
+            if (barRef.current) barRef.current.style.transform = `scaleX(${self.progress})`;
+          },
         },
       });
     }, section);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      workScroll.active = false;
+    };
   }, []);
 
   return (
     <section
       ref={sectionRef}
       id="experience"
+      data-char-anchor="work"
       className={css({
         position: "relative",
-        background: INK,
-        color: "#fff",
+        background: "dark",
+        color: "#ededeb",
         overflow: "hidden",
-        paddingY: { base: "72px", md: "0" },
+        paddingY: { base: "64px", md: "0" },
+        // the bottom strip is the floor the character runs along; content sits above it
+        paddingBottom: { md: "26vh" },
         minHeight: { md: "100vh" },
         display: { md: "flex" },
         alignItems: { md: "center" },
       })}
     >
+      {/* stacked layout: a stage for the character above the intro */}
+      <div data-char-anchor="work-m" className={css({ display: { base: "block", md: "none" }, height: "32vh" })} aria-hidden />
+
+      <StarField className={css({ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" })} />
+      <div ref={floorRef} className={floorCls} aria-hidden />
+
       <div
         ref={trackRef}
         className={css({
+          position: "relative",
           display: "flex",
           flexDirection: { base: "column", md: "row" },
           alignItems: { md: "center" },
-          gap: { base: "20px", md: "28px" },
-          paddingX: { base: "24px", md: "clamp(32px, 6vw, 120px)" },
+          gap: { base: "14px", md: "24px" },
+          paddingX: { base: "16px", md: "clamp(28px, 5vw, 88px)" },
           width: { md: "max-content" },
           willChange: "transform",
         })}
       >
         {/* intro panel */}
-        <div
-          className={css({
-            flexShrink: 0,
-            width: { base: "100%", md: "440px" },
-          })}
-        >
-          <span className={css({ ...eyebrowStyle })}>Experience / 02</span>
-          <h2
-            className={css({
-              fontFamily: prompt,
-              fontWeight: 700,
-              fontSize: { base: "40px", md: "68px" },
-              lineHeight: 0.95,
-              letterSpacing: "-0.035em",
-              textTransform: "uppercase",
-              marginTop: "16px",
-            })}
-          >
+        <div className={css({ flexShrink: 0, width: { base: "100%", md: "440px" }, marginBottom: { base: "26px", md: 0 } })}>
+          <span className={eyebrowCls}>02 — Work</span>
+          <h2 className={sectionTitleCls}>
             <ScrambleText text="일한 것들" />
           </h2>
-          <div
-            className={css({
-              marginTop: "28px",
-              borderTop: "1px solid rgba(255,255,255,0.16)",
-              paddingTop: "22px",
-            })}
-          >
-            <h3 className={css({ fontFamily: prompt, fontSize: "22px", fontWeight: 700 })}>{company.name}</h3>
-            <p className={css({ marginTop: "6px", color: ORANGE, fontSize: "14px", fontWeight: 600 })}>
+          <div className={css({ marginTop: "30px", borderTop: `1px solid token(colors.darkLine)`, paddingTop: "22px" })}>
+            <h3 className={css({ fontSize: "22px", fontWeight: 650, letterSpacing: "-0.03em" })}>{company.name}</h3>
+            <p className={cx(metaCls, css({ marginTop: "8px", color: "point" }))}>
               {company.role} · {company.period}
             </p>
-            <p className={css({ marginTop: "14px", fontSize: "15px", lineHeight: 1.7, color: "#c3c4cc" })}>
+            <p className={css({ marginTop: "14px", fontSize: "15px", lineHeight: 1.75, color: "#b9b9b5" })}>
               {company.intro}
             </p>
           </div>
           <p
-            className={css({
-              marginTop: "28px",
-              fontFamily: prompt,
-              fontSize: "12px",
-              letterSpacing: "0.18em",
-              color: "#7d7e86",
-              display: { base: "none", md: "block" },
-            })}
+            className={cx(
+              metaCls,
+              css({ marginTop: "30px", color: "darkMuted", display: { base: "none", md: "block" } })
+            )}
           >
-            SCROLL → 옆으로 넘겨보세요
+            scroll → {String(projects.length).padStart(2, "0")} files
           </p>
         </div>
 
-        {/* project panels */}
+        {/* project windows */}
         {projects.map((p, i) => {
           const shown = p.highlights.slice(0, 3);
           const rest = p.highlights.length - shown.length;
           return (
-            <article
+            <Window
               key={p.title}
+              title={`project_${String(i + 1).padStart(2, "0")}.tsx`}
+              meta={p.period}
+              tone="dark"
+              collapsible={false}
               className={css({
                 flexShrink: 0,
-                width: { base: "100%", md: "560px" },
-                background: PAPER,
-                color: INK,
-                border: "3px solid #000",
-                borderRadius: "22px",
-                boxShadow: `10px 10px 0 0 ${ORANGE}`,
-                padding: { base: "26px", md: "38px" },
+                width: { base: "100%", md: "520px" },
+                minHeight: { md: "480px" },
+                transition: "border-color .1s steps(2)",
+                _hover: { borderColor: "#6a6a66" },
+              })}
+              bodyClassName={css({
                 display: "flex",
                 flexDirection: "column",
-                transition:
-                  "transform .14s cubic-bezier(.2,.9,.2,1), box-shadow .14s cubic-bezier(.2,.9,.2,1)",
-                _hover: {
-                  transform: "translate(10px, 10px)",
-                  boxShadow: "0 0 0 0 #000",
-                },
+                flex: 1,
+                padding: { base: "22px 20px 24px", md: "26px 30px 28px" },
               })}
             >
-              <div className={css({ display: "flex", alignItems: "baseline", gap: "12px" })}>
-                <span className={css({ fontFamily: prompt, fontWeight: 700, fontSize: "40px", color: PEACH, WebkitTextStroke: `1px ${INK}` })}>
-                  0{i + 1}
+              <div className={css({ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "12px" })}>
+                <span className={css({ fontFamily: "mono", fontSize: "44px", lineHeight: 1, letterSpacing: "-0.06em", color: "point" })}>
+                  {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className={css({ fontFamily: prompt, fontSize: "13px", color: "#6b6c74", marginLeft: "auto" })}>
-                  {p.period} · {p.team}
-                </span>
+                <span className={cx(metaCls, css({ color: "darkMuted" }))}>{p.team}</span>
               </div>
 
-              <h3
-                className={css({
-                  fontFamily: prompt,
-                  fontSize: { base: "22px", md: "28px" },
-                  fontWeight: 700,
-                  letterSpacing: "-0.01em",
-                  marginTop: "10px",
-                })}
-              >
+              <h3 className={css({ fontSize: { base: "22px", md: "27px" }, fontWeight: 650, letterSpacing: "-0.035em", marginTop: "22px" })}>
                 {p.title}
               </h3>
-              <p className={css({ marginTop: "12px", fontSize: "15px", lineHeight: 1.6, color: "#54555d" })}>
-                {p.summary}
-              </p>
+              <p className={css({ marginTop: "10px", fontSize: "15px", lineHeight: 1.7, color: "#a9a9a5" })}>{p.summary}</p>
 
-              <ul className={css({ marginTop: "20px", display: "flex", flexDirection: "column", gap: "11px" })}>
+              <ul className={css({ marginTop: "22px", display: "flex", flexDirection: "column" })}>
                 {shown.map((h, idx) => (
                   <li
                     key={idx}
                     className={css({
-                      position: "relative",
-                      paddingLeft: "24px",
+                      display: "grid",
+                      gridTemplateColumns: "28px 1fr",
+                      paddingY: "10px",
+                      borderTop: `1px solid token(colors.darkLine)`,
                       fontSize: "14px",
-                      lineHeight: 1.6,
-                      color: "#3a3b43",
-                      _before: { content: '"→"', position: "absolute", left: 0, color: ORANGE, fontWeight: 700 },
+                      lineHeight: 1.65,
+                      color: "#d6d6d2",
                     })}
                   >
+                    <span className={css({ fontFamily: "mono", fontSize: "11px", color: "darkMuted", paddingTop: "3px" })}>
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
                     {h}
                   </li>
                 ))}
               </ul>
 
               <div className={css({ marginTop: "auto", paddingTop: "22px" })}>
-                <div className={css({ display: "flex", flexWrap: "wrap", gap: "7px" })}>
+                <div className={css({ display: "flex", flexWrap: "wrap", gap: "6px" })}>
                   {p.stack.slice(0, 6).map((s) => (
-                    <span key={s} className={chipCls}>
+                    <span key={s} className={chipDarkCls}>
                       {s}
                     </span>
                   ))}
                   {p.stack.length > 6 && (
-                    <span className={css({ fontFamily: prompt, fontSize: "12px", color: "#8a8b93", alignSelf: "center" })}>
-                      +{p.stack.length - 6}
-                    </span>
+                    <span className={cx(metaCls, css({ color: "darkMuted", alignSelf: "center" }))}>+{p.stack.length - 6}</span>
                   )}
                 </div>
                 <Link
                   href="/project"
                   data-cursor="pointer"
                   data-cursor-label="View ↗"
-                  className={css({
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    marginTop: "20px",
-                    fontFamily: prompt,
-                    fontWeight: 600,
-                    fontSize: "14px",
-                    color: INK,
-                    borderBottom: `2px solid ${ORANGE}`,
-                    paddingBottom: "3px",
-                    transition: "gap .2s ease",
-                    _hover: { gap: "12px" },
-                  })}
+                  className={cx(textLinkCls, css({ marginTop: "22px" }))}
                 >
                   자세히 보기{rest > 0 ? ` (+${rest})` : ""} →
                 </Link>
               </div>
-            </article>
+            </Window>
           );
         })}
       </div>
+
+      {/* progress rail */}
+      <div
+        className={css({
+          display: { base: "none", md: "block" },
+          position: "absolute",
+          left: "clamp(28px, 5vw, 88px)",
+          right: "clamp(28px, 5vw, 88px)",
+          bottom: "32px",
+          height: "1px",
+          background: "darkLine",
+        })}
+      >
+        <div ref={barRef} className={css({ height: "100%", background: "point", transformOrigin: "left", transform: "scaleX(0)" })} />
+      </div>
     </section>
   );
-};
-
-const eyebrowStyle = {
-  display: "inline-block",
-  fontFamily: mono,
-  fontSize: "11px",
-  fontWeight: 700,
-  letterSpacing: "0.2em",
-  textTransform: "uppercase" as const,
-  background: LIME,
-  color: "#000",
-  border: "2px solid #000",
-  padding: "5px 10px",
 };
 
 export default Experience;
