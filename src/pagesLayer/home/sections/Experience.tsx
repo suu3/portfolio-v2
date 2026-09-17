@@ -8,6 +8,7 @@ import { css, cx } from "@/styled-system/css";
 import { company, projects } from "../data";
 import ScrambleText from "@/components/ScrambleText";
 import Window from "@/components/Window";
+import StarField from "@/components/StarField";
 import { workScroll } from "@/lib/workScroll";
 import { chipDarkCls, eyebrowCls, metaCls, sectionTitleCls, textLinkCls } from "../ui";
 
@@ -94,6 +95,7 @@ const Experience = () => {
       {/* stacked layout: a stage for the character above the intro */}
       <div data-char-anchor="work-m" className={css({ display: { base: "block", md: "none" }, height: "32vh" })} aria-hidden />
 
+      <StarField className={css({ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" })} />
       <div ref={floorRef} className={floorCls} aria-hidden />
 
       <div
