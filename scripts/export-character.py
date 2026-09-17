@@ -15,7 +15,8 @@ What it does (the .blend itself is never modified):
 - one skinned mesh "Character" under the "Armature" node, feet at y = 0
 - Draco-compressed; the decoder is served locally from public/draco/
 
-Pass a preview_dir to also get EEVEE renders of every clip.
+Pass a preview_dir to also get EEVEE renders of every clip, and optionally a comma
+list of clip names after it to render only those.
 """
 import bpy, bmesh, math, sys, os
 import numpy as np
@@ -24,6 +25,7 @@ from mathutils import Vector, Matrix
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 OUT = argv[0]
 PREVIEW = argv[1] if len(argv) > 1 and argv[1] != "-" else None
+PREVIEW_ONLY = set(argv[2].split(",")) if len(argv) > 2 else None
 
 scene = bpy.context.scene
 FLOOR_Z = -3.85
@@ -419,13 +421,16 @@ def run(f, t):
 
 
 def wave(f, t):
+    # arm out to the side and a little forward, forearm up, waving outside the
+    # head silhouette (straight-up arms disappear behind this much hair)
+    sw = S(t, 2)
     return {
-        "UpperArm.L": arm_drop("L", 62),
-        "LowerArm.L": elbow("L", 8),
-        "UpperArm.R": arm_swing(10) @ arm_drop("R", -100 - 14 * S(t, 2)),
-        "LowerArm.R": elbow("R", 38 + 26 * S(t, 2, 0.2)),
-        "Spine": lean(-2) @ Matrix.Rotation(math.radians(3 * S(t, 2)), 3, "Y"),
-        "hips": (0, 0, 0.02 * S(t, 2)),
+        "UpperArm.L": arm_swing(4) @ arm_drop("L", 66),
+        "LowerArm.L": elbow("L", 12),
+        "UpperArm.R": arm_swing(12) @ arm_drop("R", -(30 + 6 * sw)),
+        "LowerArm.R": Matrix.Rotation(math.radians(40 + 24 * sw), 3, "Y"),
+        "Spine": Matrix.Rotation(math.radians(-3 * sw), 3, "Y") @ lean(-2),
+        "hips": (0, 0, 0.015 * S(t, 4)),
     }
 
 
@@ -493,9 +498,12 @@ if PREVIEW:
     scene.render.engine = "BLENDER_EEVEE"
     scene.render.resolution_x, scene.render.resolution_y = 520, 640
     shots = [("Idle", 12, "tq"), ("Sit", 12, "tq"), ("Sit", 12, "side"), ("Perch", 20, "tq"),
-             ("Run", 4, "side"), ("Run", 8, "side"), ("Run", 4, "tq"), ("Wave", 9, "front"),
+             ("Run", 4, "side"), ("Run", 8, "side"), ("Run", 4, "tq"), ("Wave", 5, "front"),
              ("Lounge", 12, "front")]
     views = {"front": (0, -11, 3.0), "tq": (6, -9.5, 4), "side": (11, -1, 3.2)}
+    shots += [("Wave", 14, "front"), ("Wave", 5, "tq")]
+    if PREVIEW_ONLY:
+        shots = [sh for sh in shots if sh[0] in PREVIEW_ONLY]
     for name, frame, view in shots:
         solo(name)
         scene.frame_set(frame)

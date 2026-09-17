@@ -105,7 +105,7 @@ const STOPS: Stop[] = [
     clip: "Wave",
     place: (r, vw, vh, desk) =>
       desk
-        ? { x: r.right + vw * 0.07, y: r.bottom - 4, height: clamp(vh * 0.36, 220, 380) }
+        ? { x: Math.max(r.right + vw * 0.16, vw * 0.68), y: r.bottom - 4, height: clamp(vh * 0.4, 240, 420) }
         : { x: r.right - 70, y: r.top - 12, height: clamp(vh * 0.24, 150, 220) },
     window: [0.95, 0.45],
     yaw: -0.15,

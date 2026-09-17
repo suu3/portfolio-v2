@@ -9,9 +9,46 @@ const steel = new THREE.MeshStandardMaterial({ color: "#9a9a96", roughness: 0.35
 const shell = new THREE.MeshStandardMaterial({ color: "#d9d9d5", roughness: 0.4, metalness: 0.25 });
 const shellDark = new THREE.MeshStandardMaterial({ color: "#3a3a38", roughness: 0.5 });
 const screen = new THREE.MeshStandardMaterial({ color: "#0d0d0d", roughness: 0.3, emissive: "#2d3cff", emissiveIntensity: 0.55 });
-const logo = new THREE.MeshStandardMaterial({ color: "#ff5a1f", roughness: 0.5 });
+const carrotSkin = new THREE.MeshStandardMaterial({ color: "#ff5a1f", roughness: 0.5 });
+const carrotLeaf = new THREE.MeshStandardMaterial({ color: "#6f9a4a", roughness: 0.6 });
 
 const noRaycast = () => null;
+
+/* the lid logo: a carrot instead of a fruit — it's a rabbit's laptop */
+const carrotBody = (() => {
+  const s = new THREE.Shape();
+  s.moveTo(-0.08, 0.05);
+  s.quadraticCurveTo(0, 0.1, 0.08, 0.05);
+  s.quadraticCurveTo(0.07, -0.08, 0.012, -0.23);
+  s.quadraticCurveTo(0, -0.25, -0.012, -0.23);
+  s.quadraticCurveTo(-0.07, -0.08, -0.08, 0.05);
+  return new THREE.ShapeGeometry(s, 12);
+})();
+
+const carrotLeafGeo = (() => {
+  const s = new THREE.Shape();
+  s.moveTo(0, 0);
+  s.quadraticCurveTo(0.045, 0.07, 0, 0.15);
+  s.quadraticCurveTo(-0.045, 0.07, 0, 0);
+  return new THREE.ShapeGeometry(s, 8);
+})();
+
+const CarrotLogo = (props: JSX.IntrinsicElements["group"]) => (
+  <group {...props}>
+    <mesh geometry={carrotBody} material={carrotSkin} raycast={noRaycast} />
+    {[-0.5, 0, 0.5].map((r) => (
+      <mesh
+        key={r}
+        geometry={carrotLeafGeo}
+        material={carrotLeaf}
+        position={[r * 0.05, 0.065, -0.001]}
+        rotation={[0, 0, -r]}
+        scale={r === 0 ? 1 : 0.85}
+        raycast={noRaycast}
+      />
+    ))}
+  </group>
+);
 
 /**
  * A stubby office chair, sized to the character (model units, feet at y = 0):
@@ -58,9 +95,7 @@ export const Laptop = () => (
       <mesh position={[0, 0.52, -0.035]} rotation={[0, Math.PI, 0]} material={screen} raycast={noRaycast}>
         <planeGeometry args={[1.4, 0.9]} />
       </mesh>
-      <mesh position={[0, 0.55, 0.035]} material={logo} raycast={noRaycast}>
-        <circleGeometry args={[0.1, 20]} />
-      </mesh>
+      <CarrotLogo position={[0, 0.56, 0.036]} scale={1.15} />
     </group>
   </group>
 );
