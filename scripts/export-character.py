@@ -186,6 +186,7 @@ M_SHORTS = flat_mat("Shorts", (0.034, 0.044, 0.044), 0.86)
 M_HAIR = flat_mat("Hair | espresso", (0.028, 0.019, 0.016), 0.55)
 M_HAIR_SOFT = flat_mat("Hair | soft espresso", (0.041, 0.028, 0.022), 0.57)
 M_EYE = flat_mat("Eyes | warm charcoal", (0.025, 0.019, 0.017), 1.0)
+next(n for n in M_EYE.node_tree.nodes if n.type == "BSDF_PRINCIPLED").inputs["Specular IOR Level"].default_value = 0.0
 
 swap = {
     "Hoodie | rabbit companion orange cotton": M_HOODIE,
@@ -244,12 +245,14 @@ skin_shader = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
 paint = skin_shader.inputs["Base Color"].links[0].from_socket
 ear_node = nt.nodes.new("ShaderNodeVertexColor")
 ear_node.layer_name = ear_colour.name
-tint = nt.nodes.new("ShaderNodeMixRGB")
+tint = nt.nodes.new("ShaderNodeMix")
+tint.data_type = "RGBA"
 tint.blend_type = "MULTIPLY"
 tint.inputs[0].default_value = 1.0
-nt.links.new(paint, tint.inputs[1])
-nt.links.new(ear_node.outputs["Color"], tint.inputs[2])
-nt.links.new(tint.outputs["Color"], skin_shader.inputs["Base Color"])
+# The glTF exporter recognizes the RGBA sockets of the modern Mix node.
+nt.links.new(paint, tint.inputs[6])
+nt.links.new(ear_node.outputs["Color"], tint.inputs[7])
+nt.links.new(tint.outputs[2], skin_shader.inputs["Base Color"])
 
 # ---------- 4. smooth normals where it reads as soft vinyl ----------
 for o in bpy.data.objects:
@@ -330,6 +333,13 @@ for o in bpy.data.objects:
 
 # ---------- 6. one mesh ----------
 meshes = [o for o in bpy.data.objects if o.type == "MESH"]
+# glTF applies COLOR_0 to every primitive after joining. Missing colour layers
+# otherwise become transparent black, so use neutral white on the other parts.
+for o in meshes:
+    if o == face:
+        continue
+    colour = o.data.color_attributes.new(name="Ear warmth", type="FLOAT_COLOR", domain="CORNER")
+    colour.data.foreach_set("color", np.ones(len(colour.data) * 4, dtype=np.float32))
 with bpy.context.temp_override(active_object=meshes[0], object=meshes[0],
                                selected_objects=meshes, selected_editable_objects=meshes):
     bpy.ops.object.join()
