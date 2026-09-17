@@ -1,0 +1,68 @@
+/* speech bubble as a one-line window — same hairline frame as the HTML windows */
+.bubble {
+  position: relative;
+  white-space: nowrap;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: #111;
+  background: #f7f7f5;
+  border: 1px solid #111;
+  padding: 9px 12px;
+  user-select: none;
+  transform-origin: 50% 130%;
+  transition: transform 0.16s steps(3);
+}
+
+/* blinking caret */
+.bubble::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 11px;
+  margin-left: 6px;
+  vertical-align: -1px;
+  background: #ff5a1f;
+  animation: caret 1s steps(2) infinite;
+}
+
+/* the tail: a 1px-bordered notch */
+.bubble::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  background: #f7f7f5;
+  border-right: 1px solid #111;
+  border-bottom: 1px solid #111;
+  transform: rotate(45deg);
+}
+
+@keyframes caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.pop {
+  transform: scale(1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble {
+    transition: none;
+  }
+  .bubble::after {
+    animation: none;
+  }
+}

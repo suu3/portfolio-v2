@@ -2,6 +2,7 @@
 
 import { css } from "@/styled-system/css";
 
+/** menu opener — only on the stacked (< lg) layout, the pill nav covers desktop */
 export default function Burger({ openMenu }: { openMenu: () => void }) {
   return (
     <button
@@ -11,65 +12,28 @@ export default function Burger({ openMenu }: { openMenu: () => void }) {
       data-cursor-label="Menu"
       onClick={openMenu}
       className={css({
-        position: "fixed",
-        top: { base: "18px", md: "26px" },
-        right: { base: "18px", md: "26px" },
-        // stays under the menu overlay (z 3) while still above page content,
-        // since the header itself owns a z-999 stacking context
-        zIndex: 1,
-
-        display: "inline-flex",
+        display: { base: "inline-flex", lg: "none" },
         alignItems: "center",
-        gap: "12px",
-        padding: { base: "11px 16px", md: "13px 20px" },
-
-        background: "#fff",
-        color: "#000",
-        border: "3px solid #000",
+        gap: "10px",
+        height: "38px",
+        padding: "0 14px",
+        background: "#f7f7f5",
+        color: "#111",
+        border: "1px solid #111",
         borderRadius: "999px",
-        boxShadow: "5px 5px 0 0 #000",
-
-        fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
-        fontSize: { base: "11px", md: "12px" },
-        fontWeight: 700,
-        letterSpacing: "0.2em",
+        fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+        fontSize: "11px",
+        letterSpacing: "0.06em",
         textTransform: "uppercase",
-
-        transition:
-          "transform .12s cubic-bezier(.2,.9,.2,1), box-shadow .12s cubic-bezier(.2,.9,.2,1), background .1s steps(1)",
-
-        _hover: {
-          background: "#bffe28",
-          transform: "translate(5px, 5px)",
-          boxShadow: "0 0 0 0 #000",
-          "& .bar-top": { width: "20px" },
-          "& .bar-mid": { width: "12px" },
-          "& .bar-bot": { width: "20px" },
-        },
-        _active: { background: "#ff00ff", color: "#fff" },
+        transition: "background .1s steps(2), color .1s steps(2)",
+        _hover: { background: "#111", color: "#fff" },
+        _focusVisible: { outline: "2px solid #2d3cff", outlineOffset: "3px" },
       })}
     >
-      <span
-        className={css({
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
-          gap: "4px",
-        })}
-      >
-        {(["bar-top", "bar-mid", "bar-bot"] as const).map((c, i) => (
-          <span
-            key={c}
-            className={`${c} ${css({
-              display: "block",
-              height: "2.5px",
-              background: "currentColor",
-              borderRadius: "2px",
-              transition: "width .18s cubic-bezier(.2,.9,.2,1)",
-            })}`}
-            style={{ width: i === 1 ? 20 : 12 }}
-          />
-        ))}
+      <span className={css({ display: "flex", flexDirection: "column", gap: "3px" })}>
+        <i className={css({ display: "block", width: "14px", height: "1px", background: "currentColor" })} />
+        <i className={css({ display: "block", width: "14px", height: "1px", background: "currentColor" })} />
+        <i className={css({ display: "block", width: "8px", height: "1px", background: "#ff5a1f" })} />
       </span>
       Menu
     </button>

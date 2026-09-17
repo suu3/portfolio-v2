@@ -1,6 +1,6 @@
 import { css } from "@/styled-system/css";
 
-const mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+const mono = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
 export const splashScreenCls = css({
   zIndex: 10001,
@@ -9,11 +9,12 @@ export const splashScreenCls = css({
   width: "100%",
   height: "100%",
   overflow: "hidden",
-  background: "#000",
+  background: "#ededeb",
+  color: "#111",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
-  padding: { base: "22px", md: "34px" },
+  padding: { base: "16px", md: "28px" },
 });
 
 /** top + bottom HUD rails */
@@ -23,11 +24,9 @@ export const railCls = css({
   alignItems: "center",
   gap: "16px",
   fontFamily: mono,
-  fontSize: { base: "9.5px", md: "11px" },
-  fontWeight: 700,
-  letterSpacing: "0.24em",
+  fontSize: "11px",
+  letterSpacing: "0.06em",
   textTransform: "uppercase",
-  color: "#bffe28",
 });
 
 export const centerCls = css({
@@ -35,40 +34,35 @@ export const centerCls = css({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  gap: "16px",
+  gap: "18px",
   flex: 1,
 });
 
 export const textCls = css({
-  fontFamily: "Prompt, sans-serif",
-  fontSize: { base: "clamp(38px, 13vw, 58px)", md: "clamp(60px, 8vw, 112px)" },
-  fontWeight: 700,
-  lineHeight: 0.94,
-  letterSpacing: "-0.035em",
+  fontFamily: mono,
+  fontSize: "11px",
+  letterSpacing: "0.06em",
   textTransform: "uppercase",
-  color: "#fff",
-  textAlign: "center",
 });
 
 /** the 000 → 100 counter */
 export const counterCls = css({
   fontFamily: mono,
-  fontSize: { base: "50px", md: "84px" },
-  fontWeight: 700,
+  fontSize: { base: "44px", md: "64px" },
+  fontWeight: 500,
   lineHeight: 1,
-  letterSpacing: "-0.02em",
-  color: "#ff6737",
+  letterSpacing: "-0.04em",
+  fontVariantNumeric: "tabular-nums",
 });
 
 export const barTrackCls = css({
-  width: { base: "180px", md: "280px" },
-  height: "10px",
-  border: "2px solid #bffe28",
-  borderRadius: "999px",
+  width: { base: "200px", md: "260px" },
+  height: "8px",
+  border: "1px solid #111",
   overflow: "hidden",
 });
 
 export const barFillCls = css({
   height: "100%",
-  background: "#bffe28",
+  background: "#111",
 });

@@ -3,133 +3,84 @@
 import { css, cx } from "@/styled-system/css";
 import Reveal from "@/components/Reveal";
 import ScrambleText from "@/components/ScrambleText";
-import Sparkle from "@/components/Sparkle";
+import Window from "@/components/Window";
 import { about } from "../data";
-import { INK, ORANGE, LIME, MAGENTA, prompt, mono, sectionCls, innerCls, eyebrowCls, sectionTitleCls, halftoneCls } from "../ui";
-
-/* each card slams into a differently-coloured shadow */
-const accents = [ORANGE, LIME, MAGENTA];
+import { eyebrowCls, innerCls, metaCls, paperGridCls, sectionCls, sectionTitleCls } from "../ui";
 
 const About = () => {
   return (
-    <section id="about" className={sectionCls}>
+    <section id="about" className={cx(sectionCls, paperGridCls, css({ backgroundColor: "paper", color: "ink" }))}>
       <div className={innerCls}>
         <Reveal>
-          <span className={eyebrowCls}>About / 01</span>
-          <h2 className={sectionTitleCls}>
-            <ScrambleText text="팀과 함께 성장하는 개발자" />
-          </h2>
+          <div
+            className={css({
+              display: "flex",
+              flexDirection: { base: "column", md: "row" },
+              justifyContent: "space-between",
+              alignItems: { md: "flex-end" },
+              gap: "18px",
+            })}
+          >
+            <div>
+              <span className={eyebrowCls}>01 — About</span>
+              <h2 className={sectionTitleCls}>
+                <ScrambleText text="팀과 함께 성장하는 개발자" />
+              </h2>
+            </div>
+            <p className={cx(metaCls, css({ color: "muted", whiteSpace: "nowrap" }))}>
+              README.md · {String(about.length).padStart(2, "0")} items
+            </p>
+          </div>
         </Reveal>
 
         <div
           className={css({
-            marginTop: "56px",
+            marginTop: { base: "40px", md: "64px" },
             display: "grid",
             gridTemplateColumns: { base: "1fr", md: "repeat(3, 1fr)" },
-            gap: "24px",
+            gap: { base: "14px", md: "18px" },
+            alignItems: "start",
           })}
         >
           {about.map((item, i) => (
             <Reveal key={item.no} delay={i * 0.08}>
-              <article
-                style={{ ["--acc" as string]: accents[i % accents.length] }}
+              <Window
+                title={`principle_${item.no}.md`}
+                meta={`${item.body.length} ch`}
                 className={css({
-                  height: "100%",
-                  background: "#fbfbfb",
-                  border: "3px solid #000",
-                  borderRadius: "20px",
-                  boxShadow: "8px 8px 0 0 #000",
-                  padding: { base: "26px", md: "30px" },
-                  position: "relative",
-                  overflow: "hidden",
-                  transition:
-                    "transform .14s cubic-bezier(.2,.9,.2,1), box-shadow .14s cubic-bezier(.2,.9,.2,1), background .1s steps(1)",
-                  _hover: {
-                    transform: "translate(8px, 8px)",
-                    boxShadow: "0 0 0 0 #000",
-                    background: "var(--acc)",
-                  },
+                  // stagger the row slightly, like windows left open on a desk
+                  marginTop: { md: i === 1 ? "36px" : i === 2 ? "12px" : 0 },
+                  transition: "transform .14s steps(3)",
+                  _hover: { transform: "translateY(-4px)" },
                 })}
+                bodyClassName={css({ padding: { base: "22px 20px 24px", md: "26px 24px 30px" } })}
               >
-                {/* halftone corner patch — riso print texture */}
                 <span
-                  className={cx(
-                    halftoneCls,
-                    css({
-                      position: "absolute",
-                      top: "-14px",
-                      right: "-14px",
-                      width: "104px",
-                      height: "104px",
-                      opacity: 0.16,
-                      pointerEvents: "none",
-                    })
-                  )}
-                />
-
-                <div
                   className={css({
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    borderBottom: "2px solid #000",
-                    paddingBottom: "12px",
-                    position: "relative",
+                    display: "block",
+                    fontFamily: "mono",
+                    fontSize: "48px",
+                    lineHeight: 1,
+                    letterSpacing: "-0.06em",
+                    color: i === 0 ? "point" : "ink",
                   })}
                 >
-                  <span
-                    className={css({
-                      fontFamily: prompt,
-                      fontSize: "46px",
-                      fontWeight: 700,
-                      lineHeight: 1,
-                      color: "transparent",
-                      WebkitTextStroke: "2px #000",
-                    })}
-                  >
-                    {item.no}
-                  </span>
-                  <span className={css({ display: "inline-flex", alignItems: "center", gap: "7px" })}>
-                    <Sparkle size={15} color="#000" />
-                    <span
-                      className={css({
-                        fontFamily: mono,
-                        fontSize: "10px",
-                        fontWeight: 700,
-                        letterSpacing: "0.18em",
-                        textTransform: "uppercase",
-                        color: "#000",
-                      })}
-                    >
-                      FIG.{item.no}
-                    </span>
-                  </span>
-                </div>
-
+                  {item.no}
+                </span>
                 <h3
                   className={css({
-                    fontFamily: prompt,
-                    fontSize: "20px",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: "-0.01em",
-                    color: INK,
-                    marginTop: "18px",
+                    fontSize: "21px",
+                    fontWeight: 650,
+                    letterSpacing: "-0.03em",
+                    marginTop: "26px",
                   })}
                 >
                   {item.title}
                 </h3>
-                <p
-                  className={css({
-                    marginTop: "12px",
-                    fontSize: "14.5px",
-                    lineHeight: 1.7,
-                    color: "#2a2b31",
-                  })}
-                >
+                <p className={css({ marginTop: "12px", fontSize: "14.5px", lineHeight: 1.75, color: "#3b3b38" })}>
                   {item.body}
                 </p>
-              </article>
+              </Window>
             </Reveal>
           ))}
         </div>

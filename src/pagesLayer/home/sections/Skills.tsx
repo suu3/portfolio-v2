@@ -1,142 +1,102 @@
 "use client";
 
-import { css } from "@/styled-system/css";
+import { css, cx } from "@/styled-system/css";
 import Reveal from "@/components/Reveal";
 import ScrambleText from "@/components/ScrambleText";
 import Marquee from "@/components/Marquee";
+import Window from "@/components/Window";
 import { skills } from "../data";
-import Sparkle from "@/components/Sparkle";
-import { INK, ORANGE, LIME, PURPLE, prompt, mono, metaCls, hudCls, sectionCls, innerCls } from "../ui";
+import { eyebrowCls, innerCls, metaCls, sectionCls, sectionTitleCls } from "../ui";
+
+const promptCls = css({
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "baseline",
+  gap: "0 10px",
+  fontFamily: "mono",
+  fontSize: { base: "12px", md: "13px" },
+  color: "#ededeb",
+  "& .sig": { color: "point" },
+  "& .dim": { color: "darkMuted" },
+});
 
 const Skills = () => {
   return (
-    <section id="skills" className={css({ position: "relative" })}>
+    <section id="skills" className={css({ position: "relative", background: "paper", color: "ink" })}>
       {/* divider ticker */}
-      <div
-        className={css({
-          background: ORANGE,
-          color: "#000",
-          borderY: "3px solid #000",
-          paddingY: "10px",
-        })}
-      >
+      <div className={css({ borderY: `1px solid token(colors.ink)`, paddingY: "10px" })}>
         <Marquee
           className={metaCls}
-          duration={20}
+          duration={28}
           reverse
           separator="/"
-          items={["SKILLS", "TOOLS", "STACK", "SKILLS", "TOOLS", "STACK"]}
+          items={["stack", "tools", "things i reach for", "stack", "tools", "things i reach for"]}
         />
       </div>
 
       <div className={sectionCls}>
         <div className={innerCls}>
-          <div
-            className={css({
-              position: "relative",
-              background: "#000",
-              border: "3px solid #000",
-              borderRadius: "26px",
-              boxShadow: `10px 10px 0 0 ${PURPLE}`,
-              padding: { base: "34px 24px", md: "64px" },
-              color: "#fff",
-              overflow: "hidden",
-            })}
-          >
-            <Sparkle
-              size={70}
-              color={LIME}
-              style={{ position: "absolute", top: 26, right: 28, opacity: 0.9 }}
-            />
-            <Sparkle
-              size={26}
-              color={ORANGE}
-              style={{ position: "absolute", top: 96, right: 96 }}
-            />
-            <span
+          <Reveal>
+            <div
               className={css({
-                position: "absolute",
-                bottom: "22px",
-                right: "28px",
-                color: LIME,
-                display: { base: "none", md: "block" },
+                display: "flex",
+                flexDirection: { base: "column", md: "row" },
+                justifyContent: "space-between",
+                alignItems: { md: "flex-end" },
+                gap: "18px",
               })}
             >
-              <span className={hudCls}>0000000 ✦ STACK / IDX</span>
-            </span>
-            <Reveal>
-              <span
-                className={css({
-                  fontFamily: mono,
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  background: LIME,
-                  color: "#000",
-                  padding: "5px 10px",
-                  border: "2px solid #000",
-                })}
-              >
-                Skills / 03
-              </span>
-              <h2
-                className={css({
-                  fontFamily: prompt,
-                  fontWeight: 700,
-                  fontSize: { base: "40px", md: "64px" },
-                  lineHeight: 0.95,
-                  letterSpacing: "-0.035em",
-                  textTransform: "uppercase",
-                  marginTop: "18px",
-                })}
-              >
-                <ScrambleText text="쓰는 도구들" />
-              </h2>
-            </Reveal>
+              <div>
+                <span className={eyebrowCls}>03 — Stack</span>
+                <h2 className={sectionTitleCls}>
+                  <ScrambleText text="쓰는 도구들" />
+                </h2>
+              </div>
+              <p className={cx(metaCls, css({ color: "muted" }))}>
+                {skills.reduce((n, s) => n + s.items.length, 0)} packages
+              </p>
+            </div>
+          </Reveal>
 
-            {skills.map((s, gi) => (
-              <Reveal key={s.group} delay={0.06 + gi * 0.05}>
-                <div className={css({ marginTop: gi === 0 ? "44px" : "38px" })}>
-                  <p
+          <Reveal delay={0.06} className={css({ marginTop: { base: "40px", md: "60px" } })}>
+            <Window
+              title="~/stack — zsh"
+              meta="80×24"
+              tone="dark"
+              data-char-anchor="stack"
+              bodyClassName={css({ padding: { base: "22px 18px 26px", md: "34px 36px 38px" } })}
+            >
+              {skills.map((s, gi) => (
+                <div key={s.group} className={css({ marginTop: gi === 0 ? 0 : "34px" })}>
+                  <p className={promptCls}>
+                    <span className="sig">→</span>
+                    <span>stack</span>
+                    <span className="dim">--{gi === 0 ? "primary" : "experienced"}</span>
+                    <span className="dim"># {s.group}</span>
+                  </p>
+                  <div
                     className={css({
-                      fontFamily: mono,
-                      fontSize: "11px",
-                      letterSpacing: "0.2em",
-                      textTransform: "uppercase",
-                      fontWeight: 700,
-                      color: LIME,
-                      borderBottom: "2px solid rgba(255,255,255,0.25)",
-                      paddingBottom: "10px",
-                      marginBottom: "18px",
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: gi === 0 ? "8px" : "6px",
+                      marginTop: "16px",
                     })}
                   >
-                    [{gi === 0 ? "PRIMARY" : "EXPERIENCED"}] {s.items.length}
-                  </p>
-                  <div className={css({ display: "flex", flexWrap: "wrap", gap: "12px" })}>
                     {s.items.map((item) => (
                       <span
                         key={item}
                         className={css({
-                          fontFamily: mono,
-                          fontWeight: 700,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.06em",
-                          fontSize: gi === 0 ? { base: "14px", md: "17px" } : { base: "12px", md: "13px" },
-                          padding: gi === 0 ? "12px 18px" : "9px 13px",
-                          border: "2px solid #fff",
+                          fontFamily: "mono",
+                          fontSize: gi === 0 ? { base: "14px", md: "17px" } : "12px",
+                          lineHeight: 1,
+                          letterSpacing: "0.01em",
+                          padding: gi === 0 ? { base: "11px 15px", md: "13px 18px" } : "8px 11px",
                           borderRadius: "999px",
-                          background: gi === 0 ? LIME : "transparent",
-                          color: gi === 0 ? "#000" : "#fff",
-                          boxShadow: gi === 0 ? "5px 5px 0 0 #fff" : "none",
-                          transition:
-                            "transform .1s steps(1), box-shadow .1s steps(1), background .1s steps(1), color .1s steps(1)",
-                          _hover: {
-                            background: gi === 0 ? "#fff" : LIME,
-                            color: "#000",
-                            transform: gi === 0 ? "translate(5px, 5px)" : "translate(-3px, -3px)",
-                            boxShadow: gi === 0 ? "0 0 0 0 #fff" : `4px 4px 0 0 ${ORANGE}`,
-                          },
+                          border: gi === 0 ? "1px solid #ededeb" : `1px solid token(colors.darkLine)`,
+                          background: gi === 0 ? "#ededeb" : "transparent",
+                          color: gi === 0 ? "ink" : "#cfcfcb",
+                          transition: "background .1s steps(2), color .1s steps(2), border-color .1s steps(2)",
+                          _hover: { background: "point", borderColor: "point", color: "ink" },
                         })}
                       >
                         {item}
@@ -144,9 +104,23 @@ const Skills = () => {
                     ))}
                   </div>
                 </div>
-              </Reveal>
-            ))}
-          </div>
+              ))}
+
+              <p className={cx(promptCls, css({ marginTop: "34px" }))}>
+                <span className="sig">→</span>
+                <span
+                  className={css({
+                    display: "inline-block",
+                    width: "8px",
+                    height: "15px",
+                    background: "#ededeb",
+                    animation: "blink 1s steps(2) infinite",
+                    alignSelf: "center",
+                  })}
+                />
+              </p>
+            </Window>
+          </Reveal>
         </div>
       </div>
     </section>

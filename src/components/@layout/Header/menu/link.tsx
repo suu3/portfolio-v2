@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { css } from "@/styled-system/css";
 import { rotateX, mountAnim } from "../anim";
 
-const mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+const mono = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
 export default function MenuLink({
   index,
@@ -22,55 +22,33 @@ export default function MenuLink({
         href={href}
         onClick={onNavigate}
         data-cursor="pointer"
-        data-cursor-label="Go ↗"
+        data-cursor-label="Go"
         className={css({
           display: "flex",
-          alignItems: "center",
-          gap: { base: "14px", md: "26px" },
-          borderTop: "2px solid rgba(255,255,255,0.22)",
-          paddingY: { base: "13px", md: "16px" },
-          paddingX: { base: "20px", md: "clamp(24px, 5vw, 80px)" },
-          color: "#fff",
-          transition:
-            "background .1s steps(1), color .1s steps(1), padding-left .18s cubic-bezier(.2,.9,.2,1)",
-          _hover: {
-            background: "#bffe28",
-            color: "#000",
-            paddingLeft: { base: "32px", md: "clamp(40px, 6vw, 110px)" },
-          },
+          alignItems: "baseline",
+          gap: "16px",
+          borderTop: "1px solid #2c2c2c",
+          paddingY: "12px",
+          paddingX: "16px",
+          color: "#ededeb",
+          transition: "background .1s steps(2), color .1s steps(2)",
+          _hover: { background: "#ff5a1f", color: "#111" },
         })}
       >
-        <span
-          className={css({
-            fontFamily: mono,
-            fontSize: { base: "11px", md: "13px" },
-            fontWeight: 700,
-            letterSpacing: "0.2em",
-            opacity: 0.75,
-          })}
-        >
+        <span className={css({ fontFamily: mono, fontSize: "11px", opacity: 0.6 })}>
           {String(index).padStart(2, "0")}
         </span>
         <span
           className={css({
-            fontFamily: "Prompt, sans-serif",
-            fontWeight: 700,
-            fontSize: { base: "30px", md: "clamp(40px, 6vw, 68px)" },
+            fontWeight: 600,
+            fontSize: "clamp(30px, 9vw, 56px)",
             lineHeight: 1.05,
-            letterSpacing: "-0.03em",
-            textTransform: "uppercase",
+            letterSpacing: "-0.04em",
           })}
         >
           {title}
         </span>
-        <span
-          className={css({
-            marginLeft: "auto",
-            fontSize: { base: "18px", md: "26px" },
-          })}
-        >
-          ↗
-        </span>
+        <span className={css({ marginLeft: "auto", fontFamily: mono, fontSize: "14px" })}>↗</span>
       </Link>
     </motion.div>
   );
