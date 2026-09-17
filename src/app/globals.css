@@ -61,6 +61,20 @@ body {
   }
 }
 
+@keyframes drip {
+  0% {
+    transform: scaleY(0);
+  }
+  60% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -95,24 +95,6 @@ const StatusBar = () => {
         <span className={barItemCls}>
           SEOUL <Clock />
         </span>
-        <a
-          href="#about"
-          data-cursor="pointer"
-          data-cursor-label="Go ↓"
-          className={css({
-            display: { base: "none", lg: "inline-flex" },
-            alignItems: "center",
-            gap: "6px",
-            paddingX: "8px",
-            height: "20px",
-            background: "ink",
-            color: "#fff",
-            transition: "background .1s steps(2), color .1s steps(2)",
-            _hover: { background: "point", color: "ink" },
-          })}
-        >
-          scroll ↓
-        </a>
       </span>
     </div>
   );
@@ -242,7 +224,7 @@ const Hero = () => {
         className={css({
           position: { base: "relative", lg: "absolute" },
           right: { lg: "clamp(24px, 4vw, 72px)" },
-          bottom: { lg: "54px" },
+          bottom: { lg: "88px" },
           zIndex: 1,
           width: { base: "auto", lg: "236px" },
           marginX: { base: "16px", lg: 0 },
@@ -268,6 +250,38 @@ const Hero = () => {
           </Row>
         </Window>
       </div>
+
+      <a
+        href="#about"
+        data-cursor="pointer"
+        data-cursor-label="Scroll"
+        className={css({
+          display: { base: "none", lg: "flex" },
+          position: "absolute",
+          left: "50%",
+          bottom: "46px",
+          transform: "translateX(-50%)",
+          zIndex: 1,
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "8px",
+          fontFamily: "mono",
+          fontSize: "10px",
+          letterSpacing: "0.16em",
+          color: "ink",
+        })}
+      >
+        SCROLL
+        <span
+          className={css({
+            width: "1px",
+            height: "34px",
+            background: "ink",
+            transformOrigin: "top",
+            animation: "drip 1.6s steps(8) infinite",
+          })}
+        />
+      </a>
 
       {/* editor-style status bar */}
       <StatusBar />
