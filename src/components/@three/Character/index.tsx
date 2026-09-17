@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { ThreeEvent, useFrame, useThree } from "@react-three/fiber";
+import { ThreeEvent, createPortal, useFrame, useThree } from "@react-three/fiber";
 import { Html, useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { sfx } from "@/lib/sfx";
 import { workScroll } from "@/lib/workScroll";
 import Bunny from "@/components/@three/Bunny";
+import Headset from "@/components/@three/Headset";
 import { CodeGlyph, Keyboard, Rocket, Star } from "@/components/@three/DeskToys";
 import { Laptop, OfficeChair } from "@/components/@three/Props";
 import { CLIPS, MODEL_HEIGHT, TrackState, computeTrack, emptyTrack } from "./track";
@@ -303,6 +304,8 @@ const Character = ({ touch }: { touch: boolean }) => {
             }}
             onPointerOut={() => hint(null)}
           />
+          {/* headset rides on the head bone, so it turns with the look-at */}
+          {head && createPortal(<Headset />, head)}
           <group ref={props}>
             <group ref={chair}>
               <OfficeChair />

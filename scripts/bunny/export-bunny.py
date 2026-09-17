@@ -104,23 +104,29 @@ for ob in [o for o in bpy.data.objects if o.type == "MESH"]:
 
 HOOD = os.environ.get("HOOD", "on") != "off"
 LINING = mat("Hood lining", "#f3e2bd", 0.85)
+HOOD_INNER = mat("Hood inside", "#e3906a", 0.9)
 CORD = mat("Cord", "#f9d169", 0.7)
 
 if HOOD:
     # hood down: a bowl draped behind the neck, opening toward the head.
     # Outer shell hoodie-coloured, the solidified inner face + cut rim in cream.
-    bpy.ops.mesh.primitive_uv_sphere_add(radius=0.66, segments=48, ring_count=24, location=(0, 0.25, 1.0))
+    bpy.ops.mesh.primitive_uv_sphere_add(radius=0.72, segments=56, ring_count=28, location=(0, 0.28, 0.95))
     hood = bpy.context.active_object
     hood.name = "Hood"
-    hood.scale = (0.86, 0.85, 0.6)
+    # wide enough to drape over the shoulders so the arms sit inside it, not through it
+    hood.scale = (1.04, 0.86, 0.64)
     with bpy.context.temp_override(active_object=hood, object=hood, selected_objects=[hood], selected_editable_objects=[hood]):
         bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
     bm = bmesh.new(); bm.from_mesh(hood.data)
     # keep the sides wrapping forward around the shoulders; open at the top
-    cut = [v for v in bm.verts if v.co.y < -0.2 or v.co.z > 0.12]
+    # the front edge swings back toward the sides, so from the front the hood
+    # tucks behind the shoulders instead of flaring out like wings
+    cut = [v for v in bm.verts if v.co.y < -0.18 + 0.3 * (abs(v.co.x) / 0.75) ** 2 or v.co.z > 0.1]
     bmesh.ops.delete(bm, geom=cut, context="VERTS")
     bm.to_mesh(hood.data); bm.free()
-    assign(hood, [HOODIE, LINING])
+    # outside hoodie, inside a shade darker, only the cut edge in cream — a
+    # cream inside read as little wings behind the shoulders
+    assign(hood, [HOODIE, HOOD_INNER, LINING])
     for p in hood.data.polygons:
         p.material_index = 0
         p.use_smooth = True
@@ -128,7 +134,7 @@ if HOOD:
     sol.thickness = 0.07
     sol.offset = -1
     sol.material_offset = 1
-    sol.material_offset_rim = 1
+    sol.material_offset_rim = 2
     sub = hood.modifiers.new("soft", "SUBSURF")
     sub.levels = 1
     dg = bpy.context.evaluated_depsgraph_get(); dg.update()
@@ -136,12 +142,29 @@ if HOOD:
     old = hood.data; hood.modifiers.clear(); hood.data = baked; bpy.data.meshes.remove(old)
     hood.data.transform(hood.matrix_world); hood.matrix_world = Matrix.Identity(4)
 
-    # drawcords hanging down the chest, with little aglets
+    # neckline: the hood opening wraps the neck and tucks up under the chin, so
+    # there's no bare strip between head and hoodie. Hoodie colour outside, a
+    # thin cream lining ring peeking at the top edge.
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.36, minor_radius=0.13, major_segments=64, minor_segments=18,
+                                     location=(0, 0.19, 0.98))
+    neck = bpy.context.active_object; neck.name = "Neckline"; neck.scale = (1.0, 0.95, 0.85)
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.33, minor_radius=0.05, major_segments=64, minor_segments=12,
+                                     location=(0, 0.17, 1.075))
+    lining = bpy.context.active_object; lining.name = "Neckline lining"
+    for o in (neck, lining):
+        with bpy.context.temp_override(active_object=o, object=o, selected_objects=[o], selected_editable_objects=[o]):
+            bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
+        for p in o.data.polygons:
+            p.use_smooth = True
+    assign(neck, [HOODIE])
+    assign(lining, [LINING])
+
+    # drawcords hanging down the chest from under the neckline, with little aglets
     parts = []
     for sx in (-1, 1):
-        bpy.ops.mesh.primitive_cylinder_add(radius=0.026, depth=0.3, vertices=12, location=(sx * 0.12, -0.25, 0.83))
+        bpy.ops.mesh.primitive_cylinder_add(radius=0.026, depth=0.3, vertices=12, location=(sx * 0.11, -0.25, 0.76))
         c = bpy.context.active_object; c.rotation_euler = (math.radians(-12), 0, 0); parts.append(c)
-        bpy.ops.mesh.primitive_uv_sphere_add(radius=0.045, segments=14, ring_count=8, location=(sx * 0.12, -0.28, 0.67))
+        bpy.ops.mesh.primitive_uv_sphere_add(radius=0.045, segments=14, ring_count=8, location=(sx * 0.11, -0.28, 0.6))
         parts.append(bpy.context.active_object)
     cords = parts[0]
     with bpy.context.temp_override(active_object=cords, object=cords, selected_objects=parts, selected_editable_objects=parts):
@@ -157,7 +180,7 @@ if HOOD:
 ear_obj = bpy.data.objects["Cube001"]
 for i, (cx, front_y, top, width) in enumerate(EAR_SPOTS):
     bm = bmesh.new()
-    rx, rz, cz = width * 0.29, 0.31, top - 0.43
+    rx, rz, cz = width * 0.24, 0.25, top - 0.53
     RINGS, SEG = 7, 56
     center = bm.verts.new((cx, front_y - 0.12, cz))
     rings = []
@@ -208,7 +231,7 @@ if PREVIEW != "-":
     sc = bpy.context.scene
     sc.render.engine = "BLENDER_EEVEE"; sc.render.resolution_x, sc.render.resolution_y = 360, 440
     cam = bpy.data.objects["c"]
-    for tag, loc, aim in [("front", (0, -7.5, 1.6), 1.4), ("tq", (4.5, -5.8, 2.4), 1.4), ("neck", (1.6, -3.4, 1.35), 1.05), ("ears", (0.9, -3.2, 2.7), 2.6)]:
+    for tag, loc, aim in [("front", (0, -7.5, 1.6), 1.4), ("tq", (4.5, -5.8, 2.4), 1.4), ("neck", (1.6, -3.4, 1.35), 1.05), ("ears", (0.9, -3.2, 2.7), 2.6), ("chin", (0.0, -3.6, 1.2), 1.1), ("back", (-4.2, 5.2, 2.4), 1.2)]:
         cam.location = loc
         cam.rotation_euler = (Vector((0, 0, aim)) - Vector(loc)).to_track_quat("-Z", "Y").to_euler()
         sc.render.filepath = os.path.join(PREVIEW, f"rig_{TAG}_{tag}.png")
@@ -218,7 +241,7 @@ if OUT != "-":
     for o in list(bpy.data.objects):
         if o.type != "MESH":
             bpy.data.objects.remove(o, do_unlink=True)
-    names = {"Cube": "Body", "Cube001": "Ears", "Cube004": "Pads", "Cube006": "Face", "Roundcube": "Head", "Sphere": "Tail", "Hood": "Hood", "Cords": "Cords", "InnerEar0": "InnerEarL", "InnerEar1": "InnerEarR"}
+    names = {"Cube": "Body", "Cube001": "Ears", "Cube004": "Pads", "Cube006": "Face", "Roundcube": "Head", "Sphere": "Tail", "Hood": "Hood", "Cords": "Cords", "Neckline": "Neckline", "Neckline lining": "NecklineLining", "InnerEar0": "InnerEarL", "InnerEar1": "InnerEarR"}
     for o in bpy.data.objects:
         o.name = names.get(o.name, o.name)
     bpy.ops.export_scene.gltf(filepath=OUT, export_format="GLB", export_yup=True, export_apply=True,
