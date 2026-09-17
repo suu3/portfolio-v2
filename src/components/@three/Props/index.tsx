@@ -95,7 +95,7 @@ export const Laptop = () => (
       <mesh position={[0, 0.52, -0.035]} rotation={[0, Math.PI, 0]} material={screen} raycast={noRaycast}>
         <planeGeometry args={[1.4, 0.9]} />
       </mesh>
-      <CarrotLogo position={[0, 0.56, 0.036]} scale={1.15} />
+      <CarrotLogo position={[0, 0.56, 0.036]} rotation={[0, 0, -Math.PI / 4]} scale={1.15} />
     </group>
   </group>
 );

@@ -109,6 +109,7 @@ const Hero = () => {
             {profile.role} — {profile.location}
           </p>
           <h1
+            data-cursor-lens
             className={css({
               fontFamily: "sans",
               fontWeight: 650,

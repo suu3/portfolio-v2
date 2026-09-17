@@ -8,6 +8,10 @@ import styles from "./cursor.module.css";
  * (mix-blend-mode: difference) and snaps to wrap any [data-cursor] target,
  * showing its [data-cursor-label] as a monospace tag.
  *
+ * Over a [data-cursor-lens] element (big display type) the ring swells into a
+ * solid disc sized to the text, so the same difference blend inverts the
+ * letters underneath. It's decoration, not a click target.
+ *
  * Things that aren't DOM (the 3D character) can't carry [data-cursor], so they
  * dispatch `cursor:hint` with a label (or null) instead.
  */
@@ -43,15 +47,18 @@ const Cursor = () => {
     };
 
     let hint: string | null = null;
+    let lens: HTMLElement | null = null;
 
     const release = () => {
-      const size = hint ? "64px" : "26px";
+      const lensSize = lens ? `${Math.round((parseFloat(getComputedStyle(lens).fontSize) || 60) * 2.1)}px` : null;
+      const size = lensSize ?? (hint ? "64px" : "26px");
       box.style.width = size;
       box.style.height = size;
       box.style.borderRadius = "999px";
       box.dataset.stuck = "false";
-      label.textContent = hint ?? "";
-      dot.style.opacity = hint ? "0" : "1";
+      box.dataset.lens = lens ? "true" : "false";
+      label.textContent = lens ? "" : hint ?? "";
+      dot.style.opacity = hint || lens ? "0" : "1";
     };
 
     const onHint = (e: Event) => {
@@ -60,6 +67,7 @@ const Cursor = () => {
     };
 
     const grab = (el: HTMLElement) => {
+      box.dataset.lens = "false";
       const r = el.getBoundingClientRect();
       box.style.width = `${r.width + PAD * 2}px`;
       box.style.height = `${r.height + PAD * 2}px`;
@@ -70,12 +78,16 @@ const Cursor = () => {
     };
 
     const onOver = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement)?.closest<HTMLElement>("[data-cursor]");
+      const el = e.target as HTMLElement | null;
+      const target = el?.closest?.<HTMLElement>("[data-cursor]") ?? null;
+      const nextLens = target ? null : el?.closest?.<HTMLElement>("[data-cursor-lens]") ?? null;
       if (target && target !== stuck) {
         stuck = target;
+        lens = null;
         grab(target);
-      } else if (!target && stuck) {
+      } else if (!target && (stuck || nextLens !== lens)) {
         stuck = null;
+        lens = nextLens;
         release();
       }
     };

@@ -10,7 +10,7 @@ What it does (the .blend itself is never modified):
 - the procedural sock shader (coloured by world Z) -> real geometry split into 3 flat materials
 - flat-colour image textures (hoodie/shorts) -> plain base colour; skin lightened
 - rigs it: an 11-bone armature with hand-computed weights (the file has no rig), then
-  keyframes the clips the site plays — Idle / Sit / Perch / Run / Wave / Lounge — and pushes
+  keyframes the clips the site plays — Idle / Sit / Perch / Run / Wave / Recline — and pushes
   each onto an NLA track so the glTF exporter writes them as separate animations
 - one skinned mesh "Character" under the "Armature" node, feet at y = 0
 - Draco-compressed; the decoder is served locally from public/draco/
@@ -323,7 +323,7 @@ def arm_swing(d): return RX(-d)                                  # + = forward
 def elbow(side, d): return RZ(-d if side == "L" else d)          # + = bend forward
 def thigh(d): return RX(-d)                                      # + = forward
 def knee(d): return RX(d)                                        # + = bend back
-def lean(d): return RX(-d)                                       # + = forward
+def lean(d): return RX(d)                                        # + = forward (spine points up)
 
 
 ALL = [b[0] for b in BONES]
@@ -421,30 +421,32 @@ def run(f, t):
 
 
 def wave(f, t):
-    # arm out to the side and a little forward, forearm up, waving outside the
-    # head silhouette (straight-up arms disappear behind this much hair)
+    # a vinyl-toy wave: the arm stays straight and swings from the shoulder.
+    # Bending the elbow creases the thick sleeve, and a raised straight-up arm
+    # vanishes behind the hair, so it waves out to the side at 25-55°.
     sw = S(t, 2)
     return {
         "UpperArm.L": arm_swing(4) @ arm_drop("L", 66),
         "LowerArm.L": elbow("L", 12),
-        "UpperArm.R": arm_swing(12) @ arm_drop("R", -(30 + 6 * sw)),
-        "LowerArm.R": Matrix.Rotation(math.radians(40 + 24 * sw), 3, "Y"),
+        "UpperArm.R": arm_swing(10) @ arm_drop("R", -(40 + 15 * sw)),
         "Spine": Matrix.Rotation(math.radians(-3 * sw), 3, "Y") @ lean(-2),
         "hips": (0, 0, 0.015 * S(t, 4)),
     }
 
 
-def lounge(f, t):
-    # on the back: one knee up, arms folded behind the head
+def recline(f, t):
+    # sitting on a ledge, leaning back on both hands: one knee up, the other leg
+    # stretched out with the foot tapping, a slow rock of the upper body
+    tap = max(0.0, S(t, 3))
     return {
-        "UpperLeg.L": thigh(48 + 3 * S(t)), "LowerLeg.L": knee(88),
-        "UpperLeg.R": thigh(8), "LowerLeg.R": knee(14 + 3 * S(t, 1, 0.3)),
-        "UpperArm.L": arm_swing(-55) @ arm_drop("L", -135),
-        "UpperArm.R": arm_swing(-55) @ arm_drop("R", -135),
-        "LowerArm.L": elbow("L", 125),
-        "LowerArm.R": elbow("R", 125),
-        "Spine": lean(-3),
-        "hips": (0, 0, 0.015 * S(t)),
+        "Spine": lean(-22 + 2.5 * S(t)),
+        "UpperLeg.L": thigh(112), "LowerLeg.L": knee(62),
+        "UpperLeg.R": thigh(86), "LowerLeg.R": knee(6 + 14 * tap),
+        "UpperArm.L": arm_swing(-30) @ arm_drop("L", 76),
+        "UpperArm.R": arm_swing(-30) @ arm_drop("R", 76),
+        "LowerArm.L": elbow("L", -4),
+        "LowerArm.R": elbow("R", -4),
+        "hips": (0, 0, 0.012 * S(t)),
     }
 
 
@@ -454,7 +456,7 @@ tracks = {
     "Perch": clip("Perch", 48, perch),
     "Run": clip("Run", 14, run),
     "Wave": clip("Wave", 36, wave),
-    "Lounge": clip("Lounge", 48, lounge),
+    "Recline": clip("Recline", 48, recline),
 }
 
 
@@ -499,7 +501,7 @@ if PREVIEW:
     scene.render.resolution_x, scene.render.resolution_y = 520, 640
     shots = [("Idle", 12, "tq"), ("Sit", 12, "tq"), ("Sit", 12, "side"), ("Perch", 20, "tq"),
              ("Run", 4, "side"), ("Run", 8, "side"), ("Run", 4, "tq"), ("Wave", 5, "front"),
-             ("Lounge", 12, "front")]
+             ("Recline", 12, "front"), ("Recline", 12, "tq"), ("Recline", 12, "side")]
     views = {"front": (0, -11, 3.0), "tq": (6, -9.5, 4), "side": (11, -1, 3.2)}
     shots += [("Wave", 14, "front"), ("Wave", 5, "tq")]
     if PREVIEW_ONLY:

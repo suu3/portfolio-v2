@@ -35,8 +35,9 @@ const Beyond = () => {
           </h2>
         </Reveal>
 
-        {/* side projects */}
+        {/* side projects — the character sits on the top edge of this row, right end */}
         <div
+          data-char-anchor="archive"
           className={css({
             marginTop: { base: "40px", md: "60px" },
             display: "grid",
@@ -65,7 +66,6 @@ const Beyond = () => {
           <Window
             title="archive/"
             meta={`${archive.length} items`}
-            data-char-anchor="archive"
             className={css({ marginTop: { base: "14px", md: "18px" } })}
           >
             <div

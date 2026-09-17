@@ -13,8 +13,8 @@ export const MODEL_HEIGHT = 5.5;
 /** hip joint height in model units — Perch/Sit pivot on it */
 export const HIPS_Y = 1.37;
 
-export type Clip = "Idle" | "Sit" | "Perch" | "Run" | "Wave" | "Lounge";
-export const CLIPS: Clip[] = ["Idle", "Sit", "Perch", "Run", "Wave", "Lounge"];
+export type Clip = "Idle" | "Sit" | "Perch" | "Run" | "Wave" | "Recline";
+export const CLIPS: Clip[] = ["Idle", "Sit", "Perch", "Run", "Wave", "Recline"];
 
 export type StopId = "hero" | "work" | "stack" | "archive" | "contact";
 
@@ -88,16 +88,17 @@ const STOPS: Stop[] = [
   {
     id: "archive",
     anchor: () => "archive",
-    clip: "Lounge",
+    // sitting on the top edge of the side-project row, leaning back, legs out
+    // toward the viewer — at the right end, where only empty paper is above it
+    clip: "Recline",
+    pivot: "hips",
     place: (r, vw, vh, desk) => ({
-      x: r.left + r.width * (desk ? 0.14 : 0.12),
+      x: desk ? r.right - r.width * 0.12 : r.right - 72,
       y: r.top + 2,
-      height: desk ? clamp(vh * 0.21, 150, 240) : clamp(vh * 0.17, 120, 170),
+      height: desk ? clamp(vh * 0.26, 160, 300) : clamp(vh * 0.2, 130, 200),
     }),
     window: [1.0, 0.4],
-    yaw: 0,
-    roll: -Math.PI / 2,
-    float: true,
+    yaw: 0.55,
   },
   {
     id: "contact",
@@ -142,7 +143,7 @@ export const emptyTrack = (): TrackState => ({
   scale: 1,
   yaw: 0,
   roll: 0,
-  weights: { Idle: 0, Sit: 1, Perch: 0, Run: 0, Wave: 0, Lounge: 0 },
+  weights: { Idle: 0, Sit: 1, Perch: 0, Run: 0, Wave: 0, Recline: 0 },
   hero: 1,
   work: 0,
   ground: 0,
