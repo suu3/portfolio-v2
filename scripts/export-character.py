@@ -9,7 +9,7 @@ What it does (the .blend itself is never modified):
 - curves -> meshes at a web-friendly resolution, modifiers applied, subsurf capped at 2
 - the procedural sock shader (coloured by world Z) -> real geometry split into 3 flat materials
 - flat-colour image textures (hoodie/shorts) -> plain base colour; skin lightened
-- rigs it: an 11-bone armature with hand-computed weights (the file has no rig), then
+- rigs it: a 13-bone armature (incl. two eye bones for blinking) with hand-computed weights (the file has no rig), then
   keyframes the clips the site plays — Idle / Sit / Perch / Run / Wave / Recline — and pushes
   each onto an NLA track so the glTF exporter writes them as separate animations
 - one skinned mesh "Character" under the "Armature" node, feet at y = 0
@@ -208,6 +208,9 @@ def leg_w(x, y, z, strength=1.0):
 
 
 def classify(name):
+    if name.startswith("Face | bean eye"):
+        # own bones so the site can squash them shut (blink)
+        return lambda x, y, z: {("EyeL" if x > 0 else "EyeR"): 1.0}
     if name.startswith(("Face |", "Hair |", "Small smile")):
         return lambda x, y, z: {"Head": 1.0}
     if name.startswith(("Hoodie | ribbed wrist", "Sleeve |")):
@@ -261,6 +264,10 @@ BONES = [
     ("Hips", (0, 0, -2.5), (0, 0, -2.1), None),
     ("Spine", (0, 0, -2.1), (0, 0, -0.62), "Hips"),
     ("Head", (0, 0, -0.62), (0, 0, 1.0), "Spine"),
+    # eye bones sit at the centre of each bean eye and point up, so scaling
+    # their local Y closes the eye onto its middle line
+    ("EyeL", (0.36, -0.925, 0.025), (0.36, -0.925, 0.2), "Head"),
+    ("EyeR", (-0.36, -0.925, 0.025), (-0.36, -0.925, 0.2), "Head"),
     ("UpperArm.L", (0.56, -0.02, -1.15), (1.15, -0.02, -1.26), "Spine"),
     ("LowerArm.L", (1.15, -0.02, -1.26), (1.73, -0.02, -1.36), "UpperArm.L"),
     ("UpperArm.R", (-0.56, -0.02, -1.15), (-1.15, -0.02, -1.26), "Spine"),
@@ -344,8 +351,8 @@ def clip(name, frames, pose):
         p = pose(f, t)
         hips = p.pop("hips", (0, 0, 0))
         for b in ALL:
-            if b == "Head":
-                continue  # left free for the runtime look-at
+            if b in ("Head", "EyeL", "EyeR"):
+                continue  # left free for the runtime look-at / blink
             key(b, p.get(b, I3), f)
         key_loc("Hips", hips, f)
     act.frame_range = (1, frames + 1)

@@ -75,6 +75,7 @@ const Character = ({ touch }: { touch: boolean }) => {
 
   const { actions } = useAnimations(animations, rig);
   const head = useMemo(() => nodes.Head as THREE.Object3D | undefined, [nodes]);
+  const eyes = useMemo(() => [nodes.EyeL, nodes.EyeR].filter(Boolean) as THREE.Object3D[], [nodes]);
   const shadowTex = useMemo(shadowTexture, []);
 
   const [line, setLine] = useState(0);
@@ -83,6 +84,9 @@ const Character = ({ touch }: { touch: boolean }) => {
   const s = useRef({
     track: emptyTrack(),
     hopT: -1,
+    blinkT: -1,
+    nextBlink: 1.5,
+    doubleBlink: false,
     lastScroll: 0,
     vel: 0,
     run: 0,
@@ -181,6 +185,29 @@ const Character = ({ touch }: { touch: boolean }) => {
     }
     const runAction = actions.Run;
     if (runAction) runAction.timeScale = 0.7 + 1.3 * st.run;
+
+    // blink: squash the eye bones shut for ~130ms every few seconds, now and
+    // then twice in a row. Runs after the mixer, which rewrites their rest scale.
+    if (st.blinkT < 0 && t >= st.nextBlink) {
+      st.blinkT = 0;
+      st.doubleBlink = Math.random() < 0.22;
+      st.nextBlink = t + 2.5 + Math.random() * 3.5;
+    }
+    let lid = 1;
+    if (st.blinkT >= 0) {
+      st.blinkT += dt;
+      const p = st.blinkT / 0.13;
+      if (p >= 1) {
+        st.blinkT = -1;
+        if (st.doubleBlink) {
+          st.doubleBlink = false;
+          st.nextBlink = t + 0.09;
+        }
+      } else {
+        lid = 1 - Math.sin(p * Math.PI) * 0.92;
+      }
+    }
+    for (const e of eyes) e.scale.y = lid;
 
     // the head follows the pointer; less so while sprinting sideways
     if (head) {
