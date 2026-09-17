@@ -8,10 +8,10 @@ import * as THREE from "three";
 /**
  * GPU backdrop for the hero, two looks from one shader:
  *
- * - "grid": flat graph paper (major + minor lines). The pointer is a loupe —
- *   the paper bulges under it and the lines turn signal-blue; a fast scroll
- *   makes horizontal bands jump sideways in snapped steps (a glitch, not a
- *   cloth wave).
+ * - "grid": graph paper that only shows through a few soft, drifting round
+ *   patches. The pointer is a loupe — the paper appears and bulges under it,
+ *   lines turning signal-blue; a fast scroll makes horizontal bands jump
+ *   sideways in snapped steps (a glitch, not a cloth wave).
  * - "halftone": square dots sized by slowly flowing fbm noise, same loupe.
  *
  * Colours are written straight out as sRGB (no colorspace chunk), so they match
@@ -86,12 +86,23 @@ const HalftoneMaterial = shaderMaterial(
         float amt = smoothstep(3.0, 22.0, abs(uVel));
         q.x += (hash(vec2(band, tick)) - 0.5) * 2.0 * 34.0 * amt * pick;
 
-        float major = uCell * 4.0;
-        vec2 dM = abs(fract(q / major + 0.5) - 0.5) * major;
-        vec2 dm = abs(fract(q / uCell + 0.5) - 0.5) * uCell;
-        float lineM = 1.0 - smoothstep(0.1, 1.1, min(dM.x, dM.y));
-        float linem = 1.0 - smoothstep(0.0, 0.8, min(dm.x, dm.y));
-        float alpha = max(lineM * mix(0.2, 0.9, blue), linem * mix(0.06, 0.4, blue));
+        // one weight of line — no major/minor split (that read as a sudoku board)
+        vec2 dg = abs(fract(q / uCell + 0.5) - 0.5) * uCell;
+        float line = 1.0 - smoothstep(0.1, 1.0, min(dg.x, dg.y));
+
+        // the paper only shows through a few soft, slowly drifting patches
+        float spots = 0.0;
+        for (int i = 0; i < 7; i++) {
+          float fi = float(i);
+          vec2 c = vec2(hash(vec2(fi, 1.3)), hash(vec2(fi, 7.1))) * uRes;
+          c += vec2(sin(uTime * 0.08 + fi * 1.7), cos(uTime * 0.06 + fi * 2.3)) * 70.0;
+          float r = mix(150.0, 320.0, hash(vec2(fi, 4.2)));
+          float k = length(px - c) / r;
+          spots = max(spots, (1.0 - smoothstep(0.0, 1.0, k)) * mix(0.55, 1.0, hash(vec2(fi, 9.9))));
+        }
+        float show = max(spots, smoothstep(0.02, 0.35, lens));
+
+        float alpha = line * show * mix(0.22, 0.9, blue);
         gl_FragColor = vec4(col, alpha);
         return;
       }
@@ -178,7 +189,8 @@ const Field = ({ host, variant }: { host: HTMLElement; variant: Variant }) => {
     m.uMouseOn = st.on;
     m.uVel = reduce ? 0 : st.vel;
     m.uMode = variant === "grid" ? 0 : 1;
-    m.uCell = variant === "grid" ? (size.width < 768 ? 12 : 16) : size.width < 768 ? 12 : 14;
+    // grid cells match the 48px drafting grid on the light sections (ui.ts paperGridCls)
+    m.uCell = variant === "grid" ? 48 : size.width < 768 ? 12 : 14;
   });
 
   return (

@@ -7,6 +7,7 @@ import * as THREE from "three";
 import { sfx } from "@/lib/sfx";
 import { workScroll } from "@/lib/workScroll";
 import Bunny from "@/components/@three/Bunny";
+import { CodeGlyph, Keyboard, Rocket, Star } from "@/components/@three/DeskToys";
 import { Laptop, OfficeChair } from "@/components/@three/Props";
 import { CLIPS, MODEL_HEIGHT, TrackState, computeTrack, emptyTrack } from "./track";
 import styles from "./bubble.module.css";
@@ -54,11 +55,14 @@ const shadowTexture = () => {
   return new THREE.CanvasTexture(c);
 };
 
-/* the desk-mates fly off in different directions when the desk is left behind */
-const RABBITS = [
-  { at: [-2.3, 4.9, 0.6], size: 0.55, rot: [0.1, 0.5, 0.18], speed: 1.2, fly: [-6, 5, 1] },
-  { at: [2.55, 3.7, -0.6], size: 0.66, rot: [0.05, -0.6, -0.12], speed: 1, fly: [7, 4, -1] },
-  { at: [-2.4, 0.6, 1.2], size: 0.42, rot: [-0.2, 0.3, 0.3], speed: 1.7, fly: [-5, -4, 2] },
+/* the desk-mates fly off in different directions when the desk is left behind.
+   Positions are in character model units around the hero placement. */
+const DESK = [
+  // the rabbit doll sits low at the character's left and looks at them
+  { kind: "bunny", at: [-2.7, 1.2, 0.9], size: 0.82, speed: 1.1, fly: [-6, -3, 2] },
+  { kind: "code", at: [-2.5, 4.9, 0.4], size: 0.62, speed: 1.3, fly: [-6, 5, 1] },
+  { kind: "star", at: [2.7, 3.9, -0.4], size: 0.62, speed: 1.5, fly: [7, 4, -1] },
+  { kind: "keys", at: [3.1, 2.0, 0.6], size: 0.5, speed: 1.2, fly: [7, -4, 2] },
 ] as const;
 
 const Character = ({ touch }: { touch: boolean }) => {
@@ -71,7 +75,8 @@ const Character = ({ touch }: { touch: boolean }) => {
   const chair = useRef<THREE.Group>(null);
   const laptop = useRef<THREE.Group>(null);
   const shadow = useRef<THREE.Mesh>(null);
-  const rabbitRefs = useRef<(THREE.Group | null)[]>([]);
+  const deskRefs = useRef<(THREE.Group | null)[]>([]);
+  const rocket = useRef<THREE.Group>(null);
 
   const { actions } = useAnimations(animations, rig);
   const head = useMemo(() => nodes.Head as THREE.Object3D | undefined, [nodes]);
@@ -245,18 +250,38 @@ const Character = ({ touch }: { touch: boolean }) => {
       laptop.current.rotation.set(-0.6 * gone, 0, -2.2 * gone);
       laptop.current.scale.setScalar(1 - gone);
     }
-    rabbitRefs.current.forEach((rb, i) => {
+    // on narrow screens the desk is centred with little room either side: pull
+    // the toys in toward the character and shrink them a touch
+    const spread = size.width < 1024 ? 0.6 : 1;
+    const shrink = size.width < 1024 ? 0.78 : 1;
+    deskRefs.current.forEach((rb, i) => {
       if (!rb) return;
-      const d = RABBITS[i];
+      const d = DESK[i];
       rb.visible = tr.hero > 0.01;
       rb.position.set(
-        tr.heroX + (d.at[0] + d.fly[0] * gone) * tr.heroScale,
+        tr.heroX + (d.at[0] * spread + d.fly[0] * gone) * tr.heroScale,
         tr.heroY + (d.at[1] + d.fly[1] * gone) * tr.heroScale,
         d.at[2] * tr.heroScale
       );
-      rb.scale.setScalar(tr.heroScale * d.size * (1 - gone));
+      rb.scale.setScalar(tr.heroScale * d.size * shrink * (1 - gone));
       rb.rotation.z = gone * 3;
     });
+
+    // Work: a toy rocket crosses the gap between the cards and the floor, pushed
+    // along by the horizontal scroll. Only while pinned — on the stacked layout
+    // there is no empty strip and it would fly over the card copy.
+    if (rocket.current) {
+      const R = rocket.current;
+      R.visible = tr.work > 0.02 && workScroll.active;
+      if (R.visible) {
+        const W = viewport.width;
+        const H = viewport.height;
+        const p = workScroll.progress;
+        R.position.set((-0.62 + p * 1.24) * W, (0.5 - 0.69) * H + Math.sin(t * 2.2) * H * 0.012, 1);
+        R.scale.setScalar(H * 0.028 * tr.work);
+        R.rotation.set(0.2, 0.35, -Math.PI / 2 + Math.sin(t * 3) * 0.06);
+      }
+    }
 
     if (shadow.current) {
       const m = shadow.current.material as THREE.MeshBasicMaterial;
@@ -300,16 +325,28 @@ const Character = ({ touch }: { touch: boolean }) => {
         </mesh>
       </group>
 
-      {RABBITS.map((d, i) => (
+      {DESK.map((d, i) => (
         <group
-          key={i}
+          key={d.kind}
           ref={(el) => {
-            rabbitRefs.current[i] = el;
+            deskRefs.current[i] = el;
           }}
         >
-          <Bunny rotation={[...d.rot]} speed={d.speed} />
+          {d.kind === "bunny" ? (
+            <Bunny rotation={[0.05, 1.0, 0]} speed={d.speed} />
+          ) : d.kind === "code" ? (
+            <CodeGlyph speed={d.speed} />
+          ) : d.kind === "keys" ? (
+            <Keyboard speed={d.speed} />
+          ) : (
+            <Star speed={d.speed} />
+          )}
         </group>
       ))}
+
+      <group ref={rocket} visible={false}>
+        <Rocket />
+      </group>
     </>
   );
 };
