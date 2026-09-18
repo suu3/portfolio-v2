@@ -52,8 +52,12 @@ const CharacterStage = () => {
           eventSource={source}
           eventPrefix="client"
           camera={{ position: [0, 0, 16], fov: 28 }}
-          dpr={[1, 1.5]}
-          gl={{ antialias: true, alpha: true }}
+          // A phone renders this full-screen: at dpr 1.5 with MSAA that is 0.74M
+          // pixels of skinned PBR every frame, on top of the star field and the
+          // page itself. Drop to one device pixel and no multisampling there —
+          // the character is small on a phone and the edges hold up.
+          dpr={touch ? 1 : [1, 1.5]}
+          gl={{ antialias: !touch, alpha: true }}
           onCreated={({ gl }) => {
             gl.toneMapping = THREE.NeutralToneMapping;
             gl.toneMappingExposure = 1.02;

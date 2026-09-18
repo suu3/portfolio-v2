@@ -8,8 +8,14 @@
  * like something that lives on the page rather than a sticker on the viewport.
  */
 import { MathUtils } from "three";
+import { workScroll } from "@/lib/workScroll";
 
 export const MODEL_HEIGHT = 5.5;
+/** How far across the viewport the character runs while the Work room slides
+ *  sideways, as a share of its width. They start in from the left edge and
+ *  finish about three quarters of the way over, so the run has somewhere to go
+ *  and still ends on screen. */
+const RUN_SPAN = 0.62;
 /** hip joint height in model units — Perch/Sit pivot on it */
 export const HIPS_Y = 1.37;
 
@@ -61,9 +67,20 @@ const STOPS: Stop[] = [
     id: "work",
     anchor: (desk) => (desk ? "work" : "work-m"),
     clip: "Idle",
+    // On the desktop layout the room is pinned and its cards slide sideways, so
+    // the character covers ground rather than running on the spot: they start in
+    // from the left and travel with the horizontal scroll, back the other way
+    // when it is scrolled back. Reading it here rather than in the frame loop
+    // means the walk into and out of this stop lerps from wherever they have
+    // run to. Nothing to do on mobile — the room is vertical there and progress
+    // stays at 0.
     place: (r, vw, vh, desk) =>
       desk
-        ? { x: r.left + Math.max(vw * 0.13, 150), y: r.bottom - vh * 0.05, height: vh * 0.27 }
+        ? {
+            x: r.left + Math.max(vw * 0.13, 150) + workScroll.progress * vw * RUN_SPAN,
+            y: r.bottom - vh * 0.05,
+            height: vh * 0.27,
+          }
         : { x: r.left + r.width * 0.5, y: r.bottom - 8, height: clamp(vh * 0.26, 160, 260) },
     window: [0.85, 0.05],
     // leaving the desk starts the moment you scroll: the chair and laptop fly

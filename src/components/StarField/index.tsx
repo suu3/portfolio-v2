@@ -84,11 +84,27 @@ const StarField = ({ className }: Props) => {
     };
 
     const draw = (t: number) => {
+      // The canvas is as tall as the whole Work section — on a phone that is
+      // 3154px against an 844px viewport, so nearly three quarters of every
+      // frame used to be spent clearing and re-drawing sky that is nowhere near
+      // the screen. Work out the band that is actually visible and do only that:
+      // the stars outside it are not on screen to miss.
+      // BAND of slack either side: momentum scrolling can move the page between
+      // the compositor and this frame, and a bare viewport-sized strip would
+      // then show an unpainted edge for a frame.
+      const BAND = 160;
+      const rect = canvas.getBoundingClientRect();
+      const top = Math.max(0, -rect.top - BAND);
+      const bottom = Math.min(h, -rect.top + window.innerHeight + BAND);
+      if (bottom <= top) return;
+
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, w, h);
+      ctx.clearRect(0, top, w, bottom - top);
       const travel = w * 1.1 * workScroll.progress;
+      const pad = 8; // the flare arms reach past the star itself
 
       for (const s of stars) {
+        if (s.y < top - pad || s.y > bottom + pad) continue;
         let x = s.x - travel * s.depth;
         x = ((x % (w * SPAN)) + w * SPAN) % (w * SPAN);
         if (x > w + 8) continue;
