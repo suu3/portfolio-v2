@@ -52,12 +52,14 @@ const CharacterStage = () => {
           eventSource={source}
           eventPrefix="client"
           camera={{ position: [0, 0, 16], fov: 28 }}
-          // A phone renders this full-screen: at dpr 1.5 with MSAA that is 0.74M
-          // pixels of skinned PBR every frame, on top of the star field and the
-          // page itself. Drop to one device pixel and no multisampling there —
-          // the character is small on a phone and the edges hold up.
-          dpr={touch ? 1 : [1, 1.5]}
-          gl={{ antialias: !touch, alpha: true }}
+          // Desktop draws at the display's own resolution — capping at 1.5 on a
+          // 2x screen renders three quarters of the pixels and reads soft, which
+          // is what you see on the character's outline. A phone still skips
+          // multisampling, the expensive part when the canvas is full-screen,
+          // but renders above one device pixel so the edges have something to
+          // resolve against: supersampling does the smoothing MSAA would have.
+          dpr={touch ? [1, 1.5] : [1, 2]}
+          gl={{ antialias: !touch, alpha: true, powerPreference: "high-performance" }}
           onCreated={({ gl }) => {
             gl.toneMapping = THREE.NeutralToneMapping;
             gl.toneMappingExposure = 1.02;
@@ -67,7 +69,7 @@ const CharacterStage = () => {
           <ambientLight intensity={0.35} />
           <directionalLight position={[4, 7, 8]} intensity={1.5} />
           <directionalLight position={[-6, 3, -5]} intensity={0.7} color="#e6e8ff" />
-          <Environment resolution={128} frames={1}>
+          <Environment resolution={256} frames={1}>
             <Lightformer form="rect" intensity={1.6} position={[0, 4, 6]} scale={[12, 6, 1]} />
             <Lightformer form="rect" intensity={0.8} position={[-7, 0, 2]} rotation-y={Math.PI / 2} scale={[8, 8, 1]} />
             <Lightformer form="rect" intensity={0.5} position={[7, -2, 1]} rotation-y={-Math.PI / 2} scale={[8, 8, 1]} />

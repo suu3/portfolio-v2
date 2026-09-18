@@ -205,11 +205,13 @@ const ShaderBackdrop = ({ className, variant = "grid" }: { className?: string; v
   const wrap = useRef<HTMLDivElement>(null);
   const [host, setHost] = useState<HTMLElement>();
   const [onScreen, setOnScreen] = useState(true);
+  const [touch, setTouch] = useState(false);
 
   useEffect(() => {
     const el = wrap.current;
     if (!el) return;
     setHost(el);
+    setTouch(window.matchMedia("(pointer: coarse)").matches);
     const io = new IntersectionObserver(([e]) => setOnScreen(e.isIntersecting));
     io.observe(el);
     // R3F measures before creating the renderer; wake it in tabs that load hidden
@@ -226,7 +228,11 @@ const ShaderBackdrop = ({ className, variant = "grid" }: { className?: string; v
       {host && (
         <Canvas
           flat
-          dpr={[1, 1.5]}
+          // Thin grid lines alias badly below the display's own resolution and
+          // this one has no multisampling to fall back on — so the display's
+          // resolution it is, except on a phone, where the full-bleed canvas at
+          // 2x would cost more fill than the character does.
+          dpr={touch ? [1, 1.5] : [1, 2]}
           frameloop={onScreen ? "always" : "never"}
           gl={{ antialias: false, alpha: true }}
           style={{ position: "absolute", inset: 0 }}

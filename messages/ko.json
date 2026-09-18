@@ -37,7 +37,6 @@
   "a11y": {
     "openMenu": "메뉴 열기",
     "closeMenu": "메뉴 닫기",
-    "soundToggle": "인터랙션 효과음 켜기 / 끄기",
     "expand": "{title} 펼치기",
     "collapse": "{title} 접기",
     "language": "언어 선택",

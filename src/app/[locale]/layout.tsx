@@ -5,7 +5,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import Cursor from "@/components/Cursor";
 import Grain from "@/components/Grain";
-import SoundToggle from "@/components/SoundToggle";
 import { htmlLang, locales, type Locale } from "@/i18n/routing";
 
 /** build all three at compile time rather than on first request */
@@ -54,7 +53,6 @@ export default async function RootLayout({
       <body>
         <NextIntlClientProvider messages={messages}>
           {children}
-          <SoundToggle />
           <Grain />
           <Cursor />
         </NextIntlClientProvider>

@@ -4,7 +4,6 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ThreeEvent, createPortal, useFrame, useThree } from "@react-three/fiber";
 import { Html, useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
-import { sfx } from "@/lib/sfx";
 import { workScroll } from "@/lib/workScroll";
 import Bunny from "@/components/@three/Bunny";
 import Headset from "@/components/@three/Headset";
@@ -149,11 +148,7 @@ const Character = ({ touch }: { touch: boolean }) => {
     const target = e.nativeEvent.target as HTMLElement | null;
     if (target?.closest?.("a, button")) return;
     s.current.hopT = 0;
-    setLine((n) => {
-      const next = (n + 1) % LINES.length;
-      sfx.step(next);
-      return next;
-    });
+    setLine((n) => (n + 1) % LINES.length);
     setPop(true);
     window.setTimeout(() => setPop(false), 160);
   };
