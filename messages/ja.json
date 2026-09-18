@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "title": "",
+    "description": ""
+  },
+  "nav": {
+    "top": "",
+    "about": "",
+    "experience": "",
+    "skills": "",
+    "beyond": "",
+    "contact": ""
+  },
+  "hero": {
+    "greeting": "",
+    "role": "",
+    "nameSuffix": "",
+    "mail": "",
+    "work": ""
+  },
+  "sections": {
+    "about": "",
+    "experience": "",
+    "skills": "",
+    "beyond": "",
+    "contact": ""
+  },
+  "actions": {
+    "mail": "",
+    "go": "",
+    "view": "",
+    "open": "",
+    "top": "",
+    "back": "",
+    "poke": ""
+  },
+  "a11y": {
+    "openMenu": "",
+    "closeMenu": "",
+    "soundToggle": "",
+    "expand": "",
+    "collapse": "",
+    "language": "",
+    "sections": ""
+  },
+  "project": {
+    "case1Title": "",
+    "case1Body": "",
+    "case2Title": "",
+    "case2Body": ""
+  },
+  "character": {
+    "pokeDesktop": "",
+    "pokeTouch": ""
+  }
+}

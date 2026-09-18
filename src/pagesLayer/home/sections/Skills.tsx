@@ -7,6 +7,7 @@ import Marquee from "@/components/Marquee";
 import Window from "@/components/Window";
 import { skills } from "../data";
 import { eyebrowCls, innerCls, metaCls, sectionCls, sectionTitleCls } from "../ui";
+import { useTranslations } from "next-intl";
 
 const promptCls = css({
   display: "flex",
@@ -21,6 +22,7 @@ const promptCls = css({
 });
 
 const Skills = () => {
+  const t = useTranslations();
   return (
     <section id="skills" className={css({ position: "relative", background: "paper", color: "ink" })}>
       {/* divider ticker */}
@@ -49,7 +51,7 @@ const Skills = () => {
               <div>
                 <span className={eyebrowCls}>03 — Stack</span>
                 <h2 className={sectionTitleCls}>
-                  <ScrambleText text="쓰는 도구들" />
+                  <ScrambleText text={t("sections.skills")} />
                 </h2>
               </div>
               <p className={cx(metaCls, css({ color: "muted" }))}>

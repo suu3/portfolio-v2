@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { css, cx } from "@/styled-system/css";
 import Reveal from "@/components/Reveal";
 import Window from "@/components/Window";
 import { company, projects } from "@/pagesLayer/home/data";
 import { GeoSyncDiagram, ProductConfigDiagram } from "@/components/Diagram";
+import { useTranslations } from "next-intl";
 import {
   chipCls,
   eyebrowCls,
@@ -15,19 +16,19 @@ import {
   sectionTitleCls,
 } from "@/pagesLayer/home/ui";
 
-const DIAGRAMS = [
+/** The case studies. Titles and captions come from the message file, so this
+ *  takes the translator rather than reading it at module scope. */
+const diagrams = (t: (key: string) => string) => [
   {
     file: "geo-sync.svg",
-    title: "지역 상태 동기화 — Adapter + Coordinator",
-    caption:
-      "지도·필터·URL·API가 서로 다른 상태 모델을 쓰던 문제를, 변환을 맡는 Adapter와 동기화를 조율하는 Coordinator로 분리해 해결했습니다. 상태 변경의 출처를 추적해 반복 갱신과 query 덮어쓰기를 막습니다.",
+    title: t("project.case1Title"),
+    caption: t("project.case1Body"),
     render: () => <GeoSyncDiagram />,
   },
   {
     file: "product-config.svg",
-    title: "제품 확장 — config 외부화 + Strategy/DI",
-    caption:
-      "제품이 늘 때마다 공통 컴포넌트에 조건문이 쌓이던 구조를, 제품별 차이를 config와 전략 객체로 외부화해 바꿨습니다. 신규 제품은 공통 엔진을 수정하지 않고 spec 추가만으로 지원됩니다.",
+    title: t("project.case2Title"),
+    caption: t("project.case2Body"),
     render: () => <ProductConfigDiagram />,
   },
 ];
@@ -35,6 +36,8 @@ const DIAGRAMS = [
 const padX = { base: "16px", md: "clamp(28px, 5vw, 88px)" };
 
 const Project = () => {
+  const t = useTranslations();
+  const DIAGRAMS = diagrams(t);
   return (
     <main className={cx(paperGridCls, css({ backgroundColor: "paper", color: "ink", minHeight: "100vh", overflowX: "hidden" }))}>
       <header
@@ -164,7 +167,7 @@ const Project = () => {
 
         <Reveal>
           <div className={css({ textAlign: "center", marginTop: "40px" })}>
-            <Link href="/home" data-cursor="pointer" data-cursor-label="Back" className={pillGhostCls}>
+            <Link href="/home" data-cursor="pointer" data-cursor-label={t("actions.back")} className={pillGhostCls}>
               ← 홈으로 돌아가기
             </Link>
           </div>

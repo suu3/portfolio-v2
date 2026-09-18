@@ -3,6 +3,7 @@
 import { CSSProperties, ReactNode, RefObject, useState } from "react";
 import { motion, useDragControls } from "framer-motion";
 import { css, cx } from "@/styled-system/css";
+import { useTranslations } from "next-intl";
 
 /** shared across every window so the last one touched is always on top */
 let topZ = 20;
@@ -110,6 +111,7 @@ const Window = ({
   children,
   ...rest
 }: Props) => {
+  const t = useTranslations();
   const controls = useDragControls();
   const [collapsed, setCollapsed] = useState(false);
   const [z, setZ] = useState<number>();
@@ -143,7 +145,7 @@ const Window = ({
             onPointerDown={(e) => e.stopPropagation()}
             onClick={() => setCollapsed((c) => !c)}
             aria-expanded={!collapsed}
-            aria-label={collapsed ? `${title} 펼치기` : `${title} 접기`}
+            aria-label={collapsed ? t("a11y.expand", { title }) : t("a11y.collapse", { title })}
             data-cursor="pointer"
             data-cursor-label={collapsed ? "Open" : "Fold"}
           >

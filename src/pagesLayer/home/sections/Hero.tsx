@@ -6,6 +6,7 @@ import { css, cx } from "@/styled-system/css";
 import Window from "@/components/Window";
 import { profile } from "../data";
 import { metaCls, pillCls, pillGhostCls } from "../ui";
+import { useTranslations } from "next-intl";
 
 const ShaderBackdrop = dynamic(() => import("@/components/@three/ShaderBackdrop"), { ssr: false });
 
@@ -180,6 +181,7 @@ const Row = ({ k, children }: { k: string; children: React.ReactNode }) => (
 );
 
 const Hero = () => {
+  const t = useTranslations();
   return (
     <section id="top" className={sectionCls}>
       {/* variant="halftone" for the dot version */}
@@ -202,11 +204,12 @@ const Hero = () => {
               textWrap: "balance",
             })}
           >
-            안녕하세요,
+            {t("hero.greeting")}
             <br />
-            프론트엔드 개발자
+            {t("hero.role")}
             <br />
-            <span className={css({ color: "point" })}>{profile.handle}</span>입니다.
+            <span className={css({ color: "point" })}>{profile.handle}</span>
+            {t("hero.nameSuffix")}
           </h1>
           <p
             className={css({
@@ -221,11 +224,11 @@ const Hero = () => {
             {profile.tagline}
           </p>
           <div className={css({ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: { base: "24px", lg: "34px" } })}>
-            <a href={`mailto:${profile.email}`} className={pillCls} data-cursor="pointer" data-cursor-label="Mail ↗">
-              메일 보내기 ↗
+            <a href={`mailto:${profile.email}`} className={pillCls} data-cursor="pointer" data-cursor-label={t("actions.mail")}>
+              {t("hero.mail")}
             </a>
-            <a href="#experience" className={pillGhostCls} data-cursor="pointer" data-cursor-label="Go ↓">
-              작업 보기 ↓
+            <a href="#experience" className={pillGhostCls} data-cursor="pointer" data-cursor-label={t("actions.go")}>
+              {t("hero.work")}
             </a>
           </div>
         </div>

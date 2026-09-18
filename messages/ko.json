@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "title": "Portfolio · Frontend Developer",
+    "description": "확장 가능한 구조 설계와 인터랙티브 웹을 만드는 프론트엔드 개발자 포트폴리오."
+  },
+  "nav": {
+    "top": "Index",
+    "about": "About",
+    "experience": "Work",
+    "skills": "Stack",
+    "beyond": "Archive",
+    "contact": "Contact"
+  },
+  "hero": {
+    "greeting": "안녕하세요,",
+    "role": "프론트엔드 개발자",
+    "nameSuffix": "입니다.",
+    "mail": "메일 보내기 ↗",
+    "work": "작업 보기 ↓"
+  },
+  "sections": {
+    "about": "팀과 함께 성장하는 개발자",
+    "experience": "일한 것들",
+    "skills": "쓰는 도구들",
+    "beyond": "그 밖의 것들",
+    "contact": "함께 이야기해요"
+  },
+  "actions": {
+    "mail": "Mail ↗",
+    "go": "Go ↓",
+    "view": "View ↗",
+    "open": "Open ↗",
+    "top": "Top ↑",
+    "back": "Back",
+    "poke": "Poke"
+  },
+  "a11y": {
+    "openMenu": "메뉴 열기",
+    "closeMenu": "메뉴 닫기",
+    "soundToggle": "인터랙션 효과음 켜기 / 끄기",
+    "expand": "{title} 펼치기",
+    "collapse": "{title} 접기",
+    "language": "언어 선택",
+    "sections": "섹션"
+  },
+  "project": {
+    "case1Title": "지역 상태 동기화 — Adapter + Coordinator",
+    "case1Body": "지도·필터·URL·API가 서로 다른 상태 모델을 쓰던 문제를, 변환을 맡는 Adapter와 동기화를 조율하는 Coordinator로 분리해 해결했습니다. 상태 변경의 출처를 추적해 반복 갱신과 query 덮어쓰기를 막습니다.",
+    "case2Title": "제품 확장 — config 외부화 + Strategy/DI",
+    "case2Body": "제품이 늘 때마다 공통 컴포넌트에 조건문이 쌓이던 구조를, 제품별 차이를 config와 전략 객체로 외부화해 바꿨습니다. 신규 제품은 공통 엔진을 수정하지 않고 spec 추가만으로 지원됩니다."
+  },
+  "character": {
+    "pokeDesktop": "hi. poke me",
+    "pokeTouch": "hi. tap me"
+  }
+}

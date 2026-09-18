@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/routing";
 import { AnimatePresence, LayoutGroup } from "framer-motion";
 import { css, cx } from "@/styled-system/css";
 import PixelRabbit from "@/components/PixelRabbit";
@@ -11,6 +11,7 @@ import { ORANGE, pillCls } from "@/pagesLayer/home/ui";
 import Burger from "./burger";
 import Stairs from "./stairs";
 import Menu from "./menu";
+import LocaleSwitch from "@/components/LocaleSwitch";
 
 export const NAV = [
   { id: "top", label: "Index" },
@@ -124,6 +125,7 @@ const itemOnCls = css({
 });
 
 export default function Header() {
+  const t = useTranslations();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const pathname = usePathname();
   const onHome = pathname === "/home" || pathname === "/";
@@ -140,7 +142,7 @@ export default function Header() {
           {profile.handle}
         </Link>
 
-        <nav className={navCls} aria-label="섹션">
+        <nav className={navCls} aria-label={t("a11y.sections")}>
           {NAV.map((n) => (
             <Link
               key={n.id}
@@ -150,20 +152,21 @@ export default function Header() {
               data-cursor="pointer"
               data-cursor-label="Go"
             >
-              {n.label}
+              {t(`nav.${n.id}`)}
             </Link>
           ))}
         </nav>
 
         <div className={css({ display: "flex", gap: "6px", alignItems: "center" })}>
           <span className={css({ display: { base: "none", md: "flex" }, gap: "6px" })}>
-            <a href={profile.github} target="_blank" rel="noreferrer" className={pillCls} data-cursor="pointer" data-cursor-label="Open ↗">
+            <a href={profile.github} target="_blank" rel="noreferrer" className={pillCls} data-cursor="pointer" data-cursor-label={t("actions.open")}>
               GitHub ↗
             </a>
-            <a href={profile.blog} target="_blank" rel="noreferrer" className={pillCls} data-cursor="pointer" data-cursor-label="Open ↗">
+            <a href={profile.blog} target="_blank" rel="noreferrer" className={pillCls} data-cursor="pointer" data-cursor-label={t("actions.open")}>
               Blog ↗
             </a>
           </span>
+          <LocaleSwitch />
           <Burger openMenu={() => setMenuIsOpen(true)} />
         </div>
       </div>

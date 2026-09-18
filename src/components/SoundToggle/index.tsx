@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { disableSfx, enableSfx, sfx } from "@/lib/sfx";
 import styles from "./sound.module.css";
+import { useTranslations } from "next-intl";
 
 /**
  * Opt-in UI sound. Off by default — unexpected audio is worse than no audio,
@@ -12,6 +13,7 @@ import styles from "./sound.module.css";
  * exactly the elements that are actually clickable.
  */
 const SoundToggle = () => {
+  const t = useTranslations();
   const [on, setOn] = useState(false);
 
   useEffect(() => {
@@ -64,7 +66,7 @@ const SoundToggle = () => {
       data-cursor="pointer"
       data-cursor-label={on ? "Mute" : "Sound"}
       aria-pressed={on}
-      aria-label="인터랙션 효과음 켜기 / 끄기"
+      aria-label={t("a11y.soundToggle")}
       className={`${styles.btn} ${on ? styles.on : ""}`}
     >
       <span className={styles.bars} aria-hidden>

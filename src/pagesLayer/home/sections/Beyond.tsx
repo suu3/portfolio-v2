@@ -6,6 +6,7 @@ import ScrambleText from "@/components/ScrambleText";
 import Window from "@/components/Window";
 import { sideProjects, certs, languages, awards, education, oss } from "../data";
 import { eyebrowCls, innerCls, metaCls, paperGridCls, sectionCls, sectionTitleCls } from "../ui";
+import { useTranslations } from "next-intl";
 
 type Entry = { name: string; kind: string; date: string; note?: string };
 
@@ -25,13 +26,14 @@ const colsCls = css({
 });
 
 const Beyond = () => {
+  const t = useTranslations();
   return (
     <section id="beyond" className={cx(sectionCls, paperGridCls, css({ backgroundColor: "paper", color: "ink" }))}>
       <div className={innerCls}>
         <Reveal>
           <span className={eyebrowCls}>04 — Archive</span>
           <h2 className={sectionTitleCls}>
-            <ScrambleText text="그 밖의 것들" />
+            <ScrambleText text={t("sections.beyond")} />
           </h2>
         </Reveal>
 

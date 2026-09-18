@@ -5,6 +5,7 @@ import MenuLink from "./link";
 import PixelRabbit from "@/components/PixelRabbit";
 import { css } from "@/styled-system/css";
 import { profile } from "@/pagesLayer/home/data";
+import { useTranslations } from "next-intl";
 
 const mono = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
@@ -33,6 +34,7 @@ const railCls = css({
 });
 
 export default function Menu({ closeMenu }: { closeMenu: () => void }) {
+  const t = useTranslations();
   return (
     <motion.div className={styles.menu} variants={opacity} initial="initial" animate="enter" exit="exit">
       <motion.div variants={slideLeft} {...mountAnim} className={railCls}>
@@ -43,7 +45,7 @@ export default function Menu({ closeMenu }: { closeMenu: () => void }) {
 
         <button
           type="button"
-          aria-label="메뉴 닫기"
+          aria-label={t("a11y.closeMenu")}
           onClick={closeMenu}
           data-cursor="pointer"
           data-cursor-label="Close"
@@ -72,14 +74,14 @@ export default function Menu({ closeMenu }: { closeMenu: () => void }) {
       </nav>
 
       <motion.div variants={slideLeft} {...mountAnim} className={railCls}>
-        <a href={`mailto:${profile.email}`} data-cursor="pointer" data-cursor-label="Mail ↗">
+        <a href={`mailto:${profile.email}`} data-cursor="pointer" data-cursor-label={t("actions.mail")}>
           {profile.email}
         </a>
         <span className={css({ display: "inline-flex", gap: "16px" })}>
-          <a href={profile.github} target="_blank" rel="noreferrer" data-cursor="pointer" data-cursor-label="Open ↗">
+          <a href={profile.github} target="_blank" rel="noreferrer" data-cursor="pointer" data-cursor-label={t("actions.open")}>
             GitHub ↗
           </a>
-          <a href={profile.blog} target="_blank" rel="noreferrer" data-cursor="pointer" data-cursor-label="Open ↗">
+          <a href={profile.blog} target="_blank" rel="noreferrer" data-cursor="pointer" data-cursor-label={t("actions.open")}>
             Blog ↗
           </a>
         </span>

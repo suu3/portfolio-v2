@@ -12,6 +12,7 @@ import { CodeGlyph, Keyboard, Rocket, Star } from "@/components/@three/DeskToys"
 import { Laptop, OfficeChair } from "@/components/@three/Props";
 import { CLIPS, MODEL_HEIGHT, TrackState, computeTrack, emptyTrack } from "./track";
 import styles from "./bubble.module.css";
+import { useTranslations } from "next-intl";
 
 /**
  * Baked + rigged from `mycharactor_rabbit_theme_v2.blend` by
@@ -76,6 +77,7 @@ const DESK = [
 ] as const;
 
 const Character = ({ touch }: { touch: boolean }) => {
+  const msg = useTranslations();
   const { scene, animations, nodes } = useGLTF(MODEL_URL, DRACO);
   const { size, viewport } = useThree();
 
@@ -158,7 +160,7 @@ const Character = ({ touch }: { touch: boolean }) => {
 
   const enter = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
-    hint("Poke");
+    hint(msg("actions.poke"));
   };
   const leave = () => hint(null);
 
@@ -432,7 +434,7 @@ const Character = ({ touch }: { touch: boolean }) => {
 
           <Html center position={[0, MODEL_HEIGHT + 0.75, 0]} zIndexRange={[40, 30]} style={{ pointerEvents: "none" }}>
             <div className={`${styles.bubble} ${pop ? styles.pop : ""}`}>
-              {line === 0 ? (touch ? "hi. tap me" : "hi. poke me") : LINES[line]}
+              {line === 0 ? msg(touch ? "character.pokeTouch" : "character.pokeDesktop") : LINES[line]}
             </div>
           </Html>
         </group>

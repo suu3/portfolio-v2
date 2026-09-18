@@ -1,13 +1,15 @@
 "use client";
 
 import { css } from "@/styled-system/css";
+import { useTranslations } from "next-intl";
 
 /** menu opener — only on the stacked (< lg) layout, the pill nav covers desktop */
 export default function Burger({ openMenu }: { openMenu: () => void }) {
+  const t = useTranslations();
   return (
     <button
       type="button"
-      aria-label="메뉴 열기"
+      aria-label={t("a11y.openMenu")}
       data-cursor="pointer"
       data-cursor-label="Menu"
       onClick={openMenu}

@@ -6,8 +6,10 @@ import Marquee from "@/components/Marquee";
 import PixelRabbit from "@/components/PixelRabbit";
 import { profile } from "../data";
 import { ORANGE, eyebrowCls, metaCls, pillDarkCls } from "../ui";
+import { useTranslations } from "next-intl";
 
 const Footer = () => {
+  const t = useTranslations();
   return (
     <footer id="contact" className={css({ background: "dark", color: "#ededeb" })}>
       <div className={css({ borderBottom: `1px solid token(colors.darkLine)`, paddingY: "11px", color: "#ededeb" })}>
@@ -15,7 +17,7 @@ const Footer = () => {
           className={metaCls}
           duration={22}
           separator="●"
-          items={["get in touch", "함께 이야기해요", profile.email, "open to talk"]}
+          items={["get in touch", t("sections.contact"), profile.email, "open to talk"]}
         />
       </div>
 
@@ -50,7 +52,7 @@ const Footer = () => {
             <a
               href={`mailto:${profile.email}`}
               data-cursor="pointer"
-              data-cursor-label="Mail ↗"
+              data-cursor-label={t("actions.mail")}
               className={css({
                 display: "inline-block",
                 marginTop: "44px",
@@ -80,7 +82,7 @@ const Footer = () => {
                   target={l.href.startsWith("http") ? "_blank" : undefined}
                   rel="noreferrer"
                   data-cursor="pointer"
-                  data-cursor-label="Open ↗"
+                  data-cursor-label={t("actions.open")}
                   className={pillDarkCls}
                 >
                   {l.label} ↗
@@ -112,7 +114,7 @@ const Footer = () => {
             <a
               href="#top"
               data-cursor="pointer"
-              data-cursor-label="Top ↑"
+              data-cursor-label={t("actions.top")}
               className={css({ fontFamily: "mono", color: "#ededeb", _hover: { color: "point" } })}
             >
               back to top ↑

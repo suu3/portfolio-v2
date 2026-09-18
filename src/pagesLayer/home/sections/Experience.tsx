@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { css, cx } from "@/styled-system/css";
@@ -11,6 +11,7 @@ import Window from "@/components/Window";
 import StarField from "@/components/StarField";
 import { workScroll } from "@/lib/workScroll";
 import { chipDarkCls, eyebrowCls, metaCls, sectionTitleCls, textLinkCls } from "../ui";
+import { useTranslations } from "next-intl";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,6 +32,7 @@ const floorCls = css({
 });
 
 const Experience = () => {
+  const t = useTranslations();
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const floorRef = useRef<HTMLDivElement>(null);
@@ -115,7 +117,7 @@ const Experience = () => {
         <div className={css({ flexShrink: 0, width: { base: "100%", md: "440px" }, marginBottom: { base: "26px", md: 0 } })}>
           <span className={eyebrowCls}>02 — Work</span>
           <h2 className={sectionTitleCls}>
-            <ScrambleText text="일한 것들" />
+            <ScrambleText text={t("sections.experience")} />
           </h2>
           <div className={css({ marginTop: "30px", borderTop: `1px solid token(colors.darkLine)`, paddingTop: "22px" })}>
             <h3 className={css({ fontSize: "22px", fontWeight: 650, letterSpacing: "-0.03em" })}>{company.name}</h3>
@@ -209,7 +211,7 @@ const Experience = () => {
                 <Link
                   href="/project"
                   data-cursor="pointer"
-                  data-cursor-label="View ↗"
+                  data-cursor-label={t("actions.view")}
                   className={cx(textLinkCls, css({ marginTop: "22px" }))}
                 >
                   자세히 보기{rest > 0 ? ` (+${rest})` : ""} →

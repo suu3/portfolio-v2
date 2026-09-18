@@ -6,8 +6,10 @@ import ScrambleText from "@/components/ScrambleText";
 import Window from "@/components/Window";
 import { about } from "../data";
 import { eyebrowCls, innerCls, metaCls, paperGridCls, sectionCls, sectionTitleCls } from "../ui";
+import { useTranslations } from "next-intl";
 
 const About = () => {
+  const t = useTranslations();
   return (
     <section id="about" className={cx(sectionCls, paperGridCls, css({ backgroundColor: "paper", color: "ink" }))}>
       <div className={innerCls}>
@@ -24,7 +26,7 @@ const About = () => {
             <div>
               <span className={eyebrowCls}>01 — About</span>
               <h2 className={sectionTitleCls}>
-                <ScrambleText text="팀과 함께 성장하는 개발자" />
+                <ScrambleText text={t("sections.about")} />
               </h2>
             </div>
             <p className={cx(metaCls, css({ color: "muted", whiteSpace: "nowrap" }))}>
