@@ -225,16 +225,27 @@ const Character = ({ touch }: { touch: boolean }) => {
     }
     for (const e of eyes) e.scale.y = lid;
 
+    // The idle float, and the head's share of it. The head used to nod on a sine
+    // of its own — 1.3 rad/s against the float's 1.4. Close enough to look like
+    // one motion, far enough apart that the two drifted a full cycle every ~60s,
+    // so with the pointer sitting still (the look-at settled, nothing else
+    // moving) the head bobbed on and on out of step with the body. Worse at the
+    // stops that don't float: there it nodded away on its own with nothing to
+    // nod along with. One wave for both now, the head a beat behind the body the
+    // way a head trails the rest of you, and only where there is a float to lag.
+    const floatWave = Math.sin(t * 1.4);
+    const headLag = Math.sin(t * 1.4 - 0.7) * 0.015 * tr.float;
+
     // the head follows the pointer; less so while sprinting sideways
     if (head) {
       const k = 1 - run * 0.8;
       head.rotation.y = damp(head.rotation.y, px * 0.5 * k, 6, dt);
-      head.rotation.x = damp(head.rotation.x, (-py * 0.2 + 0.03 + Math.sin(t * 1.3) * 0.015) * k, 6, dt);
+      head.rotation.x = damp(head.rotation.x, (-py * 0.2 + 0.03 + headLag) * k, 6, dt);
       head.rotation.z = damp(head.rotation.z, -px * 0.07 * k, 4, dt);
     }
 
     // float + hop with squash & stretch
-    let lift = Math.sin(t * 1.4) * 0.12 * tr.float;
+    let lift = floatWave * 0.12 * tr.float;
     let sq = 1;
     if (st.hopT >= 0) {
       st.hopT += dt;
