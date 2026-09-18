@@ -39,6 +39,9 @@ const LINES = [
 const hint = (label: string | null) =>
   window.dispatchEvent(new CustomEvent("cursor:hint", { detail: label }));
 
+/** radius of the capsule the pointer is picked against — see the mesh below */
+const HIT_RADIUS = 1.5;
+
 const damp = THREE.MathUtils.damp;
 const clamp = THREE.MathUtils.clamp;
 
@@ -138,6 +141,12 @@ const Character = ({ touch }: { touch: boolean }) => {
     setPop(true);
     window.setTimeout(() => setPop(false), 160);
   };
+
+  const enter = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    hint("Poke");
+  };
+  const leave = () => hint(null);
 
   useFrame((state, dt) => {
     const g = root.current;
@@ -305,15 +314,17 @@ const Character = ({ touch }: { touch: boolean }) => {
     <>
       <group ref={root}>
         <group ref={rig}>
-          <primitive
-            object={scene}
-            onClick={poke}
-            onPointerOver={(e: ThreeEvent<PointerEvent>) => {
-              e.stopPropagation();
-              hint("Poke");
-            }}
-            onPointerOut={() => hint(null)}
-          />
+          <primitive object={scene} />
+          {/* The pointer is picked against this capsule, not the figure itself.
+              R3F raycasts every interactive object on every pointermove over the
+              page, and a skinned raycast re-skins each vertex it walks: with the
+              handlers on the model's 122k triangles one move cost ~40ms whenever
+              the cursor sat over the character, starving the frame loop — the
+              head's look-at stuttered along with it. A coarse stand-in also keeps
+              the hover hint steady as the silhouette shifts under a still cursor. */}
+          <mesh visible={false} position={[0, MODEL_HEIGHT / 2, 0]} onClick={poke} onPointerOver={enter} onPointerOut={leave}>
+            <capsuleGeometry args={[HIT_RADIUS, MODEL_HEIGHT - HIT_RADIUS * 2, 4, 8]} />
+          </mesh>
           {/* headset rides on the head bone (turns with the look-at) and, like the
               other desk things, comes off and flies away when the desk is left */}
           {head &&
