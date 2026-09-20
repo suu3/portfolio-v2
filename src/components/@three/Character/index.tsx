@@ -9,6 +9,7 @@ import Bunny from "@/components/@three/Bunny";
 import Headset from "@/components/@three/Headset";
 import { CodeGlyph, Keyboard, Rocket, Star } from "@/components/@three/DeskToys";
 import { Laptop, OfficeChair } from "@/components/@three/Props";
+import Confetti, { ConfettiHandle } from "@/components/@three/Confetti";
 import { CLIPS, MODEL_HEIGHT, TrackState, computeTrack, emptyTrack } from "./track";
 import styles from "./bubble.module.css";
 import { useTranslations } from "next-intl";
@@ -33,8 +34,12 @@ const LINES = [
   "retry? y/n",
   "> y",
   "result: still 0 found",
+  "...recount. 1 found.", // BURST_LINE — the scraps go up here
   "session logged. thanks.",
 ];
+
+/** the line the confetti goes off on, every time the loop comes round to it */
+const BURST_LINE = LINES.indexOf("...recount. 1 found.");
 
 const hint = (label: string | null) =>
   window.dispatchEvent(new CustomEvent("cursor:hint", { detail: label }));
@@ -89,6 +94,7 @@ const Character = ({ touch }: { touch: boolean }) => {
   const deskRefs = useRef<(THREE.Group | null)[]>([]);
   const rocket = useRef<THREE.Group>(null);
   const headset = useRef<THREE.Group>(null);
+  const confetti = useRef<ConfettiHandle>(null);
 
   const { actions } = useAnimations(animations, rig);
   const head = useMemo(() => nodes.Head as THREE.Object3D | undefined, [nodes]);
@@ -119,6 +125,8 @@ const Character = ({ touch }: { touch: boolean }) => {
     /** where the head is looking, as a heading in the world — see the look-at */
     gazeYaw: 0,
     gazePitch: 0,
+    /** how many times the click loop has come round to the burst */
+    laps: 0,
   });
 
   useLayoutEffect(() => {
@@ -148,7 +156,22 @@ const Character = ({ touch }: { touch: boolean }) => {
     const target = e.nativeEvent.target as HTMLElement | null;
     if (target?.closest?.("a, button")) return;
     s.current.hopT = 0;
-    setLine((n) => (n + 1) % LINES.length);
+    // Stick with it long enough to run the bit out and the scraps go up — and
+    // again on every lap after, because by then you are clicking to see it.
+    const next = (line + 1) % LINES.length;
+    if (next === BURST_LINE) {
+      const st = s.current;
+      st.laps += 1;
+      const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      confetti.current?.fire({
+        // just over the head and well in front of the body — thrown from the
+        // chest they spent their whole flight behind the hair and the headset
+        origin: [0, MODEL_HEIGHT * 0.88, 1.6],
+        power: st.laps === 1 ? 1 : 1.15, // later laps throw a little harder
+        count: reduced ? 36 : undefined,
+      });
+    }
+    setLine(next);
     setPop(true);
     window.setTimeout(() => setPop(false), 160);
   };
@@ -433,6 +456,10 @@ const Character = ({ touch }: { touch: boolean }) => {
             </div>
           </Html>
         </group>
+
+        {/* outside the rig, so the burst is not squashed by the hop or swung
+            round by the body's yaw — it only rides the page position and scale */}
+        <Confetti ref={confetti} />
 
         <mesh ref={shadow} position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={[3.4, 2.2, 1]} renderOrder={-1}>
           <planeGeometry />
