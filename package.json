@@ -18,8 +18,8 @@
     "framer-motion": "^11.3.2",
     "gsap": "^3.12.5",
     "leva": "^0.9.35",
-    "next": "14.2.5",
-    "next-intl": "3.26.5",
+    "next": "15.5.28",
+    "next-intl": "4.14.9",
     "react": "^18",
     "react-dom": "^18",
     "three": "^0.166.1"
@@ -30,7 +30,15 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.5",
+    "eslint-config-next": "15.5.28",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss": "^8.5.23",
+      "nanoid@3": "^3.3.18",
+      "colord": "^2.9.4",
+      "source-map-js": "^1.2.2"
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { defineRouting } from "next-intl/routing";
-import { createSharedPathnamesNavigation } from "next-intl/navigation";
+import { createNavigation } from "next-intl/navigation";
 
 /**
  * Korean is what the site is written in, so it is the fallback for anything a
@@ -33,4 +33,4 @@ export const routing = defineRouting({
 
 /** Locale-aware Link/router. Import these instead of next/link and
  *  next/navigation anywhere that points at a page of this site. */
-export const { Link, redirect, usePathname, useRouter } = createSharedPathnamesNavigation(routing);
+export const { Link, redirect, usePathname, useRouter } = createNavigation(routing);

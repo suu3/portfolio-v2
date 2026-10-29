@@ -11,6 +11,7 @@ export function generateStaticParams() {
  * redirect: reading the request locale here would opt the whole route into
  * dynamic rendering, and the segment already tells us which language it is.
  */
-export default function LocaleRootPage({ params: { locale } }: { params: { locale: string } }) {
+export default async function LocaleRootPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   redirect(`/${locale}/home`);
 }
