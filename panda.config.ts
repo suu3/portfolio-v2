@@ -48,7 +48,7 @@ export default defineConfig({
             value:
               "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif",
           },
-          mono: { value: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" },
+          mono: { value: "var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" },
         },
       },
     },

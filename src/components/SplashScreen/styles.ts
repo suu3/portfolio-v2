@@ -1,6 +1,6 @@
 import { css } from "@/styled-system/css";
 
-const mono = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+const mono = "var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
 export const splashScreenCls = css({
   zIndex: 10001,

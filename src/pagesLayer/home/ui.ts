@@ -24,7 +24,7 @@ export const BLUE = "#2d3cff";
 
 export const sans =
   "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif";
-export const mono = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+export const mono = "var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
 /** snap easing — windows pop, they don't drift */
 export const SNAP = "cubic-bezier(.2,.9,.2,1)";

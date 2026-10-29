@@ -7,7 +7,7 @@ import { css } from "@/styled-system/css";
 import { profile } from "@/pagesLayer/home/data";
 import { useTranslations } from "next-intl";
 
-const mono = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+const mono = "var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
 /** anchors are absolute so they also work from /project */
 const menu = [

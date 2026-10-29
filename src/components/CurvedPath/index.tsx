@@ -1,31 +1,19 @@
 "use client";
 
 import { css } from "@/styled-system/css";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 
 const CurvedPath: React.FC = () => {
   const path = useRef<SVGPathElement | null>(null);
-  let progress = 0;
-  let x = 0.5;
-  let time = Math.PI / 2;
-  let reqId: number | null = null;
+  const progress = useRef(0);
+  const x = useRef(0.5);
+  const time = useRef(Math.PI / 2);
+  const reqId = useRef<number | null>(null);
 
-  useEffect(() => {
-    setPath(progress);
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  const handleResize = () => {
-    setPath(progress);
-  };
-
-  const setPath = (progress: number) => {
+  const setPath = useCallback((offset: number) => {
     const width = window.innerWidth;
-    const controlPointX = width * x;
-    const controlPointY = 250 + progress;
+    const controlPointX = width * x.current;
+    const controlPointY = 250 + offset;
 
     if (path.current) {
       path.current.setAttribute(
@@ -33,13 +21,24 @@ const CurvedPath: React.FC = () => {
         `M0 250 Q${controlPointX} ${controlPointY}, ${width} 250`
       );
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => setPath(progress.current);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (reqId.current !== null) cancelAnimationFrame(reqId.current);
+    };
+  }, [setPath]);
 
   const lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
 
   const manageMouseEnter = () => {
-    if (reqId) {
-      cancelAnimationFrame(reqId);
+    if (reqId.current !== null) {
+      cancelAnimationFrame(reqId.current);
+      reqId.current = null;
       resetAnimation();
     }
   };
@@ -48,9 +47,9 @@ const CurvedPath: React.FC = () => {
     const { movementY, clientX } = e;
     const pathBound = path.current?.getBoundingClientRect();
     if (pathBound) {
-      x = (clientX - pathBound.left) / pathBound.width;
-      progress += movementY;
-      setPath(progress);
+      x.current = (clientX - pathBound.left) / pathBound.width;
+      progress.current += movementY;
+      setPath(progress.current);
     }
   };
 
@@ -59,20 +58,21 @@ const CurvedPath: React.FC = () => {
   };
 
   const animateOut = () => {
-    const newProgress = progress * Math.sin(time);
-    progress = lerp(progress, 0, 0.025); // 이전 속도로 변경
-    time += 0.2;
+    const newProgress = progress.current * Math.sin(time.current);
+    progress.current = lerp(progress.current, 0, 0.025); // 이전 속도로 변경
+    time.current += 0.2;
     setPath(newProgress);
-    if (Math.abs(progress) > 0.75) {
-      reqId = requestAnimationFrame(animateOut);
+    if (Math.abs(progress.current) > 0.75) {
+      reqId.current = requestAnimationFrame(animateOut);
     } else {
       resetAnimation();
     }
   };
 
   const resetAnimation = () => {
-    time = Math.PI / 2;
-    progress = 0;
+    time.current = Math.PI / 2;
+    progress.current = 0;
+    reqId.current = null;
   };
 
   return (

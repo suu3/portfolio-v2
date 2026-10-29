@@ -23,7 +23,7 @@ export default function Burger({ openMenu }: { openMenu: () => void }) {
         color: "#111",
         border: "1px solid #111",
         borderRadius: "999px",
-        fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+        fontFamily: "var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
         fontSize: "11px",
         letterSpacing: "0.06em",
         textTransform: "uppercase",

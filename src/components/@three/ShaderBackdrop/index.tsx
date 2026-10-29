@@ -140,7 +140,7 @@ type HalftoneMaterialImpl = THREE.ShaderMaterial & {
 
 declare module "@react-three/fiber" {
   interface ThreeElements {
-    halftoneMaterial: import("@react-three/fiber").Object3DNode<HalftoneMaterialImpl, typeof HalftoneMaterial>;
+    halftoneMaterial: import("@react-three/fiber").ThreeElement<typeof HalftoneMaterial> & Partial<HalftoneMaterialImpl>;
   }
 }
 

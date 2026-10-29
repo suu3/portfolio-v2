@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { css } from "@/styled-system/css";
 import { rotateX, mountAnim } from "../anim";
 
-const mono = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+const mono = "var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
 export default function MenuLink({
   index,

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ThreeElements } from "@react-three/fiber";
 import { RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -33,7 +34,7 @@ const carrotLeafGeo = (() => {
   return new THREE.ShapeGeometry(s, 8);
 })();
 
-const CarrotLogo = (props: JSX.IntrinsicElements["group"]) => (
+const CarrotLogo = (props: ThreeElements["group"]) => (
   <group {...props}>
     <mesh geometry={carrotBody} material={carrotSkin} raycast={noRaycast} />
     {[-0.5, 0, 0.5].map((r) => (
