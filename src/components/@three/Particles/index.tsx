@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import * as THREE from "three";
 
 const particlesCount = 100;
@@ -6,12 +6,13 @@ const particlesCount = 100;
 const Particles = () => {
   const pointsRef = useRef<THREE.Points>(null);
 
-  const positions = new Float32Array(particlesCount * 3);
-  for (let i = 0; i < particlesCount; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 10;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
-  }
+  const [positions] = useState(() => {
+    const values = new Float32Array(particlesCount * 3);
+    for (let i = 0; i < values.length; i++) {
+      values[i] = (Math.random() - 0.5) * 10;
+    }
+    return values;
+  });
 
   return (
     <points ref={pointsRef}>

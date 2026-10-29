@@ -17,14 +17,16 @@ import Character from "@/components/@three/Character";
  * business running during SSR.
  */
 const CharacterStage = () => {
-  const [touch, setTouch] = useState(false);
-  const [source, setSource] = useState<HTMLElement>();
+  const [touch, setTouch] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
+  );
+  const [source] = useState(() =>
+    typeof document !== "undefined" ? document.body : undefined
+  );
 
   useEffect(() => {
-    setSource(document.body);
     const mq = window.matchMedia("(pointer: coarse)");
     const on = () => setTouch(mq.matches);
-    on();
     mq.addEventListener("change", on);
     return () => mq.removeEventListener("change", on);
   }, []);

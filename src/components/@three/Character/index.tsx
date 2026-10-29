@@ -99,7 +99,7 @@ const Character = ({ touch }: { touch: boolean }) => {
   const { actions } = useAnimations(animations, rig);
   const head = useMemo(() => nodes.Head as THREE.Object3D | undefined, [nodes]);
   const eyes = useMemo(() => [nodes.EyeL, nodes.EyeR].filter(Boolean) as THREE.Object3D[], [nodes]);
-  const shadowTex = useMemo(shadowTexture, []);
+  const shadowTex = useMemo(() => shadowTexture(), []);
   const gaze = useMemo(() => new THREE.Vector3(), []);
   const headPos = useMemo(() => new THREE.Vector3(), []);
   const gazeQuat = useMemo(() => new THREE.Quaternion(), []);
@@ -246,7 +246,7 @@ const Character = ({ touch }: { touch: boolean }) => {
       a.setEffectiveWeight(damp(a.getEffectiveWeight(), target, 10, dt));
     }
     const runAction = actions.Run;
-    if (runAction) runAction.timeScale = 0.7 + 1.3 * st.run;
+    if (runAction) runAction.setEffectiveTimeScale(0.7 + 1.3 * st.run);
 
     // blink: squash the eye bones shut for ~130ms every few seconds, now and
     // then twice in a row. Runs after the mixer, which rewrites their rest scale.
@@ -269,7 +269,7 @@ const Character = ({ touch }: { touch: boolean }) => {
         lid = 1 - Math.sin(p * Math.PI) * 0.92;
       }
     }
-    for (const e of eyes) e.scale.y = lid;
+    for (const e of eyes) e.scale.setY(lid);
 
     // The head looks at the pointer. It used to turn by how far across the
     // screen the pointer lay (px * 0.5) and never asked where the character had
@@ -328,9 +328,7 @@ const Character = ({ touch }: { touch: boolean }) => {
       // past a running body.
       const yaw = clamp(Math.atan2(gaze.x, gaze.z), -1.66, 1.66);
       const pitch = clamp(-Math.atan2(gaze.y, Math.hypot(gaze.x, gaze.z)), -0.6, 0.6);
-      head.rotation.y = yaw * k;
-      head.rotation.x = (pitch + 0.03) * k;
-      head.rotation.z = -gy * 0.14 * k;
+      head.rotation.set((pitch + 0.03) * k, yaw * k, -gy * 0.14 * k);
     }
 
     // Float + hop with squash & stretch. The float used to swing 0.12 units,

@@ -1,5 +1,6 @@
 "use client";
 
+import type { MouseEvent } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { css, cx } from "@/styled-system/css";
 import { locales, localeNames, usePathname, type Locale } from "@/i18n/routing";
@@ -46,35 +47,29 @@ const LocaleSwitch = () => {
   const active = useLocale() as Locale;
   const pathname = usePathname();
 
-  /**
-   * A full navigation rather than a client-side one. Changing the language
-   * changes the [locale] segment, which swaps the root layout and the <html>
-   * element under React; doing that in place threw a removeChild on every
-   * switch. A language change is a new document anyway — lang, metadata and the
-   * font subset all belong to it — and nothing is lost, because the splash and
-   * the 3D stage remount either way.
-   */
-  const go = (l: Locale) => {
+  // Language roots own separate documents. Keep a native link and preserve
+  // the current query/hash when the browser follows it.
+  const go = (event: MouseEvent<HTMLAnchorElement>, locale: Locale) => {
     const { search, hash } = window.location;
-    window.location.assign(`/${l}${pathname}${search}${hash}`);
+    event.currentTarget.href = `/${locale}${pathname}${search}${hash}`;
   };
 
   return (
     <div className={wrapCls} role="group" aria-label={t("a11y.language")}>
       {locales.map((l) => (
-        <button
+        <a
           key={l}
-          type="button"
+          href={`/${l}${pathname}`}
           lang={l}
           aria-current={l === active ? "true" : undefined}
           title={localeNames[l]}
           data-cursor="pointer"
           data-cursor-label={localeNames[l]}
           className={cx(itemCls, l === active && activeCls)}
-          onClick={() => go(l)}
+          onClick={(event) => go(event, l)}
         >
           {l}
-        </button>
+        </a>
       ))}
     </div>
   );
